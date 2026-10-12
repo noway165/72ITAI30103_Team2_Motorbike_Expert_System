@@ -1,0 +1,292 @@
+{
+  "subsystem": "starting_fuel",
+  "description": "Starting and fuel subsystem (owner: Lam). Also defines the battery and starting symptoms that the ignition_electrical file reuses.",
+  "symptoms": {
+    "starter_clicks_or_silent": {
+      "question": {
+        "vi": "Khi bấm nút đề, máy không quay mà chỉ nghe tiếng tạch tạch hoặc im lặng?",
+        "en": "When you press the start button, does the engine not turn over, with only a clicking sound or silence?"
+      }
+    },
+    "engine_cranks": {
+      "question": {
+        "vi": "Khi bấm đề hoặc đạp nổ, động cơ có quay (nghe tiếng máy quay)?",
+        "en": "When you press the start button or kick-start, does the engine turn over?"
+      }
+    },
+    "engine_wont_start": {
+      "question": {
+        "vi": "Động cơ quay nhưng không nổ máy?",
+        "en": "Does the engine turn over but fail to start?"
+      }
+    },
+    "horn_weak": {
+      "question": {
+        "vi": "Còi kêu yếu hơn bình thường?",
+        "en": "Is the horn weaker than usual?"
+      }
+    },
+    "horn_normal": {
+      "question": {
+        "vi": "Còi kêu to bình thường?",
+        "en": "Does the horn sound as loud as usual?"
+      }
+    },
+    "horn_silent": {
+      "question": {
+        "vi": "Bật khóa điện rồi bấm còi mà còi không kêu?",
+        "en": "With the ignition on, does the horn make no sound at all?"
+      }
+    },
+    "dash_lights_off_key_on": {
+      "question": {
+        "vi": "Bật khóa điện mà đèn báo trên đồng hồ không sáng?",
+        "en": "With the ignition on, do the dashboard lights stay off?"
+      }
+    },
+    "battery_older_than_2_years": {
+      "question": {
+        "vi": "Ắc quy đã dùng hơn 2 năm?",
+        "en": "Is the battery more than 2 years old?"
+      }
+    },
+    "bike_unused_over_2_weeks": {
+      "question": {
+        "vi": "Xe để lâu không chạy (hơn 2 tuần)?",
+        "en": "Has the motorbike been left unused for more than 2 weeks?"
+      }
+    },
+    "battery_recently_replaced": {
+      "question": {
+        "vi": "Ắc quy mới thay gần đây (dưới 6 tháng)?",
+        "en": "Was the battery replaced recently (less than 6 months ago)?"
+      }
+    },
+    "starting_without_brake": {
+      "question": {
+        "vi": "Lúc bấm đề, bạn quên bóp phanh?",
+        "en": "Did you press the start button without holding a brake lever?"
+      },
+      "hint": {
+        "vi": "Xe tay ga chỉ cho đề khi đang bóp phanh.",
+        "en": "Scooters only let the starter run while a brake lever is held."
+      }
+    },
+    "brake_held_when_starting": {
+      "question": {
+        "vi": "Bạn đã bóp phanh trong lúc bấm đề?",
+        "en": "Were you holding a brake lever while pressing the start button?"
+      }
+    },
+    "fuel_gauge_empty": {
+      "question": {
+        "vi": "Kim xăng (hoặc vạch xăng) đang ở mức cạn (E)?",
+        "en": "Is the fuel gauge on empty (E)?"
+      }
+    },
+    "fuel_level_ok": {
+      "question": {
+        "vi": "Trong bình vẫn còn xăng (kim xăng không ở mức E)?",
+        "en": "Is there still fuel in the tank (gauge not on E)?"
+      }
+    },
+    "strong_fuel_smell": {
+      "question": {
+        "vi": "Ngửi thấy mùi xăng nồng quanh xe?",
+        "en": "Is there a strong smell of petrol around the motorbike?"
+      }
+    },
+    "no_fuel_pump_hum_key_on": {
+      "question": {
+        "vi": "Khi bật khóa điện, bạn KHÔNG nghe tiếng bơm xăng chạy rè rè khoảng 1–2 giây?",
+        "en": "When you switch the ignition on, is the 1–2 second hum of the fuel pump missing?"
+      }
+    },
+    "side_stand_down": {
+      "question": {
+        "vi": "Chân chống nghiêng đang hạ xuống?",
+        "en": "Is the side stand down?"
+      }
+    }
+  },
+  "intermediates": {
+    "low_electrical_power": {
+      "description": {
+        "vi": "Điện yếu: ắc quy không đủ điện để đề",
+        "en": "Low electrical power: not enough current to run the starter"
+      }
+    },
+    "no_electrical_power": {
+      "description": {
+        "vi": "Mất điện hoàn toàn khi bật khóa",
+        "en": "No electrical power at all with the ignition on"
+      }
+    },
+    "cranks_but_no_start": {
+      "description": {
+        "vi": "Máy quay nhưng không nổ",
+        "en": "Engine turns over but does not start"
+      }
+    }
+  },
+  "faults": {
+    "weak_battery": {
+      "name": {"vi": "Ắc quy yếu hoặc hết điện", "en": "Weak or flat battery"},
+      "action": {
+        "vi": "Sạc lại ắc quy; nếu sạc xong vẫn yếu thì thay ắc quy mới. Tạm thời có thể đạp nổ (nếu xe có cần đạp).",
+        "en": "Recharge the battery and replace it if it stays weak. Use the kick-starter in the meantime if the bike has one."
+      },
+      "severity": "self"
+    },
+    "blown_main_fuse": {
+      "name": {"vi": "Đứt cầu chì tổng", "en": "Blown main fuse"},
+      "action": {
+        "vi": "Kiểm tra cầu chì tổng gần ắc quy và thay cầu chì cùng định mức. Nếu cầu chì đứt lại ngay thì mang xe ra tiệm vì có thể chập điện.",
+        "en": "Check the main fuse near the battery and replace it with one of the same rating. If it blows again, see a mechanic: there may be a short circuit."
+      },
+      "severity": "self"
+    },
+    "start_procedure_error": {
+      "name": {"vi": "Đề không đúng thao tác (chưa bóp phanh)", "en": "Wrong starting procedure (brake not held)"},
+      "action": {
+        "vi": "Bóp phanh trước hoặc phanh sau rồi mới bấm nút đề.",
+        "en": "Hold the front or rear brake lever, then press the start button."
+      },
+      "severity": "self"
+    },
+    "starter_relay_or_motor_problem": {
+      "name": {"vi": "Hỏng rơ-le đề hoặc mô-tơ đề", "en": "Faulty starter relay or starter motor"},
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra rơ-le đề và mô-tơ đề. Tạm thời có thể đạp nổ nếu xe có cần đạp.",
+        "en": "Have a mechanic check the starter relay and starter motor. Use the kick-starter in the meantime if available."
+      },
+      "severity": "mechanic"
+    },
+    "out_of_fuel": {
+      "name": {"vi": "Hết xăng", "en": "Out of fuel"},
+      "action": {
+        "vi": "Đổ thêm xăng.",
+        "en": "Refuel the motorbike."
+      },
+      "severity": "self"
+    },
+    "flooded_engine": {
+      "name": {"vi": "Ngộp xăng (sặc xăng)", "en": "Flooded engine"},
+      "action": {
+        "vi": "Ngừng đề, chờ khoảng 5–10 phút cho xăng bay hơi rồi đề lại, có thể vặn hết ga khi đề. Nếu hay bị lại, mang xe ra tiệm chỉnh bình xăng con.",
+        "en": "Stop cranking, wait 5–10 minutes for the excess fuel to evaporate, then try again with the throttle fully open. If it keeps happening, have the carburettor adjusted."
+      },
+      "severity": "self"
+    },
+    "fuel_pump_problem": {
+      "name": {"vi": "Bơm xăng không hoạt động", "en": "Fuel pump not working"},
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra bơm xăng và cầu chì bơm xăng.",
+        "en": "Have a mechanic check the fuel pump and its fuse."
+      },
+      "severity": "mechanic"
+    },
+    "side_stand_cutoff_active": {
+      "name": {"vi": "Công tắc chân chống ngắt máy", "en": "Side-stand cut-off switch active"},
+      "action": {
+        "vi": "Gạt chân chống nghiêng lên rồi khởi động lại. Nếu chân chống đã gạt mà vẫn không nổ, mang xe ra tiệm kiểm tra công tắc chân chống.",
+        "en": "Raise the side stand and start again. If it still will not start with the stand up, have the side-stand switch checked."
+      },
+      "severity": "self"
+    }
+  },
+  "rules": [
+    {
+      "id": "SF01",
+      "if": ["starter_clicks_or_silent", "horn_weak"],
+      "then": "low_electrical_power",
+      "cf": 0.9,
+      "source": ""
+    },
+    {
+      "id": "SF02",
+      "if": ["low_electrical_power", "battery_older_than_2_years"],
+      "then": "weak_battery",
+      "cf": 0.85,
+      "source": ""
+    },
+    {
+      "id": "SF03",
+      "if": ["low_electrical_power", "bike_unused_over_2_weeks"],
+      "then": "weak_battery",
+      "cf": 0.75,
+      "source": ""
+    },
+    {
+      "id": "SF04",
+      "if": ["dash_lights_off_key_on", "horn_silent"],
+      "then": "no_electrical_power",
+      "cf": 0.9,
+      "source": ""
+    },
+    {
+      "id": "SF05",
+      "if": ["no_electrical_power", "battery_older_than_2_years"],
+      "then": "weak_battery",
+      "cf": 0.7,
+      "source": ""
+    },
+    {
+      "id": "SF06",
+      "if": ["no_electrical_power", "battery_recently_replaced"],
+      "then": "blown_main_fuse",
+      "cf": 0.65,
+      "source": ""
+    },
+    {
+      "id": "SF07",
+      "if": ["is_scooter", "starter_clicks_or_silent", "starting_without_brake"],
+      "then": "start_procedure_error",
+      "cf": 0.9,
+      "source": ""
+    },
+    {
+      "id": "SF08",
+      "if": ["starter_clicks_or_silent", "horn_normal", "brake_held_when_starting"],
+      "then": "starter_relay_or_motor_problem",
+      "cf": 0.6,
+      "source": ""
+    },
+    {
+      "id": "SF09",
+      "if": ["engine_cranks", "engine_wont_start"],
+      "then": "cranks_but_no_start",
+      "cf": 1.0,
+      "source": ""
+    },
+    {
+      "id": "SF10",
+      "if": ["cranks_but_no_start", "fuel_gauge_empty"],
+      "then": "out_of_fuel",
+      "cf": 0.95,
+      "source": ""
+    },
+    {
+      "id": "SF11",
+      "if": ["cranks_but_no_start", "fuel_level_ok", "is_carburetor", "strong_fuel_smell"],
+      "then": "flooded_engine",
+      "cf": 0.7,
+      "source": ""
+    },
+    {
+      "id": "SF12",
+      "if": ["cranks_but_no_start", "fuel_level_ok", "is_fuel_injected", "no_fuel_pump_hum_key_on"],
+      "then": "fuel_pump_problem",
+      "cf": 0.75,
+      "source": ""
+    },
+    {
+      "id": "SF13",
+      "if": ["side_stand_down", "cranks_but_no_start"],
+      "then": "side_stand_cutoff_active",
+      "cf": 0.6,
+      "source": "",
+      "note": "Not every model cuts the engine with the stand down; keep the CF moderate."
+    }
+  ]
+}

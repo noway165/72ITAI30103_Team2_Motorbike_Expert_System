@@ -1,0 +1,136 @@
+{
+  "subsystem": "ignition_electrical",
+  "description": "Ignition and electrical subsystem (owner: Lam). Reuses battery and starting symptoms from starting_fuel.json.",
+  "symptoms": {
+    "engine_misfires": {
+      "question": {
+        "vi": "Máy nổ không đều, giật cục hoặc lúc nổ lúc tắt?",
+        "en": "Does the engine run unevenly, stutter or keep cutting out?"
+      }
+    },
+    "spark_plug_overdue": {
+      "question": {
+        "vi": "Bugi đã lâu chưa thay (quá hạn trong sổ bảo dưỡng), hoặc bạn không nhớ lần thay gần nhất?",
+        "en": "Is the spark plug overdue for replacement, or can you not remember when it was last changed?"
+      }
+    },
+    "battery_goes_flat_repeatedly": {
+      "question": {
+        "vi": "Ắc quy hay bị hết điện lặp lại dù đã sạc hoặc đã thay?",
+        "en": "Does the battery keep going flat even after charging or replacing it?"
+      }
+    },
+    "headlight_off": {
+      "question": {
+        "vi": "Đèn pha (đèn trước) không sáng?",
+        "en": "Is the headlight off?"
+      }
+    },
+    "other_lights_work": {
+      "question": {
+        "vi": "Các đèn khác (xi nhan, đèn hậu) vẫn sáng bình thường?",
+        "en": "Do the other lights (indicators, tail light) still work normally?"
+      }
+    },
+    "electrics_cut_out_over_bumps": {
+      "question": {
+        "vi": "Khi đi qua chỗ xóc, đèn, còi hoặc đồng hồ chập chờn, hoặc xe bị tắt máy?",
+        "en": "Do the lights, horn or dashboard flicker, or does the engine cut out, when riding over bumps?"
+      }
+    }
+  },
+  "intermediates": {
+    "ignition_misfire_suspected": {
+      "description": {
+        "vi": "Nghi ngờ đánh lửa yếu (vẫn còn xăng nhưng máy nổ không đều)",
+        "en": "Suspected weak ignition (fuel present but engine misfires)"
+      }
+    }
+  },
+  "faults": {
+    "spark_plug_problem": {
+      "name": {"vi": "Bugi hỏng hoặc bám muội", "en": "Worn or fouled spark plug"},
+      "action": {
+        "vi": "Vệ sinh hoặc thay bugi đúng loại theo sổ hướng dẫn. Nếu không tự làm được, nhờ tiệm thay (chi phí thấp, làm nhanh).",
+        "en": "Clean or replace the spark plug with the type listed in the owner's manual, or have a shop replace it."
+      },
+      "severity": "self"
+    },
+    "charging_system_problem": {
+      "name": {"vi": "Hệ thống sạc không nạp điện cho ắc quy", "en": "Charging system not charging the battery"},
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra bộ sạc (tiết chế, cục sạc) và dây điện. Thay ắc quy mới sẽ không giải quyết được vì ắc quy sẽ lại hết điện.",
+        "en": "Have a mechanic check the regulator/rectifier, the charging coil and the wiring. A new battery alone will not fix it."
+      },
+      "severity": "mechanic"
+    },
+    "blown_headlight_bulb": {
+      "name": {"vi": "Cháy bóng đèn pha", "en": "Blown headlight bulb"},
+      "action": {
+        "vi": "Thay bóng đèn pha đúng loại. Xe dùng đèn LED nguyên cụm thì mang ra tiệm.",
+        "en": "Replace the headlight bulb with the correct type. Bikes with a sealed LED unit need a shop."
+      },
+      "severity": "self"
+    },
+    "loose_battery_terminal": {
+      "name": {"vi": "Lỏng cọc bình ắc quy hoặc lỏng dây điện", "en": "Loose battery terminal or wiring"},
+      "action": {
+        "vi": "Kiểm tra và siết chặt 2 cọc bình ắc quy. Nếu vẫn chập chờn, mang xe ra tiệm kiểm tra dây điện.",
+        "en": "Check and tighten both battery terminals. If the problem continues, have the wiring checked."
+      },
+      "severity": "self"
+    }
+  },
+  "rules": [
+    {
+      "id": "IE01",
+      "if": ["cranks_but_no_start", "fuel_level_ok", "spark_plug_overdue"],
+      "then": "spark_plug_problem",
+      "cf": 0.6,
+      "source": ""
+    },
+    {
+      "id": "IE02",
+      "if": ["engine_misfires", "fuel_level_ok"],
+      "then": "ignition_misfire_suspected",
+      "cf": 0.8,
+      "source": ""
+    },
+    {
+      "id": "IE03",
+      "if": ["ignition_misfire_suspected", "spark_plug_overdue"],
+      "then": "spark_plug_problem",
+      "cf": 0.8,
+      "source": ""
+    },
+    {
+      "id": "IE04",
+      "if": ["battery_recently_replaced", "battery_goes_flat_repeatedly"],
+      "then": "charging_system_problem",
+      "cf": 0.75,
+      "source": ""
+    },
+    {
+      "id": "IE05",
+      "if": ["low_electrical_power", "battery_recently_replaced"],
+      "then": "charging_system_problem",
+      "cf": 0.6,
+      "source": "",
+      "note": "A new battery that is already weak points to the battery not being charged."
+    },
+    {
+      "id": "IE06",
+      "if": ["headlight_off", "other_lights_work"],
+      "then": "blown_headlight_bulb",
+      "cf": 0.8,
+      "source": ""
+    },
+    {
+      "id": "IE07",
+      "if": ["electrics_cut_out_over_bumps"],
+      "then": "loose_battery_terminal",
+      "cf": 0.7,
+      "source": ""
+    }
+  ]
+}

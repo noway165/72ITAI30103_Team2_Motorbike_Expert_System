@@ -1,6 +1,6 @@
 # Motorbike Fault Diagnosis Expert System
 
-Final Project - Nhập môn Trí tuệ Nhân tạo (261_72ITSE30303_01)
+Final Project — Nhập môn Trí tuệ Nhân tạo (261_72ITSE30303_01)
 Giảng viên: Dr. Huy T. Nguyen
 
 Hệ chuyên gia dựa trên luật, chẩn đoán các lỗi thường gặp của xe máy từ triệu chứng người lái mô tả, dùng **forward chaining** và **backward chaining**, và giải thích được vì sao đưa ra mỗi kết luận (why / how).
@@ -41,7 +41,15 @@ git clone https://github.com/noway165/72ITAI30103_Team2_Motorbike_Expert_System.
 cd 72ITAI30103_Team2_Motorbike_Expert_System
 ```
 
-Hướng dẫn chạy sẽ được bổ sung khi có giao diện CLI.
+Kiểm tra cơ sở tri thức và chạy unit test (ở thư mục gốc repo):
+
+```bash
+python src/kb.py          # báo lỗi và cảnh báo trong các file luật
+python src/kb.py --list   # liệt kê các lỗi xe và luật suy ra chúng
+python -m unittest discover tests
+```
+
+Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md). Hướng dẫn chạy chương trình chẩn đoán sẽ được bổ sung khi có giao diện CLI.
 
 ## Mốc thời gian
 
