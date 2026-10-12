@@ -1,0 +1,38 @@
+{
+  "subsystem": "vehicle",
+  "description": "Vehicle-type facts shared by every subsystem. Add a fact here only if several subsystems need it.",
+  "symptoms": {
+    "is_scooter": {
+      "question": {
+        "vi": "Xe của bạn là xe tay ga?",
+        "en": "Is your motorbike a scooter?"
+      }
+    },
+    "is_manual": {
+      "question": {
+        "vi": "Xe của bạn là xe số (có cần sang số)?",
+        "en": "Is your motorbike a manual (geared) model?"
+      }
+    },
+    "is_fuel_injected": {
+      "question": {
+        "vi": "Xe của bạn dùng phun xăng điện tử (FI)?",
+        "en": "Does your motorbike use fuel injection (FI)?"
+      },
+      "hint": {
+        "vi": "Phần lớn xe đời mới là FI; thân xe hoặc đồng hồ thường có chữ FI hoặc PGM-FI.",
+        "en": "Most recent models are fuel-injected; look for an FI or PGM-FI badge."
+      }
+    },
+    "is_carburetor": {
+      "question": {
+        "vi": "Xe của bạn dùng bình xăng con (chế hòa khí)?",
+        "en": "Does your motorbike use a carburettor?"
+      },
+      "hint": {
+        "vi": "Thường là xe đời cũ, không có chữ FI.",
+        "en": "Usually older models without an FI badge."
+      }
+    }
+  }
+}
