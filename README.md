@@ -49,7 +49,14 @@ python src/kb.py --list   # liệt kê các lỗi xe và luật suy ra chúng
 python -m unittest discover tests
 ```
 
-Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md). Hướng dẫn chạy chương trình chẩn đoán sẽ được bổ sung khi có giao diện CLI.
+Chẩn đoán thử bằng forward chaining (truyền các triệu chứng đúng):
+
+```bash
+python src/forward_chaining.py --list-symptoms
+python src/forward_chaining.py starter_clicks_or_silent horn_weak battery_older_than_2_years
+```
+
+Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md). Hướng dẫn chạy chương trình chẩn đoán đầy đủ sẽ được bổ sung khi có giao diện CLI.
 
 ## Mốc thời gian
 

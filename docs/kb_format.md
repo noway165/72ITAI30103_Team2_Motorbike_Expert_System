@@ -105,7 +105,11 @@ Giao diện hiển thị tiếng Việt; tiếng Anh dùng khi trích dẫn tron
   | 0.7 – 0.85 | Nguyên nhân thường gặp nhất của nhóm triệu chứng này |
   | 0.5 – 0.65 | Có thể đúng nhưng còn nguyên nhân khác |
 
-  Cách kết hợp CF khi suy luận (nhân qua chuỗi luật, gộp khi nhiều luật cùng kết luận) do Giang chốt.
+  Cách kết hợp CF khi suy luận (Giang chốt, chi tiết trong [forward_chaining.md](forward_chaining.md)):
+  - các điều kiện nối bằng AND: CF(điều kiện) = **min** CF của từng điều kiện;
+  - luật truyền CF cho kết luận: CF = `cf` của luật × CF(điều kiện);
+  - nhiều luật cùng kết luận: CF = CF₁ + CF₂ × (1 − CF₁), lần lượt cho từng luật;
+  - lỗi được báo khi CF ≥ 0.2.
 - **`source`**: nguồn tài liệu của luật (tên tài liệu, trang hoặc link). Bắt buộc phải có trước khi nộp vì báo cáo cần trích dẫn. Luật chưa có nguồn sẽ bị cảnh báo.
 
 ## 5. Kiểm tra sau khi sửa
