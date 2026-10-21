@@ -1,0 +1,218 @@
+{
+  "subsystem": "transmission",
+  "description": "Transmission subsystem (owner: Giang): CVT belt, rollers and clutch of scooters; drive chain and clutch lever of manual motorbikes. Reuses is_scooter and is_manual from vehicle.json.",
+  "symptoms": {
+    "has_clutch_lever": {
+      "question": {
+        "vi": "Xe của bạn có tay côn (côn tay) bên trái tay lái?",
+        "en": "Does your motorbike have a clutch lever on the left handlebar?"
+      },
+      "hint": {
+        "vi": "Ví dụ Exciter, Winner. Xe số như Wave, Sirius không có tay côn.",
+        "en": "For example sport bikes; step-through models such as the Wave have no clutch lever."
+      }
+    },
+    "revs_rise_but_slow": {
+      "question": {
+        "vi": "Tăng ga thì máy rú lên (vòng tua cao) nhưng xe tăng tốc chậm, nhất là khi lên dốc hoặc chở nặng?",
+        "en": "When you open the throttle, does the engine rev high while the motorbike speeds up slowly, especially uphill or with a passenger?"
+      }
+    },
+    "cvt_belt_overdue": {
+      "question": {
+        "vi": "Dây curoa đã chạy quá mốc thay trong sổ bảo dưỡng, hoặc bạn không nhớ lần thay gần nhất?",
+        "en": "Is the drive belt past the replacement interval in the maintenance schedule, or you cannot remember when it was last replaced?"
+      }
+    },
+    "rattle_from_cvt_cover": {
+      "question": {
+        "vi": "Có tiếng lạch xạch phát ra từ vỏ hộp số bên trái (vỏ nồi) khi chạy ga nhỏ?",
+        "en": "Is there a rattling noise from the left-side transmission cover at low throttle?"
+      }
+    },
+    "judder_when_pulling_away": {
+      "question": {
+        "vi": "Xe bị rung giật, khựng lúc mới ra ga từ chỗ đứng yên?",
+        "en": "Does the motorbike shudder or judder when pulling away from a stop?"
+      }
+    },
+    "clicking_noise_from_rear": {
+      "question": {
+        "vi": "Có tiếng lạch cạch hoặc rít ở nhông xích phía sau khi xe chạy?",
+        "en": "Is there a clicking or grinding noise from the chain and rear sprocket while riding?"
+      }
+    },
+    "chain_slack_high": {
+      "question": {
+        "vi": "Dùng tay ấn lên xuống ở giữa đoạn xích dưới, thấy xích chùng nhiều hơn mức ghi trong sổ hướng dẫn?",
+        "en": "When you move the lower run of the chain up and down midway between the sprockets, is the slack more than the owner's manual allows?"
+      },
+      "hint": {
+        "vi": "Mức cho phép tùy mẫu xe, thường vài cm; xem sổ hướng dẫn sử dụng của xe.",
+        "en": "The allowed slack depends on the model, usually a few centimetres; see the owner's manual."
+      }
+    },
+    "chain_dry_or_rusty": {
+      "question": {
+        "vi": "Sợi xích khô dầu hoặc có vết gỉ sét?",
+        "en": "Does the drive chain look dry or rusty?"
+      }
+    },
+    "hard_to_shift_gears": {
+      "question": {
+        "vi": "Sang số nặng, khó vào số, hoặc xe vẫn lết tới khi đã bóp hết tay côn?",
+        "en": "Is it hard to change gear, or does the motorbike creep forward with the clutch lever fully pulled in?"
+      }
+    }
+  },
+  "intermediates": {
+    "drive_slipping": {
+      "description": {
+        "vi": "Truyền động bị trượt: máy quay nhanh nhưng lực không xuống bánh sau",
+        "en": "Drive slipping: the engine spins fast but the power does not reach the rear wheel"
+      }
+    }
+  },
+  "faults": {
+    "worn_cvt_belt": {
+      "name": {
+        "vi": "Dây curoa mòn hoặc chai",
+        "en": "Worn or glazed CVT drive belt"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra và thay dây curoa.",
+        "en": "Have the drive belt checked and replaced at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "worn_cvt_rollers": {
+      "name": {
+        "vi": "Bi nồi mòn (mòn vẹt)",
+        "en": "Worn CVT roller weights"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra nồi trước và thay bi nồi.",
+        "en": "Have the variator checked and the roller weights replaced at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "worn_centrifugal_clutch": {
+      "name": {
+        "vi": "Mòn bố nồi (má côn ly tâm) xe tay ga",
+        "en": "Worn centrifugal clutch shoes"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra và thay bố nồi.",
+        "en": "Have the clutch shoes checked and replaced at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "clutch_slipping": {
+      "name": {
+        "vi": "Côn tay bị trượt",
+        "en": "Slipping clutch (manual clutch)"
+      },
+      "action": {
+        "vi": "Kiểm tra độ rơ tay côn trước (dây côn căng quá cũng gây trượt); nếu vẫn trượt, ra tiệm kiểm tra lá côn.",
+        "en": "Check the clutch lever free play first (an over-tight cable also causes slip); if it still slips, have the clutch plates inspected."
+      },
+      "severity": "mechanic"
+    },
+    "loose_or_worn_chain": {
+      "name": {
+        "vi": "Xích chùng hoặc mòn",
+        "en": "Loose or worn drive chain"
+      },
+      "action": {
+        "vi": "Tăng xích về đúng độ chùng; nếu đã tăng hết cỡ hoặc nhông mòn, thay bộ nhông xích.",
+        "en": "Adjust the chain slack to specification; if the adjuster is at its limit or the sprockets are worn, replace the chain and sprockets."
+      },
+      "severity": "self"
+    },
+    "chain_needs_lubrication": {
+      "name": {
+        "vi": "Xích thiếu dầu bôi trơn",
+        "en": "Drive chain needs lubrication"
+      },
+      "action": {
+        "vi": "Vệ sinh và tra dầu xích.",
+        "en": "Clean and lubricate the drive chain."
+      },
+      "severity": "self"
+    },
+    "clutch_cable_needs_adjustment": {
+      "name": {
+        "vi": "Dây côn cần chỉnh lại độ rơ",
+        "en": "Clutch cable free play needs adjustment"
+      },
+      "action": {
+        "vi": "Chỉnh độ rơ tay côn bằng ốc chỉnh trên tay côn theo sổ hướng dẫn.",
+        "en": "Adjust the clutch lever free play with the cable adjuster as described in the owner's manual."
+      },
+      "severity": "self"
+    }
+  },
+  "rules": [
+    {
+      "id": "TR01",
+      "if": ["revs_rise_but_slow"],
+      "then": "drive_slipping",
+      "cf": 0.9,
+      "source": "",
+      "note": "Revs rising without a matching gain in speed is the usual description of drive slip. Only blog and forum sources found so far; to be confirmed with a mechanic."
+    },
+    {
+      "id": "TR02",
+      "if": ["drive_slipping", "is_scooter", "cvt_belt_overdue"],
+      "then": "worn_cvt_belt",
+      "cf": 0.8,
+      "source": "",
+      "note": "A glazed or worn belt slips on the pulleys. Source to be confirmed (scooter service manual, drive belt)."
+    },
+    {
+      "id": "TR03",
+      "if": ["drive_slipping", "is_scooter", "rattle_from_cvt_cover"],
+      "then": "worn_cvt_rollers",
+      "cf": 0.6,
+      "source": "",
+      "note": "Flat-spotted rollers rattle and lose top speed. Only forum sources found so far; to be confirmed with a mechanic."
+    },
+    {
+      "id": "TR04",
+      "if": ["is_scooter", "judder_when_pulling_away"],
+      "then": "worn_centrifugal_clutch",
+      "cf": 0.7,
+      "source": "",
+      "note": "To be confirmed with a mechanic."
+    },
+    {
+      "id": "TR05",
+      "if": ["drive_slipping", "has_clutch_lever"],
+      "then": "clutch_slipping",
+      "cf": 0.75,
+      "source": "MCN, \"Get your bite back: How to replace your clutch\", https://motorcyclenews.com/news/members/week-4-how-to-clutch"
+    },
+    {
+      "id": "TR06",
+      "if": ["is_manual", "clicking_noise_from_rear", "chain_slack_high"],
+      "then": "loose_or_worn_chain",
+      "cf": 0.85,
+      "source": "Honda owner's manual (web edition), \"Drive Chain\": check slack midway between the sprockets, https://webom.hondamotopub.com/webom/HMEE/MLB250/html/GMT018001.html; Honda Global, \"Ever wonder what happens if you don't conduct maintenance on your drive chain?\", https://global.honda/en/motorcycle-aftersales/plusone/202306.html"
+    },
+    {
+      "id": "TR07",
+      "if": ["is_manual", "chain_dry_or_rusty"],
+      "then": "chain_needs_lubrication",
+      "cf": 0.8,
+      "source": "Honda owner's manual (web edition), \"Drive Chain\": clean and lubricate the chain, https://webom.hondamotopub.com/webom/HMEE/MLB250/html/GMT018001.html"
+    },
+    {
+      "id": "TR08",
+      "if": ["has_clutch_lever", "hard_to_shift_gears"],
+      "then": "clutch_cable_needs_adjustment",
+      "cf": 0.6,
+      "source": "Honda CBF250 owner's manual, \"Clutch\": clutch lever free play and adjuster, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF2504_E/2500_2500/0029.pdf",
+      "note": "Too much free play keeps the clutch from fully disengaging."
+    }
+  ]
+}
