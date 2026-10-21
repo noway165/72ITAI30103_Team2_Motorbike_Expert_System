@@ -1,0 +1,298 @@
+{
+  "subsystem": "engine",
+  "description": "Engine subsystem (owner: Giang): exhaust smoke, engine oil, liquid cooling and idle. Reuses is_fuel_injected and is_carburetor from vehicle.json.",
+  "symptoms": {
+    "black_exhaust_smoke": {
+      "question": {
+        "vi": "Ống xả ra khói màu đen khi chạy?",
+        "en": "Does the exhaust give out black smoke while riding?"
+      }
+    },
+    "fuel_consumption_increased": {
+      "question": {
+        "vi": "Xe hao xăng hơn hẳn so với trước đây?",
+        "en": "Does the motorbike use noticeably more fuel than before?"
+      }
+    },
+    "engine_lacks_power": {
+      "question": {
+        "vi": "Máy yếu hơn bình thường: tăng ga chậm, khó lên dốc?",
+        "en": "Is the engine weaker than usual, slow to pick up speed and struggling uphill?"
+      }
+    },
+    "air_filter_overdue": {
+      "question": {
+        "vi": "Lọc gió đã lâu chưa vệ sinh hoặc thay (quá hạn trong sổ bảo dưỡng), hoặc bạn không nhớ lần thay gần nhất?",
+        "en": "Is the air filter overdue for cleaning or replacement in the maintenance schedule, or you cannot remember when it was last changed?"
+      }
+    },
+    "blue_white_exhaust_smoke": {
+      "question": {
+        "vi": "Ống xả ra khói màu xanh lam hoặc trắng xám, có mùi khét của nhớt?",
+        "en": "Does the exhaust give out blue or grey-white smoke that smells of burning oil?"
+      },
+      "hint": {
+        "vi": "Hơi nước trắng mỏng lúc mới nổ máy buổi sáng rồi tan nhanh là bình thường.",
+        "en": "Thin white vapour that disappears soon after a cold start is normal."
+      }
+    },
+    "oil_drops_between_changes": {
+      "question": {
+        "vi": "Nhớt máy hụt nhanh giữa hai lần thay nhớt, mà dưới gầm xe không thấy rỉ nhớt?",
+        "en": "Does the engine oil level drop quickly between oil changes, with no oil leaking under the motorbike?"
+      }
+    },
+    "oil_level_low": {
+      "question": {
+        "vi": "Kiểm tra que thăm nhớt (hoặc ô kính thăm nhớt) thấy mức nhớt dưới vạch thấp nhất?",
+        "en": "Is the engine oil below the lower mark on the dipstick or inspection window?"
+      },
+      "hint": {
+        "vi": "Dựng xe thẳng đứng trên nền phẳng, tắt máy chờ 2–3 phút rồi mới kiểm tra.",
+        "en": "Hold the motorbike upright on level ground and wait 2–3 minutes after stopping the engine before checking."
+      }
+    },
+    "engine_ticking_noise": {
+      "question": {
+        "vi": "Động cơ có tiếng gõ hoặc lạch cạch kim loại to hơn bình thường?",
+        "en": "Is there a metallic ticking or knocking noise from the engine, louder than usual?"
+      }
+    },
+    "oil_change_overdue": {
+      "question": {
+        "vi": "Xe đã chạy quá số km hẹn thay nhớt (trên tem dán hoặc sổ bảo dưỡng)?",
+        "en": "Has the motorbike gone past the distance at which the next oil change was due (on the reminder sticker or in the maintenance book)?"
+      }
+    },
+    "temp_warning_light_on": {
+      "question": {
+        "vi": "Đèn báo nhiệt độ nước làm mát (hình nhiệt kế) sáng khi đang chạy hoặc đang nổ máy?",
+        "en": "Does the coolant temperature warning light (thermometer symbol) come on while riding or idling?"
+      },
+      "hint": {
+        "vi": "Chỉ có ở xe làm mát bằng dung dịch. Đèn sáng vài giây khi vừa bật khóa điện là bình thường.",
+        "en": "Only liquid-cooled motorbikes have this light. It is normal for it to light up for a few seconds when the ignition is switched on."
+      }
+    },
+    "coolant_below_min": {
+      "question": {
+        "vi": "Mức nước làm mát trong bình phụ thấp hơn vạch thấp nhất (LOWER / MIN)?",
+        "en": "Is the coolant in the reserve tank below the lower (LOWER / MIN) mark?"
+      },
+      "hint": {
+        "vi": "Không mở nắp két nước khi máy còn nóng.",
+        "en": "Never open the radiator cap while the engine is hot."
+      }
+    },
+    "radiator_fan_not_running": {
+      "question": {
+        "vi": "Khi đèn báo nhiệt độ sáng, quạt két nước không quay (không nghe tiếng quạt)?",
+        "en": "When the temperature light is on, is the radiator fan not running (no fan noise)?"
+      }
+    },
+    "engine_stalls_at_idle": {
+      "question": {
+        "vi": "Máy hay tắt khi để ga nhỏ (dừng đèn đỏ hoặc vừa nhả ga)?",
+        "en": "Does the engine often stall at idle (at a red light or right after closing the throttle)?"
+      }
+    }
+  },
+  "intermediates": {
+    "rich_running": {
+      "description": {
+        "vi": "Hỗn hợp dư xăng: xăng đốt không hết",
+        "en": "Engine running rich: fuel is not burnt completely"
+      }
+    },
+    "engine_overheating": {
+      "description": {
+        "vi": "Động cơ quá nhiệt",
+        "en": "Engine overheating"
+      }
+    }
+  },
+  "faults": {
+    "clogged_air_filter": {
+      "name": {
+        "vi": "Lọc gió bẩn hoặc tắc",
+        "en": "Dirty or clogged air filter"
+      },
+      "action": {
+        "vi": "Vệ sinh hoặc thay lọc gió (việc nhanh, rẻ, tiệm nào cũng làm).",
+        "en": "Clean or replace the air filter (a quick, cheap job at any repair shop)."
+      },
+      "severity": "self"
+    },
+    "carburetor_mixture_too_rich": {
+      "name": {
+        "vi": "Bình xăng con chỉnh xăng quá giàu",
+        "en": "Carburettor mixture set too rich"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm vệ sinh và chỉnh lại bình xăng con.",
+        "en": "Have the carburettor cleaned and adjusted at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "low_engine_oil": {
+      "name": {
+        "vi": "Thiếu nhớt máy hoặc nhớt quá hạn",
+        "en": "Low or old engine oil"
+      },
+      "action": {
+        "vi": "Châm thêm nhớt đúng loại tới vạch trên, hoặc thay nhớt. Nếu máy kêu to, hạn chế chạy cho tới khi thay nhớt.",
+        "en": "Top up with the recommended oil to the upper mark, or change the oil. If the engine is noisy, avoid riding until the oil is changed."
+      },
+      "severity": "self"
+    },
+    "engine_burning_oil": {
+      "name": {
+        "vi": "Động cơ ăn nhớt (mòn bạc xéc-măng hoặc phớt xu-páp)",
+        "en": "Engine burning oil (worn piston rings or valve stem seals)"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra động cơ; trong lúc chờ, kiểm tra mức nhớt thường xuyên.",
+        "en": "Have the engine inspected at a repair shop; meanwhile check the oil level often."
+      },
+      "severity": "mechanic"
+    },
+    "low_coolant": {
+      "name": {
+        "vi": "Thiếu nước làm mát",
+        "en": "Low coolant"
+      },
+      "action": {
+        "vi": "Chờ máy nguội, châm nước làm mát vào bình phụ tới vạch trên. Nếu lại hụt nhanh, mang ra tiệm kiểm tra rò rỉ.",
+        "en": "Let the engine cool, then top up the reserve tank to the upper mark. If it drops again quickly, have the system checked for leaks."
+      },
+      "severity": "self"
+    },
+    "cooling_fan_problem": {
+      "name": {
+        "vi": "Quạt két nước không hoạt động",
+        "en": "Radiator fan not working"
+      },
+      "action": {
+        "vi": "Ngừng chạy cho máy nguội, rồi mang xe ra tiệm kiểm tra quạt và cảm biến nhiệt.",
+        "en": "Stop and let the engine cool, then have the fan and its temperature sensor checked at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "dirty_throttle_body": {
+      "name": {
+        "vi": "Họng ga (bướm ga) bẩn",
+        "en": "Dirty throttle body"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm vệ sinh họng ga và cài lại chế độ không tải.",
+        "en": "Have the throttle body cleaned and the idle reset at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "carburetor_idle_problem": {
+      "name": {
+        "vi": "Bình xăng con bẩn hoặc chỉnh ga-răng-ti (không tải) quá thấp",
+        "en": "Dirty carburettor or idle speed set too low"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm vệ sinh bình xăng con và chỉnh lại tốc độ không tải.",
+        "en": "Have the carburettor cleaned and the idle speed adjusted at a repair shop."
+      },
+      "severity": "mechanic"
+    }
+  },
+  "rules": [
+    {
+      "id": "EN01",
+      "if": ["black_exhaust_smoke", "fuel_consumption_increased"],
+      "then": "rich_running",
+      "cf": 0.85,
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke; Partzilla, \"What Exhaust Smoke Colors Mean\", https://www.partzilla.com/blog/exhaust-smoke-colors-meaning",
+      "note": "Black smoke is unburnt fuel, which also explains the higher fuel use."
+    },
+    {
+      "id": "EN02",
+      "if": ["rich_running", "air_filter_overdue"],
+      "then": "clogged_air_filter",
+      "cf": 0.8,
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "note": "A restricted air filter lets too little air in, so the mixture becomes rich."
+    },
+    {
+      "id": "EN03",
+      "if": ["rich_running", "is_carburetor"],
+      "then": "carburetor_mixture_too_rich",
+      "cf": 0.6,
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "note": "Second cause of black smoke after the air filter; CF lower because the air filter is checked first."
+    },
+    {
+      "id": "EN04",
+      "if": ["engine_lacks_power", "air_filter_overdue"],
+      "then": "clogged_air_filter",
+      "cf": 0.55,
+      "source": "",
+      "note": "Weaker evidence than EN02; combined with EN02 when both fire. Source to be confirmed with a mechanic."
+    },
+    {
+      "id": "EN05",
+      "if": ["oil_level_low"],
+      "then": "low_engine_oil",
+      "cf": 0.95,
+      "source": "Honda owner's manuals, \"Engine Oil\" check: add the recommended oil if the level is below the lower mark (e.g. CRF150F manual, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF150FE_EN/2500_2500/0070.pdf)"
+    },
+    {
+      "id": "EN06",
+      "if": ["engine_ticking_noise", "oil_change_overdue"],
+      "then": "low_engine_oil",
+      "cf": 0.6,
+      "source": "",
+      "note": "Old or low oil makes the valve train noisy; other causes exist (valve clearance). Source to be confirmed with a mechanic."
+    },
+    {
+      "id": "EN07",
+      "if": ["blue_white_exhaust_smoke", "oil_drops_between_changes"],
+      "then": "engine_burning_oil",
+      "cf": 0.8,
+      "source": "Partzilla, \"Why is My Motorcycle Blowing Out Blue Smoke?\", https://www.partzilla.com/blog/why/does/my/motorcycle/blow/blue/smoke/qa"
+    },
+    {
+      "id": "EN08",
+      "if": ["temp_warning_light_on"],
+      "then": "engine_overheating",
+      "cf": 0.9,
+      "source": "Honda Global, \"You see all those different indicators on your bike's instrumentation?\", https://global.honda/en/motorcycle-aftersales/plusone/202412.html"
+    },
+    {
+      "id": "EN09",
+      "if": ["engine_overheating", "coolant_below_min"],
+      "then": "low_coolant",
+      "cf": 0.85,
+      "source": "Honda CBF500 owner's manual, \"Coolant\": add coolant to the reserve tank if the level is below the lower mark, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF500A5_E/2500_2500/0036.pdf"
+    },
+    {
+      "id": "EN10",
+      "if": ["engine_overheating", "radiator_fan_not_running"],
+      "then": "cooling_fan_problem",
+      "cf": 0.7,
+      "source": "",
+      "note": "Source to be confirmed (service manual, cooling system troubleshooting)."
+    },
+    {
+      "id": "EN11",
+      "if": ["engine_stalls_at_idle", "is_fuel_injected"],
+      "then": "dirty_throttle_body",
+      "cf": 0.55,
+      "source": "",
+      "note": "Only forum and blog sources found so far; to be confirmed with a mechanic."
+    },
+    {
+      "id": "EN12",
+      "if": ["engine_stalls_at_idle", "is_carburetor"],
+      "then": "carburetor_idle_problem",
+      "cf": 0.6,
+      "source": "",
+      "note": "Only forum and blog sources found so far; to be confirmed with a mechanic."
+    }
+  ]
+}
