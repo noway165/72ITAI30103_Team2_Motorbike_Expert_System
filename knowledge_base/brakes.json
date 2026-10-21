@@ -1,0 +1,243 @@
+{
+  "subsystem": "brakes",
+  "description": "Brake subsystem (owner: Khoa): brake pads, hydraulic circuit (fluid level, leaks, air, old fluid), brake disc and caliper.",
+  "symptoms": {
+    "brake_squeal": {
+      "question": {
+        "vi": "Phanh kêu rít hoặc két khi bóp phanh?",
+        "en": "Do the brakes squeal or squeak when applied?"
+      }
+    },
+    "brake_grinding": {
+      "question": {
+        "vi": "Phanh kêu ken két như sắt cọ vào sắt khi bóp phanh?",
+        "en": "Is there a metal-on-metal grinding noise when braking?"
+      }
+    },
+    "brake_pad_thin_visible": {
+      "question": {
+        "vi": "Nhìn qua khe cùm phanh thấy má phanh đã mỏng, gần chạm lớp sắt hoặc vạch báo mòn?",
+        "en": "Looking through the caliper, are the brake pads thin, close to the metal backing or the wear mark?"
+      },
+      "hint": {
+        "vi": "Tắt máy, chờ phanh nguội rồi dùng đèn pin soi vào khe giữa cùm phanh và đĩa.",
+        "en": "Switch the engine off, let the brakes cool, then look into the gap of the caliper with a torch."
+      }
+    },
+    "brake_lever_spongy": {
+      "question": {
+        "vi": "Tay phanh (hoặc cần phanh) mềm, phải bóp sâu mới ăn?",
+        "en": "Does the brake lever feel soft or spongy, needing a deep pull before the brakes bite?"
+      }
+    },
+    "brake_fluid_low": {
+      "question": {
+        "vi": "Mức dầu phanh trong bình dầu thấp hơn vạch thấp nhất (LOWER / MIN)?",
+        "en": "Is the brake fluid in the reservoir below the lower (LOWER / MIN) mark?"
+      },
+      "hint": {
+        "vi": "Giữ xe thẳng đứng và tay lái thẳng khi nhìn mức dầu qua ô kính.",
+        "en": "Keep the motorbike upright with the handlebar straight when you read the level."
+      }
+    },
+    "brake_fluid_leak_visible": {
+      "question": {
+        "vi": "Thấy dầu phanh rỉ ướt ở dây dầu, cùm phanh hoặc bình dầu?",
+        "en": "Do you see brake fluid leaking at the brake hose, the caliper or the reservoir?"
+      }
+    },
+    "brake_fluid_old": {
+      "question": {
+        "vi": "Dầu phanh đã quá hạn thay theo sổ bảo dưỡng, hoặc bạn không nhớ lần thay gần nhất?",
+        "en": "Is the brake fluid overdue for replacement in the maintenance schedule, or you cannot remember when it was last changed?"
+      }
+    },
+    "brake_pulsation": {
+      "question": {
+        "vi": "Khi phanh có cảm giác rung hoặc giật ở tay phanh, chân phanh hoặc tay lái?",
+        "en": "Do you feel vibration or pulsing in the brake lever, pedal or handlebar when braking?"
+      }
+    },
+    "brake_stopping_distance_longer": {
+      "question": {
+        "vi": "Phanh ăn kém hơn trước, xe phải đi xa hơn mới dừng?",
+        "en": "Are the brakes weaker than before, so the motorbike needs a longer distance to stop?"
+      }
+    },
+    "brake_drags": {
+      "question": {
+        "vi": "Sau khi nhả phanh, bánh xe vẫn nặng, nóng hoặc có tiếng cọ nhẹ như bị phanh kéo?",
+        "en": "After releasing the brake, does the wheel still feel heavy, hot or rub lightly as if the brake is dragging?"
+      }
+    }
+  },
+  "intermediates": {
+    "brake_hydraulic_loss": {
+      "description": {
+        "vi": "Mạch dầu phanh bị hụt dầu",
+        "en": "Brake hydraulic circuit has lost fluid"
+      }
+    }
+  },
+  "faults": {
+    "worn_brake_pads": {
+      "name": {
+        "vi": "Má phanh mòn",
+        "en": "Worn brake pads"
+      },
+      "action": {
+        "vi": "Thay má phanh sớm, không nên chạy tiếp vì phanh sẽ kém và có thể làm xước đĩa phanh.",
+        "en": "Replace the brake pads soon; do not keep riding, as braking gets weaker and the disc can be scored."
+      },
+      "severity": "mechanic"
+    },
+    "brake_fluid_leak": {
+      "name": {
+        "vi": "Rò rỉ dầu phanh",
+        "en": "Brake fluid leak"
+      },
+      "action": {
+        "vi": "Ngừng chạy và mang xe ra tiệm ngay để kiểm tra dây dầu, phớt cùm phanh, heo dầu; hệ thống phanh có thể mất tác dụng.",
+        "en": "Stop riding and go to a repair shop at once to check the hose, caliper seals and master cylinder; the brakes may fail."
+      },
+      "severity": "mechanic"
+    },
+    "brake_air_in_lines": {
+      "name": {
+        "vi": "Lọt khí trong đường dầu phanh",
+        "en": "Air in the brake lines"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm xả e (xả khí) và bổ sung hoặc thay dầu phanh; kiểm tra luôn chỗ rò nếu mức dầu hụt.",
+        "en": "Have the brakes bled at a repair shop and the fluid topped up or replaced; check for leaks if the level has dropped."
+      },
+      "severity": "mechanic"
+    },
+    "old_brake_fluid": {
+      "name": {
+        "vi": "Dầu phanh cũ hoặc nhiễm ẩm",
+        "en": "Old or moisture-contaminated brake fluid"
+      },
+      "action": {
+        "vi": "Thay dầu phanh đúng loại hãng quy định và xả e hệ thống tại tiệm.",
+        "en": "Replace the brake fluid with the type specified by the manufacturer and bleed the system at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "warped_brake_disc": {
+      "name": {
+        "vi": "Đĩa phanh cong vênh",
+        "en": "Warped brake disc"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm đo độ dày và độ cong đĩa phanh; đĩa vênh thường phải thay.",
+        "en": "Have the disc thickness and runout measured at a repair shop; a warped disc usually has to be replaced."
+      },
+      "severity": "mechanic"
+    },
+    "sticking_brake_caliper": {
+      "name": {
+        "vi": "Cùm phanh bị kẹt (phanh kéo)",
+        "en": "Sticking brake caliper (dragging brake)"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm vệ sinh hoặc thay cùm phanh; nếu để lâu có thể làm nóng, vênh đĩa và hỏng má phanh.",
+        "en": "Have the caliper cleaned or replaced at a repair shop; left alone it can overheat and warp the disc and ruin the pads."
+      },
+      "severity": "mechanic"
+    }
+  },
+  "rules": [
+    {
+      "id": "BR01",
+      "if": ["brake_squeal", "brake_pad_thin_visible"],
+      "then": "worn_brake_pads",
+      "cf": 0.9,
+      "source": "Demon Tweeks blog, \"Motorcycle Brake Issues - Causes and Fixes\", https://blog.demon-tweeks.com/motorcycle/motorcycle-brake-issues-causes-and-fixes/; Lazada PH practical guide, \"How to tell if your motorcycle brake caliper needs replacement\", https://auto.lazada.com.ph/how-to-tell-if-your-motorcycle-brake-caliper-needs-replacement-ph/",
+      "note": "Squealing is the pad wear indicator; seeing thin pads confirms it."
+    },
+    {
+      "id": "BR02",
+      "if": ["brake_grinding"],
+      "then": "worn_brake_pads",
+      "cf": 0.85,
+      "source": "Kass & Moses, \"6 Tips to Know if Your Motorcycle Brakes are Going Bad\", https://kassandmoses.com/blog/6-tips-to-know-if-your-motorcycle-brakes-are-going-bad/",
+      "note": "Grinding usually means the friction material is gone and metal touches the disc."
+    },
+    {
+      "id": "BR03",
+      "if": ["brake_squeal", "brake_stopping_distance_longer"],
+      "then": "worn_brake_pads",
+      "cf": 0.6,
+      "source": "Demon Tweeks blog, \"Motorcycle Brake Issues - Causes and Fixes\", https://blog.demon-tweeks.com/motorcycle/motorcycle-brake-issues-causes-and-fixes/",
+      "note": "Weaker evidence than BR01: squeal can also come from glazed pads or dust."
+    },
+    {
+      "id": "BR04",
+      "if": ["brake_lever_spongy", "brake_fluid_low"],
+      "then": "brake_hydraulic_loss",
+      "cf": 0.8,
+      "source": "Demon Tweeks blog, \"Motorcycle Brake Issues - Causes and Fixes\", https://blog.demon-tweeks.com/motorcycle/motorcycle-brake-issues-causes-and-fixes/"
+    },
+    {
+      "id": "BR05",
+      "if": ["brake_fluid_leak_visible", "brake_fluid_low"],
+      "then": "brake_hydraulic_loss",
+      "cf": 0.9,
+      "source": "Kass & Moses, \"6 Tips to Know if Your Motorcycle Brakes are Going Bad\", https://kassandmoses.com/blog/6-tips-to-know-if-your-motorcycle-brakes-are-going-bad/"
+    },
+    {
+      "id": "BR06",
+      "if": ["brake_fluid_leak_visible"],
+      "then": "brake_fluid_leak",
+      "cf": 0.9,
+      "source": "Kass & Moses, \"6 Tips to Know if Your Motorcycle Brakes are Going Bad\", https://kassandmoses.com/blog/6-tips-to-know-if-your-motorcycle-brakes-are-going-bad/"
+    },
+    {
+      "id": "BR07",
+      "if": ["brake_lever_spongy", "brake_fluid_old"],
+      "then": "old_brake_fluid",
+      "cf": 0.7,
+      "source": "Lazada PH practical guide, \"How to tell if your motorcycle brake caliper needs replacement\", https://auto.lazada.com.ph/how-to-tell-if-your-motorcycle-brake-caliper-needs-replacement-ph/; RideApart, \"Brake service and maintenance\", https://www.rideapart.com/features/247469/brake-service-and-maintenance-dr-moto/",
+      "note": "A spongy lever points to air or moisture in the fluid; brake fluid absorbs moisture over time."
+    },
+    {
+      "id": "BR08",
+      "if": ["brake_lever_spongy", "brake_hydraulic_loss"],
+      "then": "brake_air_in_lines",
+      "cf": 0.75,
+      "source": "Demon Tweeks blog, \"Motorcycle Brake Issues - Causes and Fixes\", https://blog.demon-tweeks.com/motorcycle/motorcycle-brake-issues-causes-and-fixes/",
+      "note": "Fluid leaks lower the level and let air into the circuit."
+    },
+    {
+      "id": "BR09",
+      "if": ["brake_lever_spongy", "brake_stopping_distance_longer"],
+      "then": "brake_air_in_lines",
+      "cf": 0.5,
+      "source": "Kass & Moses, \"6 Tips to Know if Your Motorcycle Brakes are Going Bad\", https://kassandmoses.com/blog/6-tips-to-know-if-your-motorcycle-brakes-are-going-bad/",
+      "note": "Weak evidence: a spongy lever is caused either by air or by worn pads."
+    },
+    {
+      "id": "BR10",
+      "if": ["brake_pulsation"],
+      "then": "warped_brake_disc",
+      "cf": 0.8,
+      "source": "RideApart, \"Brake service and maintenance\", https://www.rideapart.com/features/247469/brake-service-and-maintenance-dr-moto/; Kass & Moses, \"6 Tips to Know if Your Motorcycle Brakes are Going Bad\", https://kassandmoses.com/blog/6-tips-to-know-if-your-motorcycle-brakes-are-going-bad/"
+    },
+    {
+      "id": "BR11",
+      "if": ["brake_pulsation", "brake_drags"],
+      "then": "warped_brake_disc",
+      "cf": 0.9,
+      "source": "RideApart, \"Brake service and maintenance\", https://www.rideapart.com/features/247469/brake-service-and-maintenance-dr-moto/",
+      "note": "Dragging brakes overheat the disc, which makes it warp."
+    },
+    {
+      "id": "BR12",
+      "if": ["brake_drags"],
+      "then": "sticking_brake_caliper",
+      "cf": 0.75,
+      "source": "Lazada PH practical guide, \"How to tell if your motorcycle brake caliper needs replacement\", https://auto.lazada.com.ph/how-to-tell-if-your-motorcycle-brake-caliper-needs-replacement-ph/"
+    }
+  ]
+}

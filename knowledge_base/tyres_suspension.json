@@ -1,0 +1,269 @@
+{
+  "subsystem": "tyres_suspension",
+  "description": "Tyre and suspension subsystem (owner: Khoa): tyre pressure, punctures, steering head and wheel bearings, front fork and rear shock.",
+  "symptoms": {
+    "tyre_pressure_low": {
+      "question": {
+        "vi": "Lốp xe non hơi (nhìn thấy lốp bẹp, hoặc đo áp suất thấp hơn thông số của hãng)?",
+        "en": "Is a tyre under-inflated (it looks flat, or the pressure is below the manufacturer's value)?"
+      }
+    },
+    "steering_heavy": {
+      "question": {
+        "vi": "Tay lái nặng, khó bẻ lái hoặc xe nặng khi vào cua?",
+        "en": "Is the steering heavy, hard to turn, or does the motorbike feel heavy in corners?"
+      }
+    },
+    "tyre_wear_uneven": {
+      "question": {
+        "vi": "Gai lốp mòn không đều (mòn lệch một bên, hoặc có chỗ lõm, lượn sóng)?",
+        "en": "Is the tread worn unevenly (more on one side, or scalloped / cupped)?"
+      }
+    },
+    "vehicle_pulls_to_one_side": {
+      "question": {
+        "vi": "Khi chạy thẳng, xe bị kéo lệch về một bên?",
+        "en": "Does the motorbike pull to one side when riding straight?"
+      }
+    },
+    "tyre_loses_air_quickly": {
+      "question": {
+        "vi": "Lốp xì hơi nhanh, vài ngày là phải bơm lại?",
+        "en": "Does a tyre lose air quickly, needing a top-up every few days?"
+      }
+    },
+    "tyre_foreign_object": {
+      "question": {
+        "vi": "Thấy đinh hoặc vật nhọn ghim trên lốp?",
+        "en": "Do you see a nail or sharp object stuck in the tyre?"
+      }
+    },
+    "fork_oil_on_tube": {
+      "question": {
+        "vi": "Thấy dầu rỉ ướt trên ống phuộc trước (phần ống kim loại bóng phía trên)?",
+        "en": "Do you see oil wetting the front fork tube (the shiny upper metal tube)?"
+      }
+    },
+    "front_suspension_soft": {
+      "question": {
+        "vi": "Phuộc trước mềm, xe chúi sâu khi bóp phanh trước?",
+        "en": "Is the front suspension soft, with the front end diving deeply when braking?"
+      }
+    },
+    "rear_shock_bouncy": {
+      "question": {
+        "vi": "Giảm xóc sau nảy nhiều, nhún nhiều lần sau mỗi ổ gà?",
+        "en": "Does the rear shock bounce a lot, rebounding several times after each bump?"
+      }
+    },
+    "rear_shock_oil_leak": {
+      "question": {
+        "vi": "Thấy dầu rỉ ướt trên thân giảm xóc sau?",
+        "en": "Do you see oil leaking down the rear shock body?"
+      }
+    },
+    "suspension_clunk": {
+      "question": {
+        "vi": "Nghe tiếng lộc cộc kim loại ở phuộc hoặc giảm xóc khi qua ổ gà?",
+        "en": "Do you hear a metallic clunk from the fork or shock over bumps?"
+      }
+    },
+    "sits_low_parked": {
+      "question": {
+        "vi": "Xe đứng thấp hơn trước, nhất là khi chở nặng hoặc khi dựng chống?",
+        "en": "Does the motorbike sit lower than it used to, especially when loaded or parked?"
+      }
+    }
+  },
+  "intermediates": {
+    "suspension_damping_lost": {
+      "description": {
+        "vi": "Giảm xóc mất khả năng giảm chấn",
+        "en": "Suspension has lost its damping"
+      }
+    }
+  },
+  "faults": {
+    "underinflated_tyre": {
+      "name": {
+        "vi": "Lốp thiếu hơi",
+        "en": "Under-inflated tyre"
+      },
+      "action": {
+        "vi": "Bơm lốp đúng áp suất ghi trên tem hoặc sổ hướng dẫn; kiểm tra lại sau vài ngày xem lốp có xì hơi không.",
+        "en": "Inflate the tyre to the pressure given on the sticker or in the owner's manual, and check again after a few days for leaks."
+      },
+      "severity": "self"
+    },
+    "tyre_puncture": {
+      "name": {
+        "vi": "Lốp bị thủng hoặc xì hơi chậm",
+        "en": "Punctured tyre or slow leak"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm vá hoặc thay lốp (hoặc ruột); không chạy đường dài khi lốp đang xì hơi.",
+        "en": "Have the tyre (or inner tube) repaired or replaced at a repair shop; do not ride far on a leaking tyre."
+      },
+      "severity": "mechanic"
+    },
+    "worn_steering_head_bearings": {
+      "name": {
+        "vi": "Bạc đạn cổ phuộc (cổ lái) mòn hoặc lỏng",
+        "en": "Worn or loose steering head bearings"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra, siết hoặc thay bi cổ.",
+        "en": "Have the steering head bearings checked, adjusted or replaced at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "fork_seal_leak": {
+      "name": {
+        "vi": "Phuộc trước rò dầu (phớt phuộc hỏng)",
+        "en": "Leaking front fork (damaged fork seal)"
+      },
+      "action": {
+        "vi": "Thay phớt phuộc và dầu phuộc tại tiệm; dầu dính lên đĩa hoặc má phanh làm phanh kém, nên vệ sinh ngay.",
+        "en": "Have the fork seals and oil replaced at a repair shop; oil on the disc or pads weakens the brakes, so clean it off at once."
+      },
+      "severity": "mechanic"
+    },
+    "weak_fork_spring_or_oil": {
+      "name": {
+        "vi": "Lò xo phuộc trước yếu hoặc dầu phuộc bẩn",
+        "en": "Weak fork spring or contaminated fork oil"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm thay dầu phuộc, kiểm tra hoặc thay lò xo phuộc.",
+        "en": "Have the fork oil changed and the fork springs checked or replaced at a repair shop."
+      },
+      "severity": "mechanic"
+    },
+    "worn_rear_shock": {
+      "name": {
+        "vi": "Giảm xóc sau yếu hoặc hỏng",
+        "en": "Worn or failed rear shock"
+      },
+      "action": {
+        "vi": "Thay giảm xóc sau (phuộc rò dầu không vá được); tránh chở nặng cho tới khi thay.",
+        "en": "Replace the rear shock (a leaking shock cannot be patched); avoid heavy loads until it is replaced."
+      },
+      "severity": "mechanic"
+    },
+    "faulty_wheel_bearing": {
+      "name": {
+        "vi": "Bạc đạn bánh xe hỏng",
+        "en": "Faulty wheel bearing"
+      },
+      "action": {
+        "vi": "Mang xe ra tiệm kiểm tra và thay bạc đạn (vòng bi) bánh xe.",
+        "en": "Have the wheel bearings checked and replaced at a repair shop."
+      },
+      "severity": "mechanic"
+    }
+  },
+  "rules": [
+    {
+      "id": "TS01",
+      "if": ["tyre_pressure_low", "steering_heavy"],
+      "then": "underinflated_tyre",
+      "cf": 0.85,
+      "source": "Cyclepedia online manual, \"Steering/Suspension Troubleshooting\" (hard to steer: tyre inflation too low), https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/"
+    },
+    {
+      "id": "TS02",
+      "if": ["tyre_pressure_low", "tyre_wear_uneven"],
+      "then": "underinflated_tyre",
+      "cf": 0.8,
+      "source": "Cyclepedia online manual, \"Steering/Suspension Troubleshooting\" (tyres wearing uneven: tyre pressure incorrect), https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/"
+    },
+    {
+      "id": "TS03",
+      "if": ["tyre_pressure_low", "vehicle_pulls_to_one_side"],
+      "then": "underinflated_tyre",
+      "cf": 0.7,
+      "source": "Cyclepedia online manual, \"Steering/Suspension Troubleshooting\" (steering pulls to one side: uneven tyre inflation), https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/"
+    },
+    {
+      "id": "TS04",
+      "if": ["tyre_loses_air_quickly", "tyre_foreign_object"],
+      "then": "tyre_puncture",
+      "cf": 0.9,
+      "source": "",
+      "note": "Source to be added (tyre repair guide or manual)."
+    },
+    {
+      "id": "TS05",
+      "if": ["tyre_loses_air_quickly"],
+      "then": "tyre_puncture",
+      "cf": 0.55,
+      "source": "",
+      "note": "Other causes exist (valve, rim seal). Source to be added."
+    },
+    {
+      "id": "TS06",
+      "if": ["steering_heavy", "suspension_clunk"],
+      "then": "worn_steering_head_bearings",
+      "cf": 0.6,
+      "source": "Cyclepedia online manual, \"Steering/Suspension Troubleshooting\" (hard to steer: steering head bearings worn), https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/",
+      "note": "The manual lists the heavy steering; the clunk is extra evidence, so CF stays moderate."
+    },
+    {
+      "id": "TS07",
+      "if": ["fork_oil_on_tube"],
+      "then": "fork_seal_leak",
+      "cf": 0.85,
+      "source": "SearchShop, \"Signs of Suspension Problems in a Used Motorcycle\", https://searchshop.com/cycle/research/articles/buying-a-used-all/signs-of-suspension-problems-in-a-used-motorcycle; Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\", https://brocksperformance.com/motorcycle-shocks"
+    },
+    {
+      "id": "TS08",
+      "if": ["rear_shock_bouncy", "rear_shock_oil_leak"],
+      "then": "suspension_damping_lost",
+      "cf": 0.9,
+      "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\", https://brocksperformance.com/motorcycle-shocks"
+    },
+    {
+      "id": "TS09",
+      "if": ["rear_shock_bouncy", "sits_low_parked"],
+      "then": "suspension_damping_lost",
+      "cf": 0.7,
+      "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\", https://brocksperformance.com/motorcycle-shocks"
+    },
+    {
+      "id": "TS10",
+      "if": ["suspension_damping_lost", "tyre_wear_uneven"],
+      "then": "worn_rear_shock",
+      "cf": 0.8,
+      "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\" (uneven tyre wear, cupping), https://brocksperformance.com/motorcycle-shocks"
+    },
+    {
+      "id": "TS11",
+      "if": ["suspension_damping_lost", "suspension_clunk"],
+      "then": "worn_rear_shock",
+      "cf": 0.75,
+      "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\" (metal clanking over bumps), https://brocksperformance.com/motorcycle-shocks"
+    },
+    {
+      "id": "TS12",
+      "if": ["front_suspension_soft"],
+      "then": "weak_fork_spring_or_oil",
+      "cf": 0.65,
+      "source": "Cyclepedia online manual, \"Steering/Suspension Troubleshooting\" (front suspension soft: weak fork spring, contaminated fork oil), https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/"
+    },
+    {
+      "id": "TS13",
+      "if": ["vehicle_pulls_to_one_side", "tyre_wear_uneven"],
+      "then": "faulty_wheel_bearing",
+      "cf": 0.5,
+      "source": "Cyclepedia online manual, \"Steering/Suspension Troubleshooting\" (pulls to one side and uneven tyre wear: faulty wheel bearings), https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/",
+      "note": "Low CF: tyre pressure (TS03) is the more common cause and is checked first."
+    },
+    {
+      "id": "TS14",
+      "if": ["rear_shock_oil_leak"],
+      "then": "worn_rear_shock",
+      "cf": 0.85,
+      "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\" (oil leaking down the shock body), https://brocksperformance.com/motorcycle-shocks"
+    }
+  ]
+}
