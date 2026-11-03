@@ -1,0 +1,98 @@
+{
+  "systems": ["starting_fuel", "ignition_electrical"],
+  "rules_by": "Lâm",
+  "written_by": "Giang",
+  "date": "2026-10-28",
+  "scenarios": [
+    {
+      "id": "SE01",
+      "description": {
+        "vi": "Honda Vision để qua đêm, sáng bấm đề chỉ nghe tạch tạch, còi kêu yếu; ắc quy đã dùng 3 năm.",
+        "en": "Honda Vision left overnight; in the morning the starter only clicks and the horn is weak; the battery is 3 years old."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "starter_clicks_or_silent", "horn_weak", "battery_older_than_2_years"],
+      "expected": "weak_battery"
+    },
+    {
+      "id": "SE02",
+      "description": {
+        "vi": "Air Blade bấm đề không có phản ứng gì, còi vẫn kêu to; người lái quên bóp phanh khi đề.",
+        "en": "Air Blade: nothing happens when pressing the starter, the horn is loud; the rider forgot to hold the brake."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "starter_clicks_or_silent", "horn_normal", "starting_without_brake"],
+      "expected": "start_procedure_error"
+    },
+    {
+      "id": "SE03",
+      "description": {
+        "vi": "Wave bình xăng con, đạp nổ máy vẫn quay nhưng không nổ; kim xăng chỉ E.",
+        "en": "Carburettor Wave: the engine turns over on the kick-starter but does not start; the fuel gauge shows E."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "engine_cranks", "engine_wont_start", "fuel_gauge_empty"],
+      "expected": "out_of_fuel"
+    },
+    {
+      "id": "SE04",
+      "description": {
+        "vi": "Dream đời cũ, đạp nổ nhiều lần không được, xăng còn, ngửi thấy mùi xăng nồng.",
+        "en": "Old Dream: many kicks and it will not start; there is fuel in the tank and a strong smell of petrol."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "engine_cranks", "engine_wont_start", "fuel_level_ok", "strong_fuel_smell"],
+      "expected": "flooded_engine"
+    },
+    {
+      "id": "SE05",
+      "description": {
+        "vi": "Lead FI đề máy quay nhưng không nổ; còn xăng; bật khóa không nghe tiếng bơm xăng chạy.",
+        "en": "Fuel-injected Lead: the engine cranks but does not start; there is fuel; no fuel pump hum when the key is turned on."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "engine_cranks", "engine_wont_start", "fuel_level_ok", "no_fuel_pump_hum_key_on"],
+      "expected": "fuel_pump_problem"
+    },
+    {
+      "id": "SE06",
+      "description": {
+        "vi": "Sirius FI bật khóa điện mà đồng hồ tối om, bấm còi không kêu; ắc quy mới thay 2 tháng.",
+        "en": "Sirius FI: the dashboard stays dark with the key on and the horn is silent; the battery was replaced 2 months ago."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "dash_lights_off_key_on", "horn_silent", "battery_recently_replaced"],
+      "expected": "blown_main_fuse"
+    },
+    {
+      "id": "SE07",
+      "description": {
+        "vi": "Exciter chạy tối thấy đèn pha không sáng, xi nhan và đèn hậu vẫn sáng.",
+        "en": "Exciter at night: the headlight is off, the indicators and tail light work."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "headlight_off", "other_lights_work"],
+      "expected": "blown_headlight_bulb"
+    },
+    {
+      "id": "SE08",
+      "description": {
+        "vi": "Vision thay ắc quy mới 3 tháng nhưng vẫn hay hết điện; hôm nay bấm đề chỉ tạch tạch, còi yếu.",
+        "en": "Vision: the battery was replaced 3 months ago but keeps going flat; today the starter only clicks and the horn is weak."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "battery_recently_replaced", "battery_goes_flat_repeatedly", "starter_clicks_or_silent", "horn_weak"],
+      "expected": "charging_system_problem"
+    },
+    {
+      "id": "SE09",
+      "description": {
+        "vi": "Wave bình xăng con nổ không đều, giật cục khi chạy; xăng còn; bugi chưa từng thay.",
+        "en": "Carburettor Wave runs rough and jerks; there is fuel; the spark plug has never been replaced."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "engine_misfires", "fuel_level_ok", "spark_plug_overdue"],
+      "expected": "spark_plug_problem"
+    },
+    {
+      "id": "SE10",
+      "description": {
+        "vi": "Vision đi hằng ngày, ắc quy mới dùng 1 năm; tối qua quên tắt khóa điện, sáng bấm đề chỉ tạch tạch, còi yếu.",
+        "en": "Vision ridden every day, battery 1 year old; the key was left on last night, and this morning the starter only clicks and the horn is weak."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "starter_clicks_or_silent", "horn_weak"],
+      "expected": "weak_battery"
+    }
+  ]
+}
