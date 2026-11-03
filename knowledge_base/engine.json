@@ -335,6 +335,22 @@
       "cf": 0.75,
       "source": "Honda owner's manuals, \"Engine Oil\": change the oil at the interval in the maintenance schedule (e.g. CRF150F manual, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF150FE_EN/2500_2500/0070.pdf)",
       "note": "Added 24/10. Covers the \"old oil\" half of the fault: the level may be fine but the oil is worn out."
+    },
+    {
+      "id": "EN17",
+      "if": ["rich_running", "is_fuel_injected"],
+      "then": "clogged_air_filter",
+      "cf": 0.5,
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "note": "Added 03/11 after the scenario analysis: without it, rich running on a fuel-injected bike with a recently changed air filter reached no fault. The air filter is still the first, cheapest thing to check."
+    },
+    {
+      "id": "EN18",
+      "if": ["engine_overheating"],
+      "then": "low_coolant",
+      "cf": 0.5,
+      "source": "Honda Global, \"You see all those different indicators on your bike's instrumentation?\", https://global.honda/en/motorcycle-aftersales/plusone/202412.html; Honda CBF500 owner's manual, \"Coolant\", https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF500A5_E/2500_2500/0036.pdf",
+      "note": "Added 03/11 after the scenario analysis: the temperature light alone reached no fault. Checking the coolant level is the first step for an overheating warning."
     }
   ]
 }

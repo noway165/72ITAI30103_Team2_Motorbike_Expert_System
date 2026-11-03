@@ -247,6 +247,14 @@
       "cf": 0.85,
       "source": "Honda CBF250 owner's manual, \"Clutch\": clutch lever free play and adjuster, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF2504_E/2500_2500/0029.pdf",
       "note": "Added 24/10. The manual gives the free play range and says to adjust it when it is outside."
+    },
+    {
+      "id": "TR12",
+      "if": ["drive_slipping", "is_scooter"],
+      "then": "worn_cvt_belt",
+      "cf": 0.55,
+      "source": "",
+      "note": "Added 03/11 after the scenario analysis: a slipping scooter with a recent belt and no rattle reached no fault. The belt is the most common cause of CVT slip; CF lower than TR02. Source to be confirmed with TR02."
     }
   ]
 }

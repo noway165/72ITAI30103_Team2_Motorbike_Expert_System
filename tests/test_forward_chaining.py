@@ -139,6 +139,20 @@ class ProjectScenarioTest(unittest.TestCase):
         self.assertEqual([d.fault for d in result.diagnoses],
                          ["clogged_air_filter", "carburetor_mixture_too_rich"])
 
+    def test_engine_and_transmission_intermediates_always_reach_a_fault(self):
+        # An intermediate with no follow-up symptom must still give a diagnosis
+        # (scenario analysis 02/11: BT10 and SE10 ended with no fault this way).
+        cases = {
+            "rich_running": ["is_fuel_injected", "black_exhaust_smoke", "fuel_consumption_increased"],
+            "engine_overheating": ["temp_warning_light_on"],
+            "drive_slipping": ["is_scooter", "revs_rise_but_slow"],
+        }
+        for intermediate, symptoms in cases.items():
+            with self.subTest(intermediate=intermediate):
+                result = forward_chain(self.kb, symptoms)
+                self.assertTrue(result.wm.is_true(intermediate))
+                self.assertTrue(result.diagnoses)
+
 
 if __name__ == "__main__":
     unittest.main()
