@@ -95,6 +95,16 @@
         "vi": "Máy hay tắt khi để ga nhỏ (dừng đèn đỏ hoặc vừa nhả ga)?",
         "en": "Does the engine often stall at idle (at a red light or right after closing the throttle)?"
       }
+    },
+    "oil_dark_or_thick": {
+      "question": {
+        "vi": "Nhớt trên que thăm có màu đen sẫm, đặc quánh hoặc lợn cợn cặn?",
+        "en": "Does the oil on the dipstick look very dark, thick or gritty?"
+      },
+      "hint": {
+        "vi": "Nhớt mới thường có màu vàng hổ phách và trong.",
+        "en": "Fresh oil is usually clear and amber."
+      }
     }
   },
   "intermediates": {
@@ -293,6 +303,38 @@
       "cf": 0.6,
       "source": "",
       "note": "Only forum and blog sources found so far; to be confirmed with a mechanic."
+    },
+    {
+      "id": "EN13",
+      "if": ["blue_white_exhaust_smoke", "oil_level_low"],
+      "then": "engine_burning_oil",
+      "cf": 0.7,
+      "source": "Partzilla, \"Why is My Motorcycle Blowing Out Blue Smoke?\", https://www.partzilla.com/blog/why/does/my/motorcycle/blow/blue/smoke/qa",
+      "note": "Added 24/10. Same evidence as EN07, but the rider sees the low level on the dipstick instead of noticing it between oil changes."
+    },
+    {
+      "id": "EN14",
+      "if": ["black_exhaust_smoke", "engine_lacks_power"],
+      "then": "rich_running",
+      "cf": 0.6,
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "note": "Added 24/10. A rich mixture burns badly, so black smoke often comes with a loss of power; weaker than EN01 because lack of power has many causes."
+    },
+    {
+      "id": "EN15",
+      "if": ["coolant_below_min"],
+      "then": "low_coolant",
+      "cf": 0.7,
+      "source": "Honda CBF500 owner's manual, \"Coolant\": add coolant to the reserve tank if the level is below the lower mark, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF500A5_E/2500_2500/0036.pdf",
+      "note": "Added 24/10. Low coolant found during a check, before the engine overheats; EN09 adds the warning light."
+    },
+    {
+      "id": "EN16",
+      "if": ["oil_change_overdue", "oil_dark_or_thick"],
+      "then": "low_engine_oil",
+      "cf": 0.75,
+      "source": "Honda owner's manuals, \"Engine Oil\": change the oil at the interval in the maintenance schedule (e.g. CRF150F manual, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF150FE_EN/2500_2500/0070.pdf)",
+      "note": "Added 24/10. Covers the \"old oil\" half of the fault: the level may be fine but the oil is worn out."
     }
   ]
 }
