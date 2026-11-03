@@ -1,30 +1,42 @@
 # Tiến độ — Kiều Bảo Giang
 
-Phần chính: forward chaining, xếp hạng bằng certainty factor. Phần phụ: kiểm tra bằng thuật toán Wang. Hệ thống xe: động cơ, truyền động.
+Phần chính: forward chaining, xếp hạng bằng certainty factor. Phần phụ: kiểm tra bằng thuật toán Wang. Hệ thống xe: động cơ, truyền động. Phần báo cáo: Methodology (forward chaining, xếp hạng, Wang), Discussion.
 
-Cập nhật lần cuối: 21/10/2026 (nhánh `feature/forward-chaining`).
+Cập nhật lần cuối: 03/11/2026 (nhánh `feature/forward-chaining`). Theo lịch trình và phân công ngày 02/10.
 
-## Theo mốc thời gian
+## Theo lịch
 
-| Mốc (đề cương) | Việc của Giang | Trạng thái |
+| Tuần | Việc của Giang | Trạng thái |
 |---|---|---|
-| 02/10 – 09/10: thu thập kiến thức, chốt danh sách triệu chứng và lỗi | Danh sách triệu chứng, kết luận trung gian và lỗi cho động cơ và truyền động | Xong (21/10) |
-| 10/10 – 16/10: cơ sở tri thức v1 (khoảng 40 luật) và forward chaining | `knowledge_base/engine.json` (12 luật EN01–EN12), `knowledge_base/transmission.json` (8 luật TR01–TR08) | Xong (21/10, trễ 5 ngày) |
-| | `src/forward_chaining.py`: forward chaining + xếp hạng CF, dòng lệnh chạy thử | Xong (21/10, trễ 5 ngày) |
-| | `tests/test_forward_chaining.py`: 12 test (công thức CF, xếp hạng, ngưỡng, 12 kịch bản trên cơ sở tri thức thật) | Xong (21/10) |
-| | Chốt cách kết hợp CF (`docs/kb_format.md`, `docs/forward_chaining.md`) | Xong (21/10) |
-| 17/10 – 22/10: chuẩn bị thuyết trình Logical Agents | Demo tương tác Wumpus World (chứng minh B ⇔ (P ∨ P), kiểm tra mô hình, chu trình tác tử KB) | Xong (21/10), dùng cho buổi 22/10 |
-| 23/10 – 30/10: backward chaining, giải thích; mở rộng cơ sở tri thức | Hỗ trợ Khoa dùng chung CF; bổ sung nguồn cho luật EN/TR còn thiếu | Chưa tới |
-| 31/10 – 06/11: kịch bản test, đánh giá, kiểm tra bằng Wang, GUI | Kiểm tra bằng thuật toán Wang: KB + triệu chứng ⊨ lỗi, so với forward chaining | Chưa tới |
+| 1 (05/10–11/10) | Tài liệu động cơ, truyền động; góp ý JSON; đề xuất cách tính CF; danh sách lỗi và luật mẫu | Xong |
+| 2 (12/10–18/10) | `forward_chaining.py` có unit test; luật động cơ, truyền động (20 luật EN01–EN12, TR01–TR08); CF và xếp hạng | Xong (21/10, trễ 5 ngày) |
+| 3 (19/10–25/10) | Slide và thuyết trình Logical Agents (22/10) | Xong |
+| | 10 kịch bản test cho phanh, lốp, giảm xóc (hệ thống của Khoa): `scenarios/brakes_tyres_suspension.json` | Xong |
+| | Thêm 7 luật: EN13–EN16, TR09–TR11 | Xong |
+| 4 (26/10–01/11) | Thuật toán Wang: `src/wang.py`, ví dụ nhỏ có unit test (`tests/test_wang.py`) | Xong |
+| | 10 kịch bản test cho khởi động, nhiên liệu, điện (hệ thống của Lâm): `scenarios/starting_fuel_electrical.json` | Xong |
+| | Wang trên cơ sở tri thức thật, so với forward chaining trên kịch bản và 500 bộ ngẫu nhiên: khớp 100% | Xong |
+| 5 (02/11–08/11) | Phân tích kịch bản chẩn đoán sai, đề xuất sửa luật: [docs/scenario_analysis.md](../scenario_analysis.md) | Xong |
+| | Sửa luật của mình theo kết quả: thêm EN17, EN18, TR12 (luật dự phòng cho trung gian "ngõ cụt") | Xong |
+| | Chạy lại Wang sau khi sửa luật | Xong |
+| | Nháp Methodology: [docs/report/methodology_giang.md](../report/methodology_giang.md) | Xong (nháp) |
+| | Nháp Discussion: [docs/report/discussion.md](../report/discussion.md) | Xong (nháp, còn chỗ [TODO] chờ số liệu đánh giá của Khoa) |
+| 6 (09/11–15/11) | Gửi Methodology, Discussion cho Lâm; sửa theo góp ý; slide phần forward chaining, xếp hạng, Wang (14/11) | Chưa tới |
+| 7 (16/11–22/11) | Thuyết trình Oral 19/11; kiểm tra trích dẫn phần mình | Chưa tới |
 
 ## Kết quả hiện tại
 
-- Cơ sở tri thức: 49 triệu chứng, 7 trung gian, 27 lỗi, **40 luật** (Lâm 20, Giang 20). `python src/kb.py`: 0 lỗi; cảnh báo chỉ còn luật chưa có nguồn.
-- Unit test: 27/27 qua (`python -m unittest discover tests`).
-- 12 kịch bản trên cơ sở tri thức thật đều cho lỗi mong đợi ở vị trí số 1 (top-1).
+- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **76 luật** (Giang 30: EN01–EN18, TR01–TR12). `python src/kb.py`: 0 lỗi.
+- Unit test: 57/57 qua (`python -m unittest discover tests`).
+- 20 kịch bản (BT, SE): forward chaining top-1 18/20, top-3 18/20. Backward chaining cho cùng kết quả.
+- Wang và forward chaining khớp trên 20 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
+
+## Cần người khác
+
+- **Lâm:** 10 kịch bản cho động cơ, truyền động (`scenarios/engine_transmission.json`, tiền tố `ET`), để đánh giá phần luật của Giang. Thêm luật SF14 (sửa SE10), xem `docs/scenario_analysis.md`.
+- **Khoa:** thêm luật TS15 (sửa BT10). Script đánh giá có thể dùng `load_scenarios()` trong `src/scenarios.py`.
 
 ## Còn tồn đọng
 
-- 9 luật EN/TR chưa có nguồn đủ tin cậy (EN04, EN06, EN10, EN11, EN12, TR01–TR04), xem `docs/sources.md`. Cần hỏi thợ hoặc tìm sổ tay sửa chữa trước khi nộp báo cáo.
+- 10 luật EN/TR chưa có nguồn đủ tin cậy (EN04, EN06, EN10, EN11, EN12, TR01–TR04, TR12). Cần hỏi thợ hoặc tìm sổ tay sửa chữa trước khi nộp báo cáo.
 - Các link nguồn lấy từ kết quả tìm kiếm; nên mở lại từng link để kiểm tra trước khi đưa vào báo cáo.
-- `has_clutch_lever` hiện đặt trong `transmission.json`; nếu phần khác cũng cần, có thể chuyển sang `vehicle.json` (file chung, cần cả nhóm đồng ý).

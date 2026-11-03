@@ -1,0 +1,98 @@
+{
+  "systems": ["brakes", "tyres_suspension"],
+  "rules_by": "Khoa",
+  "written_by": "Giang",
+  "date": "2026-10-23",
+  "scenarios": [
+    {
+      "id": "BT01",
+      "description": {
+        "vi": "Vision bóp phanh trước kêu rít; nhìn qua khe cùm phanh thấy má phanh gần hết.",
+        "en": "Vision: the front brake squeals; through the caliper the pads look almost worn through."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "brake_squeal", "brake_pad_thin_visible"],
+      "expected": "worn_brake_pads"
+    },
+    {
+      "id": "BT02",
+      "description": {
+        "vi": "Exciter đạp phanh sau nghe tiếng sắt cọ sắt ken két.",
+        "en": "Exciter: a metal-on-metal grinding noise when using the rear brake."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "brake_grinding"],
+      "expected": "worn_brake_pads"
+    },
+    {
+      "id": "BT03",
+      "description": {
+        "vi": "Winner tay phanh trước mềm, bình dầu dưới vạch MIN, cùm phanh ướt dầu.",
+        "en": "Winner: the front brake lever is spongy, the reservoir is below MIN and the caliper is wet with fluid."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "brake_lever_spongy", "brake_fluid_low", "brake_fluid_leak_visible"],
+      "expected": "brake_fluid_leak"
+    },
+    {
+      "id": "BT04",
+      "description": {
+        "vi": "Air Blade tay phanh mềm dần; dầu phanh 3 năm chưa thay, mức dầu vẫn đủ, không thấy rỉ.",
+        "en": "Air Blade: the brake lever has slowly become spongy; the fluid has not been changed for 3 years, the level is fine and nothing leaks."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "brake_lever_spongy", "brake_fluid_old"],
+      "expected": "old_brake_fluid"
+    },
+    {
+      "id": "BT05",
+      "description": {
+        "vi": "SH phanh gấp từ tốc độ cao thấy tay phanh rung giật theo nhịp bánh xe.",
+        "en": "SH: when braking hard from speed the lever pulses in time with the wheel."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "brake_pulsation"],
+      "expected": "warped_brake_disc"
+    },
+    {
+      "id": "BT06",
+      "description": {
+        "vi": "Wave chạy xong thấy bánh trước nóng, dắt xe thấy nặng như bị phanh kéo.",
+        "en": "Wave: after a ride the front wheel is hot and the bike is hard to push, as if the brake is still on."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "brake_drags"],
+      "expected": "sticking_brake_caliper"
+    },
+    {
+      "id": "BT07",
+      "description": {
+        "vi": "Vision lốp trước nhìn bẹp, tay lái nặng khi vào cua.",
+        "en": "Vision: the front tyre looks flat and the steering is heavy in corners."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "tyre_pressure_low", "steering_heavy"],
+      "expected": "underinflated_tyre"
+    },
+    {
+      "id": "BT08",
+      "description": {
+        "vi": "Lead lốp sau vài ngày lại xẹp, kiểm tra thấy một cây đinh ghim trên lốp.",
+        "en": "Lead: the rear tyre goes soft every few days, and a nail is found in it."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "tyre_loses_air_quickly", "tyre_pressure_low", "tyre_foreign_object"],
+      "expected": "tyre_puncture"
+    },
+    {
+      "id": "BT09",
+      "description": {
+        "vi": "Exciter thấy dầu rỉ ướt trên ống phuộc trước, bóp phanh trước xe chúi sâu.",
+        "en": "Exciter: oil on the front fork tube, and the front dives hard under braking."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "fork_oil_on_tube", "front_suspension_soft"],
+      "expected": "fork_seal_leak"
+    },
+    {
+      "id": "BT10",
+      "description": {
+        "vi": "Wave hay chở người: qua ổ gà đuôi xe nhún nhiều lần mới dừng, chở nặng thì xe đứng thấp hẳn.",
+        "en": "Wave often carrying a passenger: the rear bounces several times after each pothole and sits much lower with a load."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "rear_shock_bouncy", "sits_low_parked"],
+      "expected": "worn_rear_shock"
+    }
+  ]
+}

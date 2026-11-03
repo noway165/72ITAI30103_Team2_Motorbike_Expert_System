@@ -63,6 +63,16 @@
         "vi": "Sang số nặng, khó vào số, hoặc xe vẫn lết tới khi đã bóp hết tay côn?",
         "en": "Is it hard to change gear, or does the motorbike creep forward with the clutch lever fully pulled in?"
       }
+    },
+    "clutch_free_play_out_of_spec": {
+      "question": {
+        "vi": "Độ rơ ở đầu tay côn (khoảng bóp được trước khi côn bắt đầu nhả) nhiều hơn hoặc ít hơn mức ghi trong sổ hướng dẫn?",
+        "en": "Is the free play at the end of the clutch lever (how far it moves before the clutch starts to disengage) more or less than the owner's manual allows?"
+      },
+      "hint": {
+        "vi": "Thường khoảng 10–20 mm; xem sổ hướng dẫn sử dụng của xe.",
+        "en": "Usually about 10–20 mm; see the owner's manual."
+      }
     }
   },
   "intermediates": {
@@ -213,6 +223,38 @@
       "cf": 0.6,
       "source": "Honda CBF250 owner's manual, \"Clutch\": clutch lever free play and adjuster, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF2504_E/2500_2500/0029.pdf",
       "note": "Too much free play keeps the clutch from fully disengaging."
+    },
+    {
+      "id": "TR09",
+      "if": ["is_manual", "chain_slack_high"],
+      "then": "loose_or_worn_chain",
+      "cf": 0.7,
+      "source": "Honda owner's manual (web edition), \"Drive Chain\": adjust the chain if the slack is outside the specification, https://webom.hondamotopub.com/webom/HMEE/MLB250/html/GMT018001.html",
+      "note": "Added 24/10. Slack found during a check, before the chain gets noisy; TR06 adds the noise."
+    },
+    {
+      "id": "TR10",
+      "if": ["is_manual", "clicking_noise_from_rear", "chain_dry_or_rusty"],
+      "then": "chain_needs_lubrication",
+      "cf": 0.7,
+      "source": "Honda Global, \"Ever wonder what happens if you don't conduct maintenance on your drive chain?\", https://global.honda/en/motorcycle-aftersales/plusone/202306.html",
+      "note": "Added 24/10. A dry chain is noisy; combined with TR07 when both fire."
+    },
+    {
+      "id": "TR11",
+      "if": ["has_clutch_lever", "clutch_free_play_out_of_spec"],
+      "then": "clutch_cable_needs_adjustment",
+      "cf": 0.85,
+      "source": "Honda CBF250 owner's manual, \"Clutch\": clutch lever free play and adjuster, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF2504_E/2500_2500/0029.pdf",
+      "note": "Added 24/10. The manual gives the free play range and says to adjust it when it is outside."
+    },
+    {
+      "id": "TR12",
+      "if": ["drive_slipping", "is_scooter"],
+      "then": "worn_cvt_belt",
+      "cf": 0.55,
+      "source": "",
+      "note": "Added 03/11 after the scenario analysis: a slipping scooter with a recent belt and no rattle reached no fault. The belt is the most common cause of CVT slip; CF lower than TR02. Source to be confirmed with TR02."
     }
   ]
 }

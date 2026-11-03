@@ -56,6 +56,12 @@ python src/forward_chaining.py --list-symptoms
 python src/forward_chaining.py starter_clicks_or_silent horn_weak battery_older_than_2_years
 ```
 
+Kiểm tra bằng thuật toán Wang, so với forward chaining trên các kịch bản test trong `scenarios/` ([docs/wang.md](docs/wang.md)):
+
+```bash
+python src/wang.py --scenarios --random 500
+```
+
 Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md). Hướng dẫn chạy chương trình chẩn đoán đầy đủ sẽ được bổ sung khi có giao diện CLI.
 
 ## Mốc thời gian
