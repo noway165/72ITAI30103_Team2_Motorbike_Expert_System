@@ -53,10 +53,11 @@ distance between the first and second fault, not which fault came first.
 - **Size.** 76 rules for 40 faults cover the common problems of Vietnamese
   scooters and manual motorbikes, but not electronic faults (ABS, smart key) or
   model-specific problems.
-- **Sources.** Some rules are based on owner's manuals of models sold abroad and
-  some still have no reliable source [TODO: number of rules without a source at
-  the deadline]. A mechanic should review the rules before the system is used
-  for real.
+- **Sources.** Many rules are based on owner's manuals of models sold abroad,
+  and a few rely on retailer guides or on a car-engine guide rather than a
+  motorcycle service manual (for example the CVT belt and throttle body rules)
+  [TODO: rules still without a source in the other subsystems at the deadline].
+  A mechanic should review the rules before the system is used for real.
 - **Test scenarios.** The scenarios were written by team members, not collected
   from real repair shops, so the accuracy measures how well the rules match our
   own understanding of each fault.
