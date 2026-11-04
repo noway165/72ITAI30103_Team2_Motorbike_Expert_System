@@ -36,7 +36,10 @@ Cập nhật lần cuối: 03/11/2026 (nhánh `feature/forward-chaining`). Theo 
 - **Lâm:** 10 kịch bản cho động cơ, truyền động (`scenarios/engine_transmission.json`, tiền tố `ET`), để đánh giá phần luật của Giang. Thêm luật SF14 (sửa SE10), xem `docs/scenario_analysis.md`.
 - **Khoa:** thêm luật TS15 (sửa BT10). Script đánh giá có thể dùng `load_scenarios()` trong `src/scenarios.py`.
 
+- Nguồn (04/11): cả 30 luật EN/TR đã có nguồn; mọi link đã được mở lại và kiểm tra nội dung. Một link Partzilla chết đã được thay. EN06 giảm CF 0.6 → 0.5 vì nguồn yếu. Chi tiết: `docs/sources.md`.
+
 ## Còn tồn đọng
 
-- 10 luật EN/TR chưa có nguồn đủ tin cậy (EN04, EN06, EN10, EN11, EN12, TR01–TR04, TR12). Cần hỏi thợ hoặc tìm sổ tay sửa chữa trước khi nộp báo cáo.
-- Các link nguồn lấy từ kết quả tìm kiếm; nên mở lại từng link để kiểm tra trước khi đưa vào báo cáo.
+- `docs/report/discussion.md` còn chỗ [TODO] chờ số liệu đánh giá đầy đủ của Khoa.
+- Gửi Methodology, Discussion cho Lâm (09/11) và sửa theo góp ý.
+- Phần thuyết trình (slide 14/11, Oral 19/11) làm sau.

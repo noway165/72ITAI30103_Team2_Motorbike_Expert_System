@@ -168,31 +168,31 @@
       "if": ["revs_rise_but_slow"],
       "then": "drive_slipping",
       "cf": 0.9,
-      "source": "",
-      "note": "Revs rising without a matching gain in speed is the usual description of drive slip. Only blog and forum sources found so far; to be confirmed with a mechanic."
+      "source": "Honda CBF250 owner's manual, \"Clutch\": if the clutch slips, acceleration lags behind engine speed, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF2504_E/2500_2500/0029.pdf; Louis, \"Scooter Variator and Clutch\": the drive belt is a wearing part replaced at regular intervals; worn rollers develop flat spots, cause jerky acceleration and rattling; worn clutch linings slip and cannot deliver power, https://www.louis.ie/en-ie/magazin/rund-ums-bike/schraubertipps/variomatik-und-kupplung",
+      "note": "Revs rising without a matching gain in speed is how both sources describe drive slip."
     },
     {
       "id": "TR02",
       "if": ["drive_slipping", "is_scooter", "cvt_belt_overdue"],
       "then": "worn_cvt_belt",
       "cf": 0.8,
-      "source": "",
-      "note": "A glazed or worn belt slips on the pulleys. Source to be confirmed (scooter service manual, drive belt)."
+      "source": "Louis, \"Scooter Variator and Clutch\": the drive belt is a wearing part replaced at regular intervals; worn rollers develop flat spots, cause jerky acceleration and rattling; worn clutch linings slip and cannot deliver power, https://www.louis.ie/en-ie/magazin/rund-ums-bike/schraubertipps/variomatik-und-kupplung; Q9 PowerSports, \"Scooter Drive Belt Replacement\": signs of a worn belt include loss of acceleration power and slipping under load, https://q9powersportsusa.com/blogs/technical-support-q9-powersports-usa/change-drive-belt-motor-scooter",
+      "note": "A glazed or worn belt slips on the pulleys."
     },
     {
       "id": "TR03",
       "if": ["drive_slipping", "is_scooter", "rattle_from_cvt_cover"],
       "then": "worn_cvt_rollers",
       "cf": 0.6,
-      "source": "",
-      "note": "Flat-spotted rollers rattle and lose top speed. Only forum sources found so far; to be confirmed with a mechanic."
+      "source": "Louis, \"Scooter Variator and Clutch\": the drive belt is a wearing part replaced at regular intervals; worn rollers develop flat spots, cause jerky acceleration and rattling; worn clutch linings slip and cannot deliver power, https://www.louis.ie/en-ie/magazin/rund-ums-bike/schraubertipps/variomatik-und-kupplung",
+      "note": "Flat-spotted rollers rattle and make acceleration jerky."
     },
     {
       "id": "TR04",
       "if": ["is_scooter", "judder_when_pulling_away"],
       "then": "worn_centrifugal_clutch",
       "cf": 0.7,
-      "source": "",
+      "source": "T. Kimura et al., \"A Study of Dry Centrifugal Clutch Judder\", SAE Technical Paper 2005-32-0057 (125cc scooter): judder is caused by the friction characteristics of the clutch, https://doi.org/10.4271/2005-32-0057; Louis, \"Scooter Variator and Clutch\": the drive belt is a wearing part replaced at regular intervals; worn rollers develop flat spots, cause jerky acceleration and rattling; worn clutch linings slip and cannot deliver power, https://www.louis.ie/en-ie/magazin/rund-ums-bike/schraubertipps/variomatik-und-kupplung",
       "note": "To be confirmed with a mechanic."
     },
     {
@@ -253,8 +253,8 @@
       "if": ["drive_slipping", "is_scooter"],
       "then": "worn_cvt_belt",
       "cf": 0.55,
-      "source": "",
-      "note": "Added 03/11 after the scenario analysis: a slipping scooter with a recent belt and no rattle reached no fault. The belt is the most common cause of CVT slip; CF lower than TR02. Source to be confirmed with TR02."
+      "source": "Q9 PowerSports, \"Scooter Drive Belt Replacement\": signs of a worn belt include loss of acceleration power and slipping under load, https://q9powersportsusa.com/blogs/technical-support-q9-powersports-usa/change-drive-belt-motor-scooter; Louis, \"Scooter Variator and Clutch\": the drive belt is a wearing part replaced at regular intervals; worn rollers develop flat spots, cause jerky acceleration and rattling; worn clutch linings slip and cannot deliver power, https://www.louis.ie/en-ie/magazin/rund-ums-bike/schraubertipps/variomatik-und-kupplung",
+      "note": "Added 03/11 after the scenario analysis: a slipping scooter with a recent belt and no rattle reached no fault. The belt is the most common cause of CVT slip; CF lower than TR02."
     }
   ]
 }

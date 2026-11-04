@@ -217,7 +217,7 @@
       "if": ["black_exhaust_smoke", "fuel_consumption_increased"],
       "then": "rich_running",
       "cf": 0.85,
-      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke; Partzilla, \"What Exhaust Smoke Colors Mean\", https://www.partzilla.com/blog/exhaust-smoke-colors-meaning",
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\": black or gray smoke often indicates a clogged air filter or a rich mixture, https://motorcyclistonline.com/what-causes-motorcycle-to-smoke; Partzilla, \"Exhaust Smoke Color: What it Means\": black smoke means burning too much fuel (rich mixture), https://www.partzilla.com/blog/exhaust-smoke-colors-meaning",
       "note": "Black smoke is unburnt fuel, which also explains the higher fuel use."
     },
     {
@@ -225,7 +225,7 @@
       "if": ["rich_running", "air_filter_overdue"],
       "then": "clogged_air_filter",
       "cf": 0.8,
-      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\": black or gray smoke often indicates a clogged air filter or a rich mixture, https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
       "note": "A restricted air filter lets too little air in, so the mixture becomes rich."
     },
     {
@@ -233,7 +233,7 @@
       "if": ["rich_running", "is_carburetor"],
       "then": "carburetor_mixture_too_rich",
       "cf": 0.6,
-      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\": black or gray smoke often indicates a clogged air filter or a rich mixture, https://motorcyclistonline.com/what-causes-motorcycle-to-smoke (carburettor: adjust the jetting)",
       "note": "Second cause of black smoke after the air filter; CF lower because the air filter is checked first."
     },
     {
@@ -241,8 +241,8 @@
       "if": ["engine_lacks_power", "air_filter_overdue"],
       "then": "clogged_air_filter",
       "cf": 0.55,
-      "source": "",
-      "note": "Weaker evidence than EN02; combined with EN02 when both fire. Source to be confirmed with a mechanic."
+      "source": "Honda CRF250R owner's manual, \"Air Cleaner\": a dirty air cleaner will reduce engine power; poor maintenance causes low engine power and poor gas mileage, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RA_EN/2500_2500/0057.pdf",
+      "note": "Weaker evidence than EN02; combined with EN02 when both fire."
     },
     {
       "id": "EN05",
@@ -255,16 +255,16 @@
       "id": "EN06",
       "if": ["engine_ticking_noise", "oil_change_overdue"],
       "then": "low_engine_oil",
-      "cf": 0.6,
-      "source": "",
-      "note": "Old or low oil makes the valve train noisy; other causes exist (valve clearance). Source to be confirmed with a mechanic."
+      "cf": 0.5,
+      "source": "Ultimate Motorcycling, \"Top 6 Strange Motorcycle Noises\": ticking may occur with low oil level, but may also indicate valve train problems, https://ultimatemotorcycling.com/2016/03/29/top-6-strange-motorcycle-noises-what-they-may-mean/; Honda Global, \"The Importance of Periodic Replacement - Engine Oil\": oil performance deteriorates if not replaced at the interval in the owner's manual, https://global.honda/en/motorcycle-aftersales/plusone/202303.html",
+      "note": "Weak evidence: Honda says being a little behind the oil change causes no abnormal noise, and ticking also comes from valve clearance. CF lowered from 0.6 to 0.5 on 04/11."
     },
     {
       "id": "EN07",
       "if": ["blue_white_exhaust_smoke", "oil_drops_between_changes"],
       "then": "engine_burning_oil",
       "cf": 0.8,
-      "source": "Partzilla, \"Why is My Motorcycle Blowing Out Blue Smoke?\", https://www.partzilla.com/blog/why/does/my/motorcycle/blow/blue/smoke/qa"
+      "source": "Partzilla, \"Exhaust Smoke Color: What it Means\": blue or gray smoke means burning excess oil (leaking valve seals, worn piston rings), https://www.partzilla.com/blog/exhaust-smoke-colors-meaning"
     },
     {
       "id": "EN08",
@@ -285,7 +285,7 @@
       "if": ["engine_overheating", "radiator_fan_not_running"],
       "then": "cooling_fan_problem",
       "cf": 0.7,
-      "source": "",
+      "source": "Honda owner's manual (web edition), \"Overheating (High coolant temperature indicator is on)\": check that the radiator fan is operating; if not, suspect a fault; after the engine cools, check the coolant level in the reserve tank, https://webom.hondamotopub.com/webom/HMEE/MLB250/html/GTS004001.html",
       "note": "Source to be confirmed (service manual, cooling system troubleshooting)."
     },
     {
@@ -293,23 +293,23 @@
       "if": ["engine_stalls_at_idle", "is_fuel_injected"],
       "then": "dirty_throttle_body",
       "cf": 0.55,
-      "source": "",
-      "note": "Only forum and blog sources found so far; to be confirmed with a mechanic."
+      "source": "Mobil, \"Proper throttle-body cleaning guide\": a dirty throttle body can cause a rough idle or stalling, https://www.mobil.com/en/lubricants/for-personal-vehicles/auto-care/vehicle-maintenance/how-to-do-it-yourself/proper-throttle-body-cleaning-guide",
+      "note": "Mobil's guide is for car engines but the throttle body works the same way; other causes (idle air control valve, vacuum leaks) exist."
     },
     {
       "id": "EN12",
       "if": ["engine_stalls_at_idle", "is_carburetor"],
       "then": "carburetor_idle_problem",
       "cf": 0.6,
-      "source": "",
-      "note": "Only forum and blog sources found so far; to be confirmed with a mechanic."
+      "source": "Honda CBF250 owner's manual, \"Idle Speed\": idle is set with the throttle stop screw; see the dealer for regularly scheduled carburettor adjustments, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF2504_E/2500_2500/0073.pdf",
+      "note": "The manual covers idle adjustment, not stalling itself; stalling at idle on a carburettor bike is usually a low idle or a dirty pilot circuit, to be confirmed with a mechanic."
     },
     {
       "id": "EN13",
       "if": ["blue_white_exhaust_smoke", "oil_level_low"],
       "then": "engine_burning_oil",
       "cf": 0.7,
-      "source": "Partzilla, \"Why is My Motorcycle Blowing Out Blue Smoke?\", https://www.partzilla.com/blog/why/does/my/motorcycle/blow/blue/smoke/qa",
+      "source": "Partzilla, \"Exhaust Smoke Color: What it Means\": blue or gray smoke means burning excess oil (leaking valve seals, worn piston rings), https://www.partzilla.com/blog/exhaust-smoke-colors-meaning",
       "note": "Added 24/10. Same evidence as EN07, but the rider sees the low level on the dipstick instead of noticing it between oil changes."
     },
     {
@@ -317,7 +317,7 @@
       "if": ["black_exhaust_smoke", "engine_lacks_power"],
       "then": "rich_running",
       "cf": 0.6,
-      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\": black or gray smoke often indicates a clogged air filter or a rich mixture, https://motorcyclistonline.com/what-causes-motorcycle-to-smoke; Honda CRF250R owner's manual, \"Air Cleaner\": a dirty air cleaner will reduce engine power; poor maintenance causes low engine power and poor gas mileage, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RA_EN/2500_2500/0057.pdf",
       "note": "Added 24/10. A rich mixture burns badly, so black smoke often comes with a loss of power; weaker than EN01 because lack of power has many causes."
     },
     {
@@ -333,7 +333,7 @@
       "if": ["oil_change_overdue", "oil_dark_or_thick"],
       "then": "low_engine_oil",
       "cf": 0.75,
-      "source": "Honda owner's manuals, \"Engine Oil\": change the oil at the interval in the maintenance schedule (e.g. CRF150F manual, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF150FE_EN/2500_2500/0070.pdf)",
+      "source": "Honda Global, \"The Importance of Periodic Replacement - Engine Oil\": oil performance deteriorates if not replaced at the interval in the owner's manual, https://global.honda/en/motorcycle-aftersales/plusone/202303.html",
       "note": "Added 24/10. Covers the \"old oil\" half of the fault: the level may be fine but the oil is worn out."
     },
     {
@@ -341,7 +341,7 @@
       "if": ["rich_running", "is_fuel_injected"],
       "then": "clogged_air_filter",
       "cf": 0.5,
-      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\", https://motorcyclistonline.com/what-causes-motorcycle-to-smoke",
+      "source": "Motorcyclist, \"What Causes a Motorcycle To Smoke?\": black or gray smoke often indicates a clogged air filter or a rich mixture, https://motorcyclistonline.com/what-causes-motorcycle-to-smoke; Honda CRF250R owner's manual, \"Air Cleaner\": a dirty air cleaner will reduce engine power; poor maintenance causes low engine power and poor gas mileage, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RA_EN/2500_2500/0057.pdf",
       "note": "Added 03/11 after the scenario analysis: without it, rich running on a fuel-injected bike with a recently changed air filter reached no fault. The air filter is still the first, cheapest thing to check."
     },
     {
@@ -349,7 +349,7 @@
       "if": ["engine_overheating"],
       "then": "low_coolant",
       "cf": 0.5,
-      "source": "Honda Global, \"You see all those different indicators on your bike's instrumentation?\", https://global.honda/en/motorcycle-aftersales/plusone/202412.html; Honda CBF500 owner's manual, \"Coolant\", https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/CBF500A5_E/2500_2500/0036.pdf",
+      "source": "Honda owner's manual (web edition), \"Overheating (High coolant temperature indicator is on)\": check that the radiator fan is operating; if not, suspect a fault; after the engine cools, check the coolant level in the reserve tank, https://webom.hondamotopub.com/webom/HMEE/MLB250/html/GTS004001.html",
       "note": "Added 03/11 after the scenario analysis: the temperature light alone reached no fault. Checking the coolant level is the first step for an overheating warning."
     }
   ]
