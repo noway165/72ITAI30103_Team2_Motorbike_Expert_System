@@ -66,6 +66,8 @@ class WangOnKnowledgeBaseTest(unittest.TestCase):
         self.assertFalse(entails(kb, {"a": True, "b": False}, "f").valid)
         with self.assertRaises(ValueError):
             entails(kb, ["mid"], "f")  # only symptoms can be given
+        with self.assertRaises(ValueError):
+            entails(kb, ["a"], "typo")  # unknown goal
 
     def test_relevant_rules_skip_unrelated_rules(self):
         data = small_kb(rules=[rule("R1", ["a"], "mid"), rule("R2", ["mid", "b"], "f"),

@@ -74,7 +74,6 @@ result.wm               # WorkingMemory sau khi suy luận
 
 Một kết luận do nhiều luật suy ra được ghi trong bộ nhớ làm việc với `by` là danh sách id luật, ví dụ `"SF02,SF03"`, và `premises` là hợp các điều kiện của các luật đó.
 
-## 5. Việc tiếp theo
+## 5. Kiểm tra
 
-- Kiểm tra bằng thuật toán Wang (31/10 – 06/11): KB + triệu chứng ⊨ lỗi, so với kết quả forward chaining trên các kịch bản test.
-- Bổ sung nguồn cho các luật EN/TR còn trống `source` sau khi hỏi thợ.
+Forward chaining được kiểm tra bằng thuật toán Wang: tập lỗi suy ra luôn bằng tập lỗi KB kéo theo về mặt logic (20 kịch bản và 500 bộ triệu chứng ngẫu nhiên). Xem [wang.md](wang.md) và [scenario_analysis.md](scenario_analysis.md).

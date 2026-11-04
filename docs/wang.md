@@ -75,12 +75,14 @@ check_engines(kb, "test", symptoms).agree    # True nếu Wang và forward chain
 prove([Implies(Atom("p"), Atom("q")), Atom("p")], [Atom("q")]).valid          # True
 ```
 
-## 4. Kết quả (03/11/2026, KB 73 luật)
+## 4. Kết quả (04/11/2026, KB 76 luật)
 
 | Bộ dữ liệu | Số lần so sánh | Wang khác forward chaining |
 |---|---|---|
 | 20 kịch bản trong `scenarios/` (BT, SE) | 20 × 40 lỗi | 0 |
-| 500 bộ triệu chứng ngẫu nhiên (mỗi triệu chứng đúng với xác suất 0.15, seed 0) | 500 × 40 lỗi, 1147 lỗi được chứng minh | 0 |
+| 500 bộ triệu chứng ngẫu nhiên (mỗi triệu chứng đúng với xác suất 0.15, seed 0) | 500 × 40 lỗi, 1227 lỗi được chứng minh | 0 |
+
+Khi có thêm kịch bản (ví dụ `ET` của Lâm), chạy lại `python src/wang.py --scenarios --random 500` và cập nhật bảng này.
 
 Forward chaining suy ra đúng và đủ các lỗi được KB kéo theo về mặt logic. Hai kịch bản chẩn đoán sai (BT10, SE10) cũng được Wang xác nhận là **không** suy ra được: lỗi nằm ở cơ sở tri thức (thiếu luật), không phải ở bộ suy luận. Xem [scenario_analysis.md](scenario_analysis.md).
 
