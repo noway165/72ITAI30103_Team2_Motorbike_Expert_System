@@ -1,6 +1,6 @@
 # Motorbike Fault Diagnosis Expert System
 
-Final Project — Nhập môn Trí tuệ Nhân tạo (261_72ITSE30303_01)
+Final Project - Nhập môn Trí tuệ Nhân tạo (261_72ITSE30303_01)
 Giảng viên: Dr. Huy T. Nguyen
 
 Hệ chuyên gia dựa trên luật, chẩn đoán các lỗi thường gặp của xe máy từ triệu chứng người lái mô tả, dùng **forward chaining** và **backward chaining**, và giải thích được vì sao đưa ra mỗi kết luận (why / how).
