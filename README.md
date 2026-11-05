@@ -66,7 +66,7 @@ Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chainin
 
 ### Chạy chương trình
 
-Giao diện cửa sổ (Tkinter, có sẵn trong Python): chẩn đoán theo triệu chứng, hỏi đáp từng câu (có “Tại sao?”), kiểm chứng Wang, xem cơ sở tri thức. Thêm `--lang=en` để chạy tiếng Anh.
+Giao diện cửa sổ (Tkinter, có sẵn trong Python). Khung và màn Cơ sở tri thức: Lâm; màn Theo triệu chứng: Giang (`src/gui_forward.py`); màn Hỏi đáp từng câu: Khoa (`src/gui_backward.py`). Cách cắm màn hình: [docs/ui_guide.md](docs/ui_guide.md) mục 9. Thêm `--lang=en` để chạy tiếng Anh.
 
 ```bash
 python src/gui.py
