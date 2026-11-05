@@ -133,3 +133,54 @@ Không nên:
 - Dùng font khác Segoe UI / Consolas.
 - Đổi màu thanh CF theo giá trị.
 - Thêm icon, emoji hoặc ảnh nền.
+
+## 9. Cắm màn hình vào GUI
+
+Khung cửa sổ (`src/gui.py`, Lâm) có thanh bên trái và 4 màn hình. Hai màn chẩn đoán do người viết bộ suy luận làm, mỗi người một file riêng:
+
+| Màn hình | File | Class | Người làm |
+|---|---|---|---|
+| Theo triệu chứng (forward, Wang) | `src/gui_forward.py` | `ForwardPage` | Giang |
+| Hỏi đáp từng câu (backward, why/how) | `src/gui_backward.py` | `BackwardPage` | Khoa |
+| Cơ sở tri thức | `src/gui.py` | `KBPage` | Lâm |
+| Giới thiệu | `src/gui.py` | `AboutPage` | Lâm |
+
+Khi chưa có file, cửa sổ hiện ghi chú “Màn hình đang được làm”. Khi file có mặt, màn hình tự hiện; nếu file lỗi lúc nạp, cửa sổ hiện thông báo lỗi thay vì tắt.
+
+Mẫu tối thiểu:
+
+```python
+"""Màn hình Theo triệu chứng (owner: Giang)."""
+import tkinter as tk
+from gui_widgets import Page, Panel, label, page_header
+from theme import PAD
+
+TEXT = {"vi": {"title": "Chẩn đoán theo triệu chứng"}, "en": {"title": "Diagnosis by symptoms"}}
+
+
+class ForwardPage(Page):
+    def __init__(self, parent, app):
+        super().__init__(parent, app)
+        t = TEXT[app.lang]
+        page_header(self, t["title"], "...").pack(fill="x", pady=(0, PAD["m"]))
+        panel = Panel(self, "...")
+        panel.pack(fill="both", expand=True)
+        label(panel.body, "...").pack(anchor="w")
+
+    def on_show(self):        # gọi mỗi lần người dùng chuyển tới màn hình này (không bắt buộc)
+        pass
+
+    def on_key(self, event):  # phím bấm khi đang ở màn hình này (không bắt buộc)
+        pass
+```
+
+`app` cho mỗi màn hình dùng:
+- `app.kb`: cơ sở tri thức (`kb.text()`, `kb.question()`, `kb.action()`).
+- `app.lang`: `"vi"` hoặc `"en"`. Đổi ngôn ngữ thì cả cửa sổ được dựng lại, màn hình chỉ cần đọc `app.lang` trong `__init__`.
+- `app.scenarios`: các kịch bản trong `scenarios/` (dùng cho nút tải kịch bản mẫu nếu muốn).
+- `app.state`: dict dùng chung giữa các màn hình; giữ dữ liệu cần còn lại khi đổi ngôn ngữ (ví dụ triệu chứng đã chọn).
+- `app.show("kb")`: chuyển màn hình.
+
+Thành phần có sẵn trong `src/gui_widgets.py` (dùng thay cho widget tk thường để mọi màn hình giống nhau): `Page`, `Panel`, `ScrollFrame`, `Segmented`, `HintEntry`, `page_header`, `tile`, `label`, `autowrap`, `link`, `chip`, `severity_chip`, `rank_badge`, `CFBar`, `dot`, `px` (nhân kích thước theo độ phân giải màn hình), `fold` (tìm kiếm không dấu). Hàm chuyển kết quả thành chữ cho người dùng: `src/present.py` (`how_rows`, `near_misses`, `short`).
+
+Chạy thử: `python src/gui.py`. Phần logic (không vẽ) nên tách thành hàm riêng để viết unit test.

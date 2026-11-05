@@ -16,6 +16,7 @@ python -m unittest discover tests || goto :error
 pyinstaller --noconfirm --clean --onefile --windowed ^
     --name MotorbikeExpert ^
     --paths src ^
+    --hidden-import gui_forward --hidden-import gui_backward ^
     --add-data "knowledge_base;knowledge_base" ^
     --add-data "scenarios;scenarios" ^
     src\gui.py || goto :error
