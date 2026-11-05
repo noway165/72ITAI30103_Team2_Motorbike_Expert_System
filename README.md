@@ -62,7 +62,32 @@ Kiểm tra bằng thuật toán Wang, so với forward chaining trên các kịc
 python src/wang.py --scenarios --random 500
 ```
 
-Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md). Hướng dẫn chạy chương trình chẩn đoán đầy đủ sẽ được bổ sung khi có giao diện CLI.
+Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md).
+
+### Chạy chương trình
+
+Giao diện cửa sổ (Tkinter, có sẵn trong Python): chẩn đoán theo triệu chứng, hỏi đáp từng câu (có “Tại sao?”), kiểm chứng Wang, xem cơ sở tri thức. Thêm `--lang=en` để chạy tiếng Anh.
+
+```bash
+python src/gui.py
+```
+
+Dòng lệnh:
+
+```bash
+python src/cli.py forward                      # chọn triệu chứng từ danh sách có đánh số
+python src/cli.py forward horn_weak starter_clicks_or_silent battery_older_than_2_years
+python src/cli.py backward --subsystem brakes  # trả lời c / k, gõ why để hỏi tại sao
+python src/cli.py list symptoms
+```
+
+Tạo file chạy Windows `dist\MotorbikeExpert.exe` (chạy test trước, PyInstaller cài vào `.venv-build`, không đụng Python chính):
+
+```bash
+build_exe.bat
+```
+
+Nếu đường dẫn repo quá dài và lỗi khi tạo venv, đặt venv ở chỗ khác: `set BUILD_VENV=C:\Temp\mb-venv` rồi chạy lại. Giao diện và màu sắc chung: [docs/ui_guide.md](docs/ui_guide.md).
 
 ## Mốc thời gian
 
