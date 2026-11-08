@@ -44,5 +44,5 @@ Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo 
 
 ## Còn tồn đọng
 
-- Chạy tay 5 kịch bản trên file .exe (xem `docs/slides/giang_script.md` không cần; danh sách trong tin nhắn PR).
+- Chạy tay 5 kịch bản trên file .exe (`dist\MotorbikeExpert.exe`, chọn ở ô Kịch bản mẫu): SE01 (ắc quy yếu), ET03 (thiếu nhớt), ET07 (dây curoa), BT01 (má phanh mòn), BT10 (chưa đủ dữ kiện, hiện gợi ý thêm triệu chứng).
 - Sửa phần viết theo góp ý của Lâm; thuyết trình Oral 19/11.
