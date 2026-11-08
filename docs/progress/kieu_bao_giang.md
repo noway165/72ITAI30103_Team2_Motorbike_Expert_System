@@ -26,7 +26,7 @@ Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo 
 | | Xem 10 kịch bản ET của Lâm: 10/10 đúng hạng 1, không cần sửa luật | Xong |
 | | Cập nhật `docs/scenario_analysis.md`, Methodology, Discussion với 30 kịch bản | Xong |
 | | Slide và lời thoại phần forward chaining, CF, Wang: `docs/slides/` | Xong (chờ Lâm ghép) |
-| | Thử file .exe | Build được, mở đúng màn Theo triệu chứng; còn chạy tay 5 kịch bản |
+| | Thử file .exe (`build_exe.bat`, 09/11): chọn kịch bản mẫu trên màn Theo triệu chứng | Xong: 7 kịch bản đều đúng như khi chạy bằng Python (bảng dưới) |
 | 7 (16/11–22/11) | Thuyết trình Oral 19/11; kiểm tra trích dẫn phần mình | Chưa tới |
 
 ## Kết quả hiện tại
@@ -37,6 +37,18 @@ Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo 
 - Wang và forward chaining khớp trên 30 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
 - Nguồn: cả 30 luật EN/TR đã có nguồn đã kiểm tra (`docs/sources.md`).
 
+Thử `dist\MotorbikeExpert.exe` (09/11), màn Theo triệu chứng, ô Kịch bản mẫu:
+
+| Kịch bản | Kết quả hạng 1 | CF | Luật | Wang |
+|---|---|---|---|---|
+| BT01 | Má phanh mòn | 0.90 | BR01 | chứng minh được |
+| BT10 | Chưa đủ dữ kiện; hiện TS09 → giảm xóc mất giảm chấn và 2 triệu chứng gợi ý thêm | | TS09 | khớp |
+| ET03 | Thiếu nhớt máy hoặc nhớt quá hạn | 0.88 | EN06, EN16 | chứng minh được |
+| ET07 | Dây curoa mòn hoặc chai | 0.86 | TR01, TR02, TR12 | chứng minh được |
+| SE01 | Ắc quy yếu hoặc hết điện | 0.89 | SF01, SF02, SF14 | chứng minh được |
+| SE02 | Đề không đúng thao tác (chưa bóp phanh) | 0.90 | SF07 | chứng minh được |
+| SE10 | Ắc quy yếu hoặc hết điện | 0.54 | SF01, SF14 | chứng minh được |
+
 ## Cần người khác
 
 - **Khoa:** thêm luật TS15 (sửa BT10, kịch bản sai duy nhất còn lại). Khi script đánh giá trong `results/` xong, đối chiếu với số trong `docs/report/discussion.md`.
@@ -44,5 +56,5 @@ Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo 
 
 ## Còn tồn đọng
 
-- Chạy tay 5 kịch bản trên file .exe (`dist\MotorbikeExpert.exe`, chọn ở ô Kịch bản mẫu): SE01 (ắc quy yếu), ET03 (thiếu nhớt), ET07 (dây curoa), BT01 (má phanh mòn), BT10 (chưa đủ dữ kiện, hiện gợi ý thêm triệu chứng).
+- Lâm thử file .exe trên máy khác (11/11, việc của Lâm).
 - Sửa phần viết theo góp ý của Lâm; thuyết trình Oral 19/11.
