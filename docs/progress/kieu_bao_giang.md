@@ -2,7 +2,7 @@
 
 Phần chính: forward chaining, xếp hạng bằng certainty factor. Phần phụ: kiểm tra bằng thuật toán Wang. Hệ thống xe: động cơ, truyền động. Phần báo cáo: Methodology (forward chaining, xếp hạng, Wang), Discussion.
 
-Cập nhật lần cuối: 03/11/2026 (nhánh `feature/forward-chaining`). Theo lịch trình và phân công ngày 02/10.
+Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo lịch trình ngày 02/10 và danh sách việc ngày 09/11.
 
 ## Theo lịch
 
@@ -20,26 +20,29 @@ Cập nhật lần cuối: 03/11/2026 (nhánh `feature/forward-chaining`). Theo 
 | | Sửa luật của mình theo kết quả: thêm EN17, EN18, TR12 (luật dự phòng cho trung gian "ngõ cụt") | Xong |
 | | Chạy lại Wang sau khi sửa luật | Xong |
 | | Nháp Methodology: [docs/report/methodology_giang.md](../report/methodology_giang.md) | Xong (nháp) |
-| | Nháp Discussion: [docs/report/discussion.md](../report/discussion.md) | Xong (nháp, còn chỗ [TODO] chờ số liệu đánh giá của Khoa) |
-| 6 (09/11–15/11) | Gửi Methodology, Discussion cho Lâm; sửa theo góp ý; slide phần forward chaining, xếp hạng, Wang (14/11) | Chưa tới |
+| | Nháp Discussion: [docs/report/discussion.md](../report/discussion.md) | Xong; [TODO] đã điền bằng số đo 30 kịch bản (09/11) |
+| 6 (09/11–15/11) | Màn hình Theo triệu chứng: `src/gui_forward.py` (`ForwardPage`), unit test `tests/test_gui_forward.py` | Xong |
+| | Sửa test CF ắc quy trên nhánh `feature/sf14` (SF02, SF03, SF14) | Xong |
+| | Xem 10 kịch bản ET của Lâm: 10/10 đúng hạng 1, không cần sửa luật | Xong |
+| | Cập nhật `docs/scenario_analysis.md`, Methodology, Discussion với 30 kịch bản | Xong |
+| | Slide và lời thoại phần forward chaining, CF, Wang: `docs/slides/` | Xong (chờ Lâm ghép) |
+| | Thử file .exe | Build được, mở đúng màn Theo triệu chứng; còn chạy tay 5 kịch bản |
 | 7 (16/11–22/11) | Thuyết trình Oral 19/11; kiểm tra trích dẫn phần mình | Chưa tới |
 
 ## Kết quả hiện tại
 
-- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **76 luật** (Giang 30: EN01–EN18, TR01–TR12). `python src/kb.py`: 0 lỗi.
-- Unit test: 57/57 qua (`python -m unittest discover tests`).
-- 20 kịch bản (BT, SE): forward chaining top-1 18/20, top-3 18/20. Backward chaining cho cùng kết quả.
-- Wang và forward chaining khớp trên 20 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
+- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **77 luật** (Giang 30: EN01–EN18, TR01–TR12). `python src/kb.py`: 0 lỗi.
+- Unit test: 83 test qua, 1 bỏ qua (`python -m unittest discover tests`).
+- 30 kịch bản (BT, SE, ET): forward chaining top-1 29/30, top-3 29/30. Backward chaining cho cùng kết quả.
+- Wang và forward chaining khớp trên 30 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
+- Nguồn: cả 30 luật EN/TR đã có nguồn đã kiểm tra (`docs/sources.md`).
 
 ## Cần người khác
 
-- **Lâm:** 10 kịch bản cho động cơ, truyền động (`scenarios/engine_transmission.json`, tiền tố `ET`), để đánh giá phần luật của Giang. Thêm luật SF14 (sửa SE10), xem `docs/scenario_analysis.md`.
-- **Khoa:** thêm luật TS15 (sửa BT10). Script đánh giá có thể dùng `load_scenarios()` trong `src/scenarios.py`.
-
-- Nguồn (04/11): cả 30 luật EN/TR đã có nguồn; mọi link đã được mở lại và kiểm tra nội dung. Một link Partzilla chết đã được thay. EN06 giảm CF 0.6 → 0.5 vì nguồn yếu. Chi tiết: `docs/sources.md`.
+- **Khoa:** thêm luật TS15 (sửa BT10, kịch bản sai duy nhất còn lại). Khi script đánh giá trong `results/` xong, đối chiếu với số trong `docs/report/discussion.md`.
+- **Lâm:** merge `feature/sf14` trước nhánh này; ghép slide `docs/slides/giang_forward_wang.pptx`.
 
 ## Còn tồn đọng
 
-- `docs/report/discussion.md` còn chỗ [TODO] chờ số liệu đánh giá đầy đủ của Khoa.
-- Gửi Methodology, Discussion cho Lâm (09/11) và sửa theo góp ý.
-- Phần thuyết trình (slide 14/11, Oral 19/11) làm sau.
+- Chạy tay 5 kịch bản trên file .exe (xem `docs/slides/giang_script.md` không cần; danh sách trong tin nhắn PR).
+- Sửa phần viết theo góp ý của Lâm; thuyết trình Oral 19/11.
