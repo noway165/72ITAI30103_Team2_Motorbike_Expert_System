@@ -1,6 +1,6 @@
 # Motorbike Fault Diagnosis Expert System
 
-Final Project — Nhập môn Trí tuệ Nhân tạo (261_72ITSE30303_01)
+Final Project - Nhập môn Trí tuệ Nhân tạo (261_72ITSE30303_01)
 Giảng viên: Dr. Huy T. Nguyen
 
 Hệ chuyên gia dựa trên luật, chẩn đoán các lỗi thường gặp của xe máy từ triệu chứng người lái mô tả, dùng **forward chaining** và **backward chaining**, và giải thích được vì sao đưa ra mỗi kết luận (why / how).
@@ -62,7 +62,32 @@ Kiểm tra bằng thuật toán Wang, so với forward chaining trên các kịc
 python src/wang.py --scenarios --random 500
 ```
 
-Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md). Hướng dẫn chạy chương trình chẩn đoán đầy đủ sẽ được bổ sung khi có giao diện CLI.
+Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md).
+
+### Chạy chương trình
+
+Giao diện cửa sổ (Tkinter, có sẵn trong Python). Khung và màn Cơ sở tri thức: Lâm; màn Theo triệu chứng: Giang (`src/gui_forward.py`); màn Hỏi đáp từng câu: Khoa (`src/gui_backward.py`). Cách cắm màn hình: [docs/ui_guide.md](docs/ui_guide.md) mục 9. Thêm `--lang=en` để chạy tiếng Anh.
+
+```bash
+python src/gui.py
+```
+
+Dòng lệnh:
+
+```bash
+python src/cli.py forward                      # chọn triệu chứng từ danh sách có đánh số
+python src/cli.py forward horn_weak starter_clicks_or_silent battery_older_than_2_years
+python src/cli.py backward --subsystem brakes  # trả lời c / k, gõ why để hỏi tại sao
+python src/cli.py list symptoms
+```
+
+Tạo file chạy Windows `dist\MotorbikeExpert.exe` (chạy test trước, PyInstaller cài vào `.venv-build`, không đụng Python chính):
+
+```bash
+build_exe.bat
+```
+
+Nếu đường dẫn repo quá dài và lỗi khi tạo venv, đặt venv ở chỗ khác: `set BUILD_VENV=C:\Temp\mb-venv` rồi chạy lại. Giao diện và màu sắc chung: [docs/ui_guide.md](docs/ui_guide.md).
 
 ## Mốc thời gian
 

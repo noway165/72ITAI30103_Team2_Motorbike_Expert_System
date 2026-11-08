@@ -1,0 +1,98 @@
+{
+  "systems": ["engine", "transmission"],
+  "rules_by": "Giang",
+  "written_by": "Lâm",
+  "date": "2026-11-05",
+  "scenarios": [
+    {
+      "id": "ET01",
+      "description": {
+        "vi": "Wave bình xăng con chạy ống xả ra khói đen, đổ xăng thấy tốn hơn hẳn; lọc gió chưa thay từ lúc mua xe.",
+        "en": "Carburettor Wave: black smoke from the exhaust and clearly higher fuel use; the air filter has not been changed since the bike was bought."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "black_exhaust_smoke", "fuel_consumption_increased", "air_filter_overdue"],
+      "expected": "clogged_air_filter"
+    },
+    {
+      "id": "ET02",
+      "description": {
+        "vi": "Vision đã chạy nhiều năm, khói xả màu trắng xanh có mùi nhớt khét; nhớt hụt nhanh giữa hai lần thay nhưng gầm xe không thấy rỉ nhớt.",
+        "en": "Old Vision: blue-white exhaust smoke smelling of burnt oil; the oil level drops quickly between changes but nothing leaks under the bike."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "blue_white_exhaust_smoke", "oil_drops_between_changes"],
+      "expected": "engine_burning_oil"
+    },
+    {
+      "id": "ET03",
+      "description": {
+        "vi": "Sirius quá hạn thay nhớt gần 2.000 km, máy kêu lạch cạch to hơn bình thường, nhớt trên que thăm đen và đặc.",
+        "en": "Sirius almost 2,000 km past its oil change: louder ticking from the engine, the oil on the dipstick is black and thick."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "engine_ticking_noise", "oil_change_overdue", "oil_dark_or_thick"],
+      "expected": "low_engine_oil"
+    },
+    {
+      "id": "ET04",
+      "description": {
+        "vi": "Air Blade kẹt xe buổi trưa thì đèn báo nhiệt độ sáng; mở cốp thấy nước làm mát trong bình phụ dưới vạch LOWER.",
+        "en": "Air Blade in a midday traffic jam: the temperature light comes on; the coolant in the reserve tank is below LOWER."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "temp_warning_light_on", "coolant_below_min"],
+      "expected": "low_coolant"
+    },
+    {
+      "id": "ET05",
+      "description": {
+        "vi": "SH đứng nổ máy lâu chờ đèn đỏ thì đèn nhiệt độ sáng, không nghe tiếng quạt két nước chạy; nước làm mát vẫn đủ.",
+        "en": "SH idling a long time at a red light: the temperature light comes on and the radiator fan cannot be heard; coolant level is fine."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "temp_warning_light_on", "radiator_fan_not_running"],
+      "expected": "cooling_fan_problem"
+    },
+    {
+      "id": "ET06",
+      "description": {
+        "vi": "Lead phun xăng hay chết máy khi dừng đèn đỏ hoặc vừa nhả ga; chạy thì bình thường.",
+        "en": "Fuel-injected Lead often stalls at red lights or right after closing the throttle; it rides normally."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "engine_stalls_at_idle"],
+      "expected": "dirty_throttle_body"
+    },
+    {
+      "id": "ET07",
+      "description": {
+        "vi": "Vision 40.000 km chưa thay dây curoa, lên dốc chở người thì rú ga máy gào mà xe đi chậm.",
+        "en": "Vision at 40,000 km, drive belt never replaced: uphill with a passenger the engine revs hard but the bike is slow."
+      },
+      "symptoms": ["is_scooter", "is_fuel_injected", "revs_rise_but_slow", "cvt_belt_overdue"],
+      "expected": "worn_cvt_belt"
+    },
+    {
+      "id": "ET08",
+      "description": {
+        "vi": "Winner X khó vào số, bóp hết côn mà xe vẫn bò lên; tay côn rơ nhiều hơn sách hướng dẫn.",
+        "en": "Winner X is hard to shift and creeps forward with the clutch fully pulled; clutch lever free play is more than the manual allows."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "hard_to_shift_gears", "clutch_free_play_out_of_spec"],
+      "expected": "clutch_cable_needs_adjustment"
+    },
+    {
+      "id": "ET09",
+      "description": {
+        "vi": "Exciter tay côn, lên số cao rồi vặn ga thì máy rú nhưng xe không tăng tốc tương ứng.",
+        "en": "Exciter with a manual clutch: in a high gear, opening the throttle makes the engine rev without the bike speeding up."
+      },
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "revs_rise_but_slow"],
+      "expected": "clutch_slipping"
+    },
+    {
+      "id": "ET10",
+      "description": {
+        "vi": "Wave sau mùa mưa, nghe tiếng lách cách ở xích và nhông sau khi chạy; xích khô, có chỗ gỉ.",
+        "en": "Wave after the rainy season: clicking from the chain and rear sprocket while riding; the chain is dry with some rust."
+      },
+      "symptoms": ["is_manual", "is_carburetor", "clicking_noise_from_rear", "chain_dry_or_rusty"],
+      "expected": "chain_needs_lubrication"
+    }
+  ]
+}

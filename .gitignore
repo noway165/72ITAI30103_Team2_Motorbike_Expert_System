@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Windows executable build (build_exe.bat)
+.venv-build/
+build/
+dist/
+*.spec
