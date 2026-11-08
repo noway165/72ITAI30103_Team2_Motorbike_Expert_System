@@ -42,7 +42,9 @@ Triệu chứng: `starter_clicks_or_silent`, `horn_weak`, `battery_older_than_2_
 | SF01 → `low_electrical_power` | 0.9 × min(1, 1) | 0.90 |
 | SF02 → `weak_battery` | 0.85 × min(0.9, 1) | 0.765 |
 | SF03 → `weak_battery` | 0.75 × min(0.9, 1) | 0.675 |
-| Gộp SF02, SF03 | 0.765 + 0.675 × (1 − 0.765) | **0.92** |
+| SF14 → `weak_battery` | 0.6 × 0.9 | 0.54 |
+| Gộp SF02, SF03 | 0.765 + 0.675 × (1 − 0.765) | 0.924 |
+| Gộp thêm SF14 | 0.924 + 0.54 × (1 − 0.924) | **0.96** |
 
 ## 4. Cách dùng
 

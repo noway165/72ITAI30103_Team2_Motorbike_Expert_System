@@ -1,7 +1,7 @@
 # Methodology: forward chaining, ranking and verification (draft)
 
-Author: Kieu Bao Giang. Draft for the final report (05/11/2026), to be sent to Lâm on 09/11.
-Numbers refer to the knowledge base of 03/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 76 rules).
+Author: Kieu Bao Giang. Draft for the final report, updated 09/11/2026 and sent to Lâm.
+Numbers refer to the knowledge base of 09/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 77 rules).
 
 ## 3.x Forward chaining
 
@@ -63,10 +63,26 @@ weeks:
 | SF01 → low_electrical_power | 0.9 × min(1, 1) | 0.90 |
 | SF02 → weak_battery | 0.85 × min(0.90, 1) | 0.765 |
 | SF03 → weak_battery | 0.75 × min(0.90, 1) | 0.675 |
-| combined | 0.765 + 0.675 × (1 − 0.765) | **0.92** |
+| SF14 → weak_battery | 0.6 × 0.90 | 0.54 |
+| SF02 and SF03 combined | 0.765 + 0.675 × (1 − 0.765) | 0.924 |
+| then SF14 | 0.924 + 0.54 × (1 − 0.924) | **0.96** |
 
 Every reported fault keeps the rules and facts that produced it, so the program
 can explain *how* it reached the conclusion.
+
+## 3.y' The "By symptoms" screen
+
+In the GUI, the rider chooses the vehicle type (manual or scooter, fuel injection
+or carburettor) and ticks the symptoms, which are grouped by part of the
+motorbike and can be searched without Vietnamese accents. Pressing "Chẩn đoán"
+runs forward chaining and shows at most five result cards, best first. Each card
+gives the fault, its CF as a bar, the severity ("you can fix it" or "take it to a
+mechanic"), what to do, and whether Wang's algorithm proves the fault (Section
+3.z). Clicking a card opens the *how* explanation: each symptom the rider gave,
+then each rule that fired, with its CF. When no fault reaches the threshold, the
+screen lists the intermediate facts that were derived and the symptoms that would
+complete a rule, so the rider can add one and diagnose again. The logic of the
+screen is kept apart from the drawing code and is covered by unit tests.
 
 ## 3.z Verification with Wang's algorithm
 
@@ -93,11 +109,10 @@ known is decomposed first, so its first branch closes at once.
 
 Forward chaining is sound and complete for Horn clauses [Russell and Norvig], so
 the set of faults it derives (with the threshold set to 0) must equal the set of
-faults proved by Wang's algorithm. We compared the two on the 20 test scenarios
+faults proved by Wang's algorithm. We compared the two on the 30 test scenarios
 and on 500 random sets of answers (each symptom "yes" with probability 0.15),
-that is 20,800 entailment checks (40 faults per set of answers; 1,227 faults
-were proved in the random sets). They agreed in every
-case. Any wrong diagnosis is therefore caused by the knowledge base, not by the
+that is 21,200 entailment checks (40 faults per set of answers; 1,239 faults
+were proved in the random sets). They agreed in every case. Any wrong diagnosis is therefore caused by the knowledge base, not by the
 inference engine; Section 5 uses this to analyse the misdiagnosed scenarios.
 
 ## References
