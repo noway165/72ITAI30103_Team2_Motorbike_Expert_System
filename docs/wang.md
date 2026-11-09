@@ -75,14 +75,16 @@ check_engines(kb, "test", symptoms).agree    # True nếu Wang và forward chain
 prove([Implies(Atom("p"), Atom("q")), Atom("p")], [Atom("q")]).valid          # True
 ```
 
-## 4. Kết quả (03/11/2026, KB 73 luật)
+## 4. Kết quả (09/11/2026, KB 77 luật)
 
 | Bộ dữ liệu | Số lần so sánh | Wang khác forward chaining |
 |---|---|---|
-| 20 kịch bản trong `scenarios/` (BT, SE) | 20 × 40 lỗi | 0 |
-| 500 bộ triệu chứng ngẫu nhiên (mỗi triệu chứng đúng với xác suất 0.15, seed 0) | 500 × 40 lỗi, 1147 lỗi được chứng minh | 0 |
+| 30 kịch bản trong `scenarios/` (BT, SE, ET) | 30 × 40 lỗi | 0 |
+| 500 bộ triệu chứng ngẫu nhiên (mỗi triệu chứng đúng với xác suất 0.15, seed 0) | 500 × 40 lỗi, 1239 lỗi được chứng minh | 0 |
 
-Forward chaining suy ra đúng và đủ các lỗi được KB kéo theo về mặt logic. Hai kịch bản chẩn đoán sai (BT10, SE10) cũng được Wang xác nhận là **không** suy ra được: lỗi nằm ở cơ sở tri thức (thiếu luật), không phải ở bộ suy luận. Xem [scenario_analysis.md](scenario_analysis.md).
+Khi thêm luật hoặc kịch bản, chạy lại `python src/wang.py --scenarios --random 500` và cập nhật bảng này. Màn hình Theo triệu chứng (`src/gui_forward.py`) cũng chạy Wang cho mỗi lần chẩn đoán và báo nếu hai bên khác nhau.
+
+Forward chaining suy ra đúng và đủ các lỗi được KB kéo theo về mặt logic. Kịch bản chẩn đoán sai còn lại (BT10) cũng được Wang xác nhận là **không** suy ra được: lỗi nằm ở cơ sở tri thức (thiếu luật), không phải ở bộ suy luận. Xem [scenario_analysis.md](scenario_analysis.md).
 
 Unit test (`tests/test_wang.py`): các ví dụ nhỏ (tiên đề, luật bài trung, modus ponens, modus tollens, De Morgan, luật Horn nhiều điều kiện, chuỗi luật), KB nhỏ, KB thật, và so sánh với forward chaining trên kịch bản + 100 bộ ngẫu nhiên.
 

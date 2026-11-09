@@ -287,6 +287,14 @@
       "cf": 0.6,
       "source": "",
       "note": "Not every model cuts the engine with the stand down; keep the CF moderate."
+    },
+    {
+      "id": "SF14",
+      "if": ["low_electrical_power"],
+      "then": "weak_battery",
+      "cf": 0.6,
+      "source": "",
+      "note": "Fallback for the dead-end intermediate found in docs/scenario_analysis.md (SE10): a clicking starter with a weak horn is most often a flat battery, e.g. after the key was left on. SF02 and SF03 raise the CF when there is more evidence."
     }
   ]
 }

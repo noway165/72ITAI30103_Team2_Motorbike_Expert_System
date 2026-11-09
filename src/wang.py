@@ -234,6 +234,8 @@ def entails(kb: KnowledgeBase, answers: Answers, goal: str, trace: bool = False)
     `answers` is a list of symptoms that are true or a dict {symptom: True / False};
     a symptom answered False goes on the left as ¬symptom.
     """
+    if goal not in kb.symbols:
+        raise ValueError(f"unknown symbol {goal!r}")
     left: List[Formula] = [rule_formula(r) for r in relevant_rules(kb, goal)]
     for symptom, value in _answers(answers).items():
         if not kb.is_askable(symptom):

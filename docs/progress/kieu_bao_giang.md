@@ -2,7 +2,7 @@
 
 Phần chính: forward chaining, xếp hạng bằng certainty factor. Phần phụ: kiểm tra bằng thuật toán Wang. Hệ thống xe: động cơ, truyền động. Phần báo cáo: Methodology (forward chaining, xếp hạng, Wang), Discussion.
 
-Cập nhật lần cuối: 03/11/2026 (nhánh `feature/forward-chaining`). Theo lịch trình và phân công ngày 02/10.
+Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo lịch trình ngày 02/10 và danh sách việc ngày 09/11.
 
 ## Theo lịch
 
@@ -20,23 +20,41 @@ Cập nhật lần cuối: 03/11/2026 (nhánh `feature/forward-chaining`). Theo 
 | | Sửa luật của mình theo kết quả: thêm EN17, EN18, TR12 (luật dự phòng cho trung gian "ngõ cụt") | Xong |
 | | Chạy lại Wang sau khi sửa luật | Xong |
 | | Nháp Methodology: [docs/report/methodology_giang.md](../report/methodology_giang.md) | Xong (nháp) |
-| | Nháp Discussion: [docs/report/discussion.md](../report/discussion.md) | Xong (nháp, còn chỗ [TODO] chờ số liệu đánh giá của Khoa) |
-| 6 (09/11–15/11) | Gửi Methodology, Discussion cho Lâm; sửa theo góp ý; slide phần forward chaining, xếp hạng, Wang (14/11) | Chưa tới |
+| | Nháp Discussion: [docs/report/discussion.md](../report/discussion.md) | Xong; [TODO] đã điền bằng số đo 30 kịch bản (09/11) |
+| 6 (09/11–15/11) | Màn hình Theo triệu chứng: `src/gui_forward.py` (`ForwardPage`), unit test `tests/test_gui_forward.py` | Xong |
+| | Sửa test CF ắc quy trên nhánh `feature/sf14` (SF02, SF03, SF14) | Xong |
+| | Xem 10 kịch bản ET của Lâm: 10/10 đúng hạng 1, không cần sửa luật | Xong |
+| | Cập nhật `docs/scenario_analysis.md`, Methodology, Discussion với 30 kịch bản | Xong |
+| | Slide và lời thoại phần forward chaining, CF, Wang: `docs/slides/` | Xong (chờ Lâm ghép) |
+| | Thử file .exe (`build_exe.bat`, 09/11): chọn kịch bản mẫu trên màn Theo triệu chứng | Xong: 7 kịch bản đều đúng như khi chạy bằng Python (bảng dưới) |
 | 7 (16/11–22/11) | Thuyết trình Oral 19/11; kiểm tra trích dẫn phần mình | Chưa tới |
 
 ## Kết quả hiện tại
 
-- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **76 luật** (Giang 30: EN01–EN18, TR01–TR12). `python src/kb.py`: 0 lỗi.
-- Unit test: 57/57 qua (`python -m unittest discover tests`).
-- 20 kịch bản (BT, SE): forward chaining top-1 18/20, top-3 18/20. Backward chaining cho cùng kết quả.
-- Wang và forward chaining khớp trên 20 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
+- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **77 luật** (Giang 30: EN01–EN18, TR01–TR12). `python src/kb.py`: 0 lỗi.
+- Unit test: 83 test qua, 1 bỏ qua (`python -m unittest discover tests`).
+- 30 kịch bản (BT, SE, ET): forward chaining top-1 29/30, top-3 29/30. Backward chaining cho cùng kết quả.
+- Wang và forward chaining khớp trên 30 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
+- Nguồn: cả 30 luật EN/TR đã có nguồn đã kiểm tra (`docs/sources.md`).
+
+Thử `dist\MotorbikeExpert.exe` (09/11), màn Theo triệu chứng, ô Kịch bản mẫu:
+
+| Kịch bản | Kết quả hạng 1 | CF | Luật | Wang |
+|---|---|---|---|---|
+| BT01 | Má phanh mòn | 0.90 | BR01 | chứng minh được |
+| BT10 | Chưa đủ dữ kiện; hiện TS09 → giảm xóc mất giảm chấn và 2 triệu chứng gợi ý thêm | | TS09 | khớp |
+| ET03 | Thiếu nhớt máy hoặc nhớt quá hạn | 0.88 | EN06, EN16 | chứng minh được |
+| ET07 | Dây curoa mòn hoặc chai | 0.86 | TR01, TR02, TR12 | chứng minh được |
+| SE01 | Ắc quy yếu hoặc hết điện | 0.89 | SF01, SF02, SF14 | chứng minh được |
+| SE02 | Đề không đúng thao tác (chưa bóp phanh) | 0.90 | SF07 | chứng minh được |
+| SE10 | Ắc quy yếu hoặc hết điện | 0.54 | SF01, SF14 | chứng minh được |
 
 ## Cần người khác
 
-- **Lâm:** 10 kịch bản cho động cơ, truyền động (`scenarios/engine_transmission.json`, tiền tố `ET`), để đánh giá phần luật của Giang. Thêm luật SF14 (sửa SE10), xem `docs/scenario_analysis.md`.
-- **Khoa:** thêm luật TS15 (sửa BT10). Script đánh giá có thể dùng `load_scenarios()` trong `src/scenarios.py`.
+- **Khoa:** thêm luật TS15 (sửa BT10, kịch bản sai duy nhất còn lại). Khi script đánh giá trong `results/` xong, đối chiếu với số trong `docs/report/discussion.md`.
+- **Lâm:** merge `feature/sf14` trước nhánh này; ghép slide `docs/slides/giang_forward_wang.pptx`.
 
 ## Còn tồn đọng
 
-- 10 luật EN/TR chưa có nguồn đủ tin cậy (EN04, EN06, EN10, EN11, EN12, TR01–TR04, TR12). Cần hỏi thợ hoặc tìm sổ tay sửa chữa trước khi nộp báo cáo.
-- Các link nguồn lấy từ kết quả tìm kiếm; nên mở lại từng link để kiểm tra trước khi đưa vào báo cáo.
+- Lâm thử file .exe trên máy khác (11/11, việc của Lâm).
+- Sửa phần viết theo góp ý của Lâm; thuyết trình Oral 19/11.

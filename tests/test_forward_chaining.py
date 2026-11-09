@@ -125,13 +125,15 @@ class ProjectScenarioTest(unittest.TestCase):
             with self.subTest(fault=expected):
                 self.assertEqual(self.top(symptoms).fault, expected)
 
-    def test_weak_battery_cf_combines_two_rules(self):
+    def test_weak_battery_cf_combines_three_rules(self):
         d = self.top(["starter_clicks_or_silent", "horn_weak", "battery_older_than_2_years",
                       "bike_unused_over_2_weeks"])
         self.assertEqual(d.fault, "weak_battery")
-        self.assertEqual(d.rules, ["SF02", "SF03"])
-        # SF01 gives 0.9; SF02: 0.85 * 0.9 = 0.765; SF03: 0.75 * 0.9 = 0.675
-        self.assertAlmostEqual(d.cf, 0.765 + 0.675 * (1 - 0.765), places=4)
+        self.assertEqual(d.rules, ["SF02", "SF03", "SF14"])
+        # SF01 gives 0.9; SF02: 0.85 * 0.9 = 0.765; SF03: 0.75 * 0.9 = 0.675; SF14: 0.6 * 0.9 = 0.54
+        cf = 0.765 + 0.675 * (1 - 0.765)
+        cf = cf + 0.54 * (1 - cf)
+        self.assertAlmostEqual(d.cf, cf, places=4)  # 0.9649
 
     def test_black_smoke_on_carburetor_bike_ranks_air_filter_first(self):
         result = forward_chain(self.kb, ["black_exhaust_smoke", "fuel_consumption_increased",

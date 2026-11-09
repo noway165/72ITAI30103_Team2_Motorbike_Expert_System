@@ -188,5 +188,19 @@ class WorkingMemoryTest(unittest.TestCase):
         self.assertEqual(wm.get("f").by, "R2")
 
 
+class StartingFuelRulesTest(unittest.TestCase):
+    """Rules of Lâm's subsystems on the real knowledge base."""
+
+    def test_sf14_low_power_alone_reaches_weak_battery(self):
+        # scenario SE10 (docs/scenario_analysis.md): battery drained by leaving the key on
+        from forward_chaining import forward_chain
+        kb = load_kb()
+        self.assertEqual(kb.rule("SF14").premises, ("low_electrical_power",))
+        result = forward_chain(kb, ["starter_clicks_or_silent", "horn_weak"])
+        self.assertEqual(result.diagnoses[0].fault, "weak_battery")
+        self.assertEqual(result.diagnoses[0].rules, ["SF14"])
+        self.assertAlmostEqual(result.diagnoses[0].cf, 0.6 * 0.9, places=4)
+
+
 if __name__ == "__main__":
     unittest.main()

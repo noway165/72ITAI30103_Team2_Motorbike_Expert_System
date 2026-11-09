@@ -42,7 +42,9 @@ Triệu chứng: `starter_clicks_or_silent`, `horn_weak`, `battery_older_than_2_
 | SF01 → `low_electrical_power` | 0.9 × min(1, 1) | 0.90 |
 | SF02 → `weak_battery` | 0.85 × min(0.9, 1) | 0.765 |
 | SF03 → `weak_battery` | 0.75 × min(0.9, 1) | 0.675 |
-| Gộp SF02, SF03 | 0.765 + 0.675 × (1 − 0.765) | **0.92** |
+| SF14 → `weak_battery` | 0.6 × 0.9 | 0.54 |
+| Gộp SF02, SF03 | 0.765 + 0.675 × (1 − 0.765) | 0.924 |
+| Gộp thêm SF14 | 0.924 + 0.54 × (1 − 0.924) | **0.96** |
 
 ## 4. Cách dùng
 
@@ -74,7 +76,6 @@ result.wm               # WorkingMemory sau khi suy luận
 
 Một kết luận do nhiều luật suy ra được ghi trong bộ nhớ làm việc với `by` là danh sách id luật, ví dụ `"SF02,SF03"`, và `premises` là hợp các điều kiện của các luật đó.
 
-## 5. Việc tiếp theo
+## 5. Kiểm tra
 
-- Kiểm tra bằng thuật toán Wang (31/10 – 06/11): KB + triệu chứng ⊨ lỗi, so với kết quả forward chaining trên các kịch bản test.
-- Bổ sung nguồn cho các luật EN/TR còn trống `source` sau khi hỏi thợ.
+Forward chaining được kiểm tra bằng thuật toán Wang: tập lỗi suy ra luôn bằng tập lỗi KB kéo theo về mặt logic (20 kịch bản và 500 bộ triệu chứng ngẫu nhiên). Xem [wang.md](wang.md) và [scenario_analysis.md](scenario_analysis.md).
