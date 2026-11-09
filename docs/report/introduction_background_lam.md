@@ -3,7 +3,9 @@
 Author: Tang Thoai Lam. Draft for the final report, 09/11/2026.
 Numbers refer to the knowledge base of 09/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 77 rules).
 
-## 1 Introduction
+## Chapter 1: Introduction
+
+### 1.1 Problem and goals
 
 Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one of them breaks down, the rider has to decide what to do with little to go on. A starter that only clicks, together with a weak horn, usually needs no more than a battery charge. Brake fluid leaking from a hose means the motorbike should not be ridden at all. Many common faults can be told apart by things a rider can check without tools, such as the sound of the horn, the colour of the exhaust smoke or the level in the brake fluid window.
 
@@ -11,13 +13,19 @@ This knowledge has the form "if these symptoms appear, suspect this fault", whic
 
 We built an expert system for common faults on scooters and manual motorbikes. From the symptoms a rider reports, it ranks the likely faults by certainty factor, says which ones need a mechanic, and gives the action to take. The knowledge base covers six subsystems with 73 symptoms, 9 intermediate facts, 40 faults and 77 rules.
 
-Two inference engines use this knowledge base. Forward chaining starts from the symptoms the rider selects. Backward chaining starts from possible faults and asks yes/no questions. The rider can ask why a question is asked and how a conclusion was reached. Because we wrote the engines ourselves, we compare the faults derived by forward chaining with those proved by an independent theorem prover based on Wang's algorithm. We evaluate the system on 30 scenarios, each written by a team member who did not write the rules for that subsystem. The program runs as a Windows executable in Vietnamese and English.
+Two inference engines use this knowledge base. Forward chaining starts from the symptoms the rider selects. Backward chaining starts from possible faults and asks yes/no questions. The rider can ask why a question is asked and how a conclusion was reached. Because we wrote the engines ourselves, we compare the faults derived by forward chaining with those proved by an independent theorem prover based on Wang's algorithm. We evaluate the system on 30 scenarios, each written by a team member who did not write the rules for that subsystem. The program runs as a Windows executable in Vietnamese and English. Figure 1.1.1 shows how the parts fit together.
+
+![Figure 1.1.1](figures/fig_system_overview.png)
+
+Figure 1.1.1: Overview of the system
 
 The system covers only faults with rules in the knowledge base, and its answers do not replace an inspection by a mechanic.
 
-Section 2 gives the background, Section 3 the methods, Section 4 the experiments and results, Section 5 the discussion and Section 6 the conclusion.
+### 1.2 Chapter conclusion
 
-## 2 Background
+Diagnosing common motorbike faults from symptoms suits a rule-based system that can explain its advice. Chapter 2 gives the background, Chapter 3 the methods, Chapter 4 the experiments and results, Chapter 5 the discussion and Chapter 6 the conclusion.
+
+## Chapter 2: Background
 
 ### 2.1 Rule-based expert systems
 
@@ -25,11 +33,15 @@ A rule-based expert system keeps knowledge of a narrow domain as IF ... THEN rul
 
 ### 2.2 Horn clauses, forward and backward chaining
 
-Our rules are definite clauses of propositional logic: a conjunction of positive premises implies one positive conclusion. For such a knowledge base, entailment can be decided in time linear in its size [Russell and Norvig, ch. 7]. Forward chaining is data-driven: it fires every rule whose premises are known and adds the conclusions until nothing new can be derived. It is sound and complete for definite clauses. Backward chaining is goal-driven: it works back from a query through the rules that conclude it, so a diagnosis program can ask the user for one fact at a time.
+Our rules are definite clauses of propositional logic: a conjunction of positive premises implies one positive conclusion. For such a knowledge base, entailment can be decided in time linear in its size [Russell and Norvig, ch. 7]. Forward chaining is data-driven: it fires every rule whose premises are known and adds the conclusions until nothing new can be derived. It is sound and complete for definite clauses. Backward chaining is goal-driven: it works back from a query through the rules that conclude it, so a diagnosis program can ask the user for one fact at a time. Figure 2.2.1 shows both directions on two rules from our knowledge base.
+
+![Figure 2.2.1](figures/fig_forward_backward.png)
+
+Figure 2.2.1: Forward and backward chaining on rules SF01 and SF02
 
 ### 2.3 Certainty factors
 
-Diagnostic rules are rarely certain: a weak horn suggests a weak battery but does not prove it. MYCIN attached to each rule a certainty factor (CF), a number that expresses how strongly the premises support the conclusion [Shortliffe and Buchanan 1975]. CFs are estimates of the strength of evidence and are not probabilities. Our rules use only positive evidence, so we need only the positive part of the model (Section 3).
+Diagnostic rules are rarely certain: a weak horn suggests a weak battery but does not prove it. MYCIN attached to each rule a certainty factor (CF), a number that expresses how strongly the premises support the conclusion [Shortliffe and Buchanan 1975]. CFs are estimates of the strength of evidence and are not probabilities. Our rules use only positive evidence, so we need only the positive part of the model (Chapter 3).
 
 ### 2.4 Explanation
 
@@ -42,6 +54,10 @@ Wang's algorithm decides whether a sequent of propositional logic is valid [Wang
 ### 2.6 Related work
 
 Aditya et al. [2022] built a mobile application that uses forward chaining to diagnose damage on automatic motorcycles and checked it with black-box testing. Anggrawan et al. [2026] compared certainty factors with case-based reasoning and reported accuracies of 98% and up to 100%. Our project uses forward and backward chaining on the same knowledge base, adds why/how explanations, and checks the derived faults with a separate theorem prover.
+
+### 2.7 Chapter conclusion
+
+The system combines definite-clause inference in both directions, MYCIN-style certainty factors and explanations, and a separate proof check. Chapter 3 describes how we apply them.
 
 ## References
 
