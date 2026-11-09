@@ -1,47 +1,49 @@
 # Introduction and Background (draft)
 
-Author: Tang Thoai Lam. Draft for the final report, 09/11/2026.
+Author: Tang Thoai Lam. Draft for the final report, 09/11/2026. Cut to the page budget in README.md.
 Numbers refer to the knowledge base of 09/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 77 rules).
 
-## 1 Introduction
+## Chapter 1: Introduction
 
-Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one of them breaks down, the rider has to decide what to do with little to go on. A starter that only clicks, together with a weak horn, usually needs no more than a battery charge. Brake fluid leaking from a hose means the motorbike should not be ridden at all. Many common faults can be told apart by things a rider can check without tools, such as the sound of the horn, the colour of the exhaust smoke or the level in the brake fluid window.
+### 1.1 Problem and goals
 
-This knowledge has the form "if these symptoms appear, suspect this fault", which suits a rule-based expert system. Such a system can also show a rider the rules behind its advice.
+Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one breaks down, the rider must decide what to do with little to go on. A clicking starter with a weak horn usually needs only a battery charge, while leaking brake fluid means the motorbike should not be ridden.
 
-We built an expert system for common faults on scooters and manual motorbikes. From the symptoms a rider reports, it ranks the likely faults by certainty factor, says which ones need a mechanic, and gives the action to take. The knowledge base covers six subsystems with 73 symptoms, 9 intermediate facts, 40 faults and 77 rules.
+We built a rule-based expert system for common faults on scooters and manual motorbikes. From the symptoms a rider reports, it ranks the likely faults by certainty factor, says which need a mechanic and gives the action to take. Its knowledge base has 73 symptoms, 9 intermediate facts, 40 faults and 77 rules in six subsystems. Forward chaining starts from the selected symptoms; backward chaining asks yes/no questions and can explain why and how. We check forward chaining against a prover based on Wang's algorithm and evaluate the system on 30 scenarios, each written by a team member who did not write the rules under test (Figure 1.1.1).
 
-Two inference engines use this knowledge base. Forward chaining starts from the symptoms the rider selects. Backward chaining starts from possible faults and asks yes/no questions. The rider can ask why a question is asked and how a conclusion was reached. Because we wrote the engines ourselves, we compare the faults derived by forward chaining with those proved by an independent theorem prover based on Wang's algorithm. We evaluate the system on 30 scenarios, each written by a team member who did not write the rules for that subsystem. The program runs as a Windows executable in Vietnamese and English.
+![Figure 1.1.1](figures/fig_system_overview.png)
 
-The system covers only faults with rules in the knowledge base, and its answers do not replace an inspection by a mechanic.
+Figure 1.1.1: Overview of the system
 
-Section 2 gives the background, Section 3 the methods, Section 4 the experiments and results, Section 5 the discussion and Section 6 the conclusion.
+### 1.2 Chapter conclusion
 
-## 2 Background
+Symptom-based diagnosis suits a rule-based system that can explain its advice.
 
-### 2.1 Rule-based expert systems
+## Chapter 2: Background
 
-A rule-based expert system keeps knowledge of a narrow domain as IF ... THEN rules in a knowledge base. An inference engine applies the rules to the facts of the current case, which are held in working memory, so the knowledge can change without changing the program. MYCIN, developed at Stanford in the 1970s to advise on bacterial infections, is the classic example and the source of two techniques we use: certainty factors and why/how explanations [Buchanan and Shortliffe 1984].
+### 2.1 Expert systems and certainty factors
 
-### 2.2 Horn clauses, forward and backward chaining
+A rule-based expert system keeps domain knowledge as IF ... THEN rules, and an inference engine applies them to the facts in working memory. MYCIN, a 1970s system for bacterial infections, is the classic example [Buchanan and Shortliffe 1984]. It attached to each rule a certainty factor (CF), an estimate of how strongly the premises support the conclusion [Shortliffe and Buchanan 1975], and it could answer why it asked a question and how it reached a conclusion. We use both ideas.
 
-Our rules are definite clauses of propositional logic: a conjunction of positive premises implies one positive conclusion. For such a knowledge base, entailment can be decided in time linear in its size [Russell and Norvig, ch. 7]. Forward chaining is data-driven: it fires every rule whose premises are known and adds the conclusions until nothing new can be derived. It is sound and complete for definite clauses. Backward chaining is goal-driven: it works back from a query through the rules that conclude it, so a diagnosis program can ask the user for one fact at a time.
+### 2.2 Forward and backward chaining
 
-### 2.3 Certainty factors
+Our rules are definite clauses: positive premises imply one positive conclusion. Entailment for such rules can be decided in linear time [Russell and Norvig, ch. 7]. Forward chaining fires every rule whose premises are known until nothing new can be derived. Backward chaining works back from a goal, so the program can ask for one fact at a time (Figure 2.2.1).
 
-Diagnostic rules are rarely certain: a weak horn suggests a weak battery but does not prove it. MYCIN attached to each rule a certainty factor (CF), a number that expresses how strongly the premises support the conclusion [Shortliffe and Buchanan 1975]. CFs are estimates of the strength of evidence and are not probabilities. Our rules use only positive evidence, so we need only the positive part of the model (Section 3).
+![Figure 2.2.1](figures/fig_forward_backward.png)
 
-### 2.4 Explanation
+Figure 2.2.1: Forward and backward chaining on rules SF01 and SF02
 
-MYCIN answered two kinds of question [Buchanan and Shortliffe 1984]. "Why" asks why the program wants a piece of information, and the answer is the rule it is trying to apply. "How" asks how a conclusion was reached, and the answer is the chain of rules and facts behind it.
+### 2.3 Wang's algorithm
 
-### 2.5 Wang's algorithm
+Wang's algorithm decides whether a propositional sequent is valid by removing one connective at a time until only atoms remain [Wang 1960]. "Do the rules and answers entail this fault?" can be written as a sequent. The prover shares no code with our engines, so a disagreement reveals a bug.
 
-Wang's algorithm decides whether a sequent of propositional logic is valid [Wang 1960]. It removes one connective at a time until only atoms remain; a branch closes when the same atom appears on both sides, and the sequent is valid when every branch closes. The question "do the rules and the rider's answers entail this fault?" can be written as a sequent. The algorithm shares no code with our inference engines, so it can reveal engine bugs such as a rule that fires when a premise is missing.
+### 2.4 Related work
 
-### 2.6 Related work
+Aditya et al. [2022] used forward chaining in a mobile application for automatic motorcycles. Anggrawan et al. [2026] compared certainty factors with case-based reasoning and reported accuracies of 98% and up to 100%. We run both chaining directions on one knowledge base and add explanations and a separate proof check.
 
-Aditya et al. [2022] built a mobile application that uses forward chaining to diagnose damage on automatic motorcycles and checked it with black-box testing. Anggrawan et al. [2026] compared certainty factors with case-based reasoning and reported accuracies of 98% and up to 100%. Our project uses forward and backward chaining on the same knowledge base, adds why/how explanations, and checks the derived faults with a separate theorem prover.
+### 2.5 Chapter conclusion
+
+Chapter 3 applies these techniques to our knowledge base.
 
 ## References
 

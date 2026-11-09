@@ -114,7 +114,7 @@ Kết quả chẩn đoán  (2 luật đã chạy: SF01, SF02)
 
 - Gọi `theme.apply_matplotlib()` trước khi vẽ: nền trắng, lưới ngang mờ, bỏ viền trên và phải, chữ Segoe UI, lưu 200 dpi.
 - Màu theo mục 1 (bộ phận hoặc bộ suy luận). Không dùng màu mặc định của matplotlib.
-- Tiêu đề và nhãn trục bằng tiếng Việt; tên phương pháp giữ tiếng Anh trong ngoặc, ví dụ “suy diễn lùi (backward chaining)”.
+- Tiêu đề và nhãn trục bằng tiếng Anh, vì báo cáo viết tiếng Anh.
 - Lưu ảnh vào `docs/report/figures/`, tên file dạng `fig_<nội_dung>.png`.
 
 ## 7. Ảnh chụp màn hình cho báo cáo
