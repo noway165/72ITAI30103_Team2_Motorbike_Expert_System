@@ -21,7 +21,19 @@ Bìa (Ministry of Education and Training, Van Lang University, tên môn, Final 
 - Tiêu đề chương dạng `Chapter 1: Introduction`; mục con đánh số `1.1`, `1.2`.
 - Hình có chú thích ngay bên dưới, số theo chương.mục.thứ tự: `Figure 1.1.1: ...`. Trong bài phải nhắc đến từng hình.
 - Times New Roman, chữ thường 13 pt, tiêu đề chương 18 pt đậm, tiêu đề mục 13 pt; khổ Letter, lề 1 inch, có số trang.
-- Giãn dòng: đề bài yêu cầu double-spaced, tối đa 10 trang (file mẫu đang để 1.3).
+- Giãn dòng **double-spaced**, tổng **10 trang** theo đề bài (file mẫu để 1.3, không theo chỗ này).
+
+## Số trang mỗi phần (double-spaced, khoảng 240 từ một trang, mỗi hình khoảng 1/3 trang)
+
+| Phần | Trang | Tối đa khoảng |
+|---|---|---|
+| Chapter 1: Introduction | 1 | 170 từ + 1 hình |
+| Chapter 2: Background | 1.5 | 250 từ + 1 hình |
+| Chapter 3: Methodology | 3 | 480 từ + 3 hình |
+| Chapter 4: Experiments and Results | 1.5 | 200 từ + 2 biểu đồ |
+| Chapter 5: Discussion | 1.5 | 300 từ + 1 hình |
+| Chapter 6: Conclusion | 0.5 | 120 từ |
+| References | 1 | |
 
 ## Hình mỗi phần cần có
 
