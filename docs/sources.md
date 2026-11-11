@@ -58,6 +58,29 @@ Nguồn còn yếu, nên nói rõ trong báo cáo:
 - E3 Spark Plugs, Eagle Lights là trang của hãng bán phụ tùng, không phải sổ tay hãng xe.
 - TR02, TR12: Q9 và Louis là trang bán phụ tùng, không phải sổ tay hãng.
 
+## Phanh (`brakes.json`) và lốp, giảm xóc (`tyres_suspension.json`) — Khoa
+
+| Nguồn | Dùng cho luật |
+|---|---|
+| Demon Tweeks blog, "Motorcycle Brake Issues - Causes and Fixes", https://blog.demon-tweeks.com/motorcycle/motorcycle-brake-issues-causes-and-fixes/ | BR01, BR03, BR04, BR08, BR13 |
+| Kass & Moses, "6 Tips to Know if Your Motorcycle Brakes are Going Bad", https://kassandmoses.com/blog/6-tips-to-know-if-your-motorcycle-brakes-are-going-bad/ | BR02, BR05, BR06, BR09, BR10 |
+| Lazada PH practical guide, "How to tell if your motorcycle brake caliper needs replacement", https://auto.lazada.com.ph/how-to-tell-if-your-motorcycle-brake-caliper-needs-replacement-ph/ | BR01, BR07, BR12 |
+| RideApart, "Brake service and maintenance", https://www.rideapart.com/features/247469/brake-service-and-maintenance-dr-moto/ | BR07, BR10, BR11 |
+| Cyclepedia online manual, "Steering/Suspension Troubleshooting", https://www.cyclepedia.com/manuals/online/cpp-103/troubleshooting/steering-suspension-troubleshooting/print/ | TS01, TS02, TS03, TS06, TS12, TS13 |
+| Pirelli, "Punctured tyre on your bike? No problem", https://www.pirelli.com/global/en-ww/road/motorcycles/tips/punctured-tyre-on-your-bike-no-problem-here-are-two-virtually-failsafe-methods-to-get-straight-back-on-the-road-62919/ | TS04 |
+| Dunlop Indonesia, "Motorcycle Tires Often Puncture? Here Are Common Causes You Need to Know", https://www.dunlop.co.id/en/news/ban-motor-sering-bocor-ini-penyebab-umum-yang-perlu-diketahui | TS05 |
+| SearchShop, "Signs of Suspension Problems in a Used Motorcycle", https://searchshop.com/cycle/research/articles/buying-a-used-all/signs-of-suspension-problems-in-a-used-motorcycle | TS07 |
+| Brock's Performance, "Top 10 Signs Your Motorcycle Needs New Shocks", https://brocksperformance.com/motorcycle-shocks | TS07, TS08, TS09, TS10, TS11, TS14, TS15 |
+
+Mọi luật BR/TS đều đã có nguồn (11/11/2026). Luật thêm ngày 11/11:
+- **TS15** (`suspension_damping_lost → worn_rear_shock`, CF 0.7): sửa kịch bản BT10. Brock's Performance xếp "nảy nhiều" và "xe đứng thấp hơn trước" vào các dấu hiệu cần thay giảm xóc.
+- **BR13** (`brake_hydraulic_loss → brake_fluid_leak`, CF 0.6): luật dự phòng để trung gian này không còn là "ngõ cụt". Demon Tweeks: dầu phanh hụt do rò ở dây dầu nứt, phớt mòn hoặc xy-lanh chính hỏng.
+
+Nguồn còn yếu, nên nói rõ trong báo cáo:
+- TS04, TS05: Pirelli và Dunlop là trang của hãng lốp, không phải sổ tay sửa chữa. TS05 giữ CF 0.55 vì lốp xì chậm còn do van hoặc vành.
+- TS15: nguồn nói xe đứng thấp là dấu hiệu "cần kiểm tra" giảm xóc chứ chưa khẳng định phải thay, nên CF sau TS09 chỉ là 0.49.
+- Demon Tweeks, Kass & Moses, Lazada, Brock's là blog của nơi bán phụ tùng hoặc dịch vụ, không phải sổ tay hãng.
+
 ## Tài liệu chung
 
 1. S. Russell and P. Norvig, *Artificial Intelligence: A Modern Approach*, 4th ed., Pearson, 2020. Chapter 7: Logical Agents (PL-FC-ENTAILS?).

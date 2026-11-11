@@ -15,10 +15,11 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from backward_chaining import (  # noqa: E402
-    BackwardChainer, backward_chain, explain_why,
+    UNKNOWN, BackwardChainer, BackwardSession, backward_chain, explain_why,
 )
 from forward_chaining import forward_chain  # noqa: E402
 from kb import load_kb, validate  # noqa: E402
+from scenarios import load_scenarios  # noqa: E402
 
 
 def _text(vi):
@@ -150,6 +151,92 @@ class TinyKbTests(unittest.TestCase):
             BackwardChainer(self.kb, lambda s, c: 1.5).diagnose(goals=["f1"])
 
 
+class SessionTests(unittest.TestCase):
+    """BackwardSession: next question, answer, repeat (no input(), used by the GUI)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls._tmp = tempfile.TemporaryDirectory()
+        Path(cls._tmp.name, "tiny.json").write_text(json.dumps(TINY_KB), encoding="utf-8")
+        cls.kb = load_kb(cls._tmp.name)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmp.cleanup()
+
+    def run_session(self, yes, goals=None):
+        session = BackwardSession(self.kb, goals=goals)
+        asked = []
+        while not session.finished:
+            asked.append(session.question.symptom)
+            session.answer(session.question.symptom in yes)
+        return session, asked
+
+    def test_questions_come_one_at_a_time_with_the_why_chain(self):
+        session = BackwardSession(self.kb, goals=["f1"])
+        q = session.question
+        self.assertEqual((q.symptom, q.number), ("a", 1))
+        self.assertEqual([(step.goal, step.rule.id) for step in q.chain], [("f1", "R2"), ("m", "R1")])
+        self.assertIsNone(session.result)
+        session.answer(True)
+        self.assertEqual((session.question.symptom, session.question.number), ("b", 2))
+
+    def test_same_result_and_questions_as_backward_chain(self):
+        for yes in (["a", "b", "c"], ["a", "b", "c", "d"], ["d"], []):
+            session, asked = self.run_session(yes)
+            reference = backward_chain(self.kb, yes)
+            self.assertEqual([(d.fault, d.cf) for d in session.result.diagnoses],
+                             [(d.fault, d.cf) for d in reference.diagnoses])
+            self.assertEqual(session.result.questions_asked, reference.questions_asked)
+            self.assertEqual(len(asked), len(set(asked)))  # never asks twice
+
+    def test_a_false_premise_skips_the_rest_of_the_rule(self):
+        session, asked = self.run_session([], goals=["f1"])
+        self.assertEqual(asked, ["a", "d"])  # b and c cannot change the result any more
+
+    def test_unknown_is_treated_as_no_and_remembered(self):
+        session = BackwardSession(self.kb, goals=["f1"])
+        session.answer(UNKNOWN)          # a
+        session.answer(True)             # d
+        self.assertTrue(session.finished)
+        self.assertEqual(session.unknown, ["a"])
+        self.assertAlmostEqual(session.result.diagnoses[0].cf, 0.5, places=4)  # only R3
+
+    def test_undo_asks_the_last_question_again(self):
+        session = BackwardSession(self.kb, goals=["f1"])
+        self.assertFalse(session.undo())
+        session.answer(False)
+        self.assertEqual(session.question.symptom, "d")
+        self.assertTrue(session.undo())
+        self.assertEqual(session.question.symptom, "a")
+        session.answer(True)
+        self.assertEqual(session.question.symptom, "b")
+
+    def test_remaining_hypotheses_shrink_with_no_answers(self):
+        session = BackwardSession(self.kb)
+        self.assertEqual(session.remaining(), ["f1", "f2"])
+        session.answer(False)            # a: R1 and R4 are dead; f1 is still possible through R3
+        self.assertEqual(session.remaining(), ["f1"])
+        session.answer(False)            # d
+        self.assertEqual(session.remaining(), [])
+        self.assertTrue(session.finished)
+
+    def test_answers_can_be_restored(self):
+        session = BackwardSession(self.kb, goals=["f1"], answers={"a": True, "b": True})
+        self.assertEqual((session.question.symptom, session.question.number), ("c", 3))
+
+    def test_bad_calls_raise(self):
+        with self.assertRaises(ValueError):
+            BackwardSession(self.kb, goals=["nope"])
+        with self.assertRaises(ValueError):
+            BackwardSession(self.kb, answers={"m": True})
+        session, _ = self.run_session([])
+        with self.assertRaises(RuntimeError):
+            session.answer(True)
+        with self.assertRaises(ValueError):
+            BackwardSession(self.kb).answer(1.5)
+
+
 class RealKnowledgeBaseTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -165,6 +252,48 @@ class RealKnowledgeBaseTests(unittest.TestCase):
                                 goals=["worn_brake_pads"])
         self.assertEqual(result.diagnoses[0].fault, "worn_brake_pads")
         self.assertAlmostEqual(result.diagnoses[0].cf, 0.9, places=4)
+
+    def test_ts15_lost_damping_alone_gives_worn_rear_shock(self):
+        """Scenario BT10: bouncy rear shock and a low stance, nothing else."""
+        result = backward_chain(self.kb, ["rear_shock_bouncy", "sits_low_parked"])
+        self.assertEqual(result.diagnoses[0].fault, "worn_rear_shock")
+        self.assertEqual(result.diagnoses[0].rules, ["TS15"])
+        self.assertAlmostEqual(result.diagnoses[0].cf, 0.7 * 0.7, places=4)  # TS09 then TS15
+        more = backward_chain(self.kb, ["rear_shock_bouncy", "sits_low_parked", "suspension_clunk"],
+                              goals=["worn_rear_shock"])
+        self.assertGreater(more.diagnoses[0].cf, result.diagnoses[0].cf)     # TS11 adds to TS15
+
+    def test_brake_hydraulic_loss_is_not_a_dead_end(self):
+        """BR13: low fluid with a soft lever points to a leak even when no leak is seen."""
+        result = backward_chain(self.kb, ["brake_lever_spongy", "brake_fluid_low"])
+        cfs = {d.fault: d.cf for d in result.diagnoses}
+        self.assertAlmostEqual(cfs["brake_fluid_leak"], 0.8 * 0.6, places=4)   # BR04 then BR13
+        self.assertEqual(result.diagnoses[0].fault, "brake_air_in_lines")      # BR08 stays first
+        seen = backward_chain(self.kb, ["brake_fluid_leak_visible", "brake_fluid_low"])
+        self.assertEqual(seen.diagnoses[0].fault, "brake_fluid_leak")
+        self.assertGreater(seen.diagnoses[0].cf, 0.9)                         # BR06 and BR13 combined
+
+    def test_every_intermediate_of_my_files_reaches_a_fault_alone(self):
+        for symbol, sym in self.kb.intermediates.items():
+            if sym.subsystem in ("brakes", "tyres_suspension"):
+                alone = [r for r in self.kb.rules_using(symbol) if list(r.premises) == [symbol]]
+                self.assertTrue(alone, f"{symbol} is a dead end")
+
+    def test_my_rules_all_have_a_source(self):
+        missing = [r.id for r in self.kb.rules if r.subsystem in ("brakes", "tyres_suspension") and not r.source]
+        self.assertEqual(missing, [])
+
+    def test_session_matches_backward_chain_on_every_scenario(self):
+        for s in load_scenarios():
+            with self.subTest(scenario=s.id):
+                session = BackwardSession(self.kb)
+                while not session.finished:
+                    session.answer(session.question.symptom in s.symptoms)
+                reference = backward_chain(self.kb, s.symptoms)
+                self.assertEqual([(d.fault, d.cf) for d in session.result.diagnoses],
+                                 [(d.fault, d.cf) for d in reference.diagnoses])
+                self.assertEqual(session.result.questions_asked, reference.questions_asked)
+                self.assertIn(s.expected, session.remaining())
 
     def test_same_diagnosis_as_forward_chaining(self):
         symptoms = sorted(self.kb.symptoms)

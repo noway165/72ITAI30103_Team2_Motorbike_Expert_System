@@ -47,9 +47,9 @@ Lưu ảnh vào `figures/`, tên `fig_<nội_dung>.png`. Biểu đồ và sơ đ
 | 3 | Ví dụ forward chaining tính CF | Giang | Chưa |
 | 3 | Màn hình Theo triệu chứng | Giang | Có: `fig_forward_screen_se01.png` |
 | 3 | Ví dụ cây chứng minh Wang | Giang | Chưa |
-| 3 | Luồng backward chaining hỏi từng câu | Khoa | Chưa |
-| 3 | Màn hình Hỏi đáp, đang mở Why | Khoa | Chưa |
-| 4 | Biểu đồ độ chính xác theo nhóm kịch bản | Khoa | Chưa |
-| 4 | Biểu đồ số câu hỏi: mọi bộ phận và đúng bộ phận | Khoa | Chưa |
+| 3 | Luồng backward chaining hỏi từng câu | Khoa | Có: `fig_backward_flow.png` (`python src/evaluate.py --charts`) |
+| 3 | Màn hình Hỏi đáp, đang mở Why | Khoa | Có: `fig_backward_screen_why.png` (BT10, câu 8) |
+| 4 | Biểu đồ độ chính xác theo nhóm kịch bản | Khoa | Có: `fig_accuracy_by_group.png` |
+| 4 | Biểu đồ số câu hỏi: mọi bộ phận và đúng bộ phận | Khoa | Có: `fig_backward_questions.png` |
 | 5 | Sơ đồ trung gian "ngõ cụt" và luật dự phòng | Giang | Chưa |
 | 5 | Màn hình khi chưa đủ dữ kiện | Giang | Có: `fig_forward_screen_no_fault.png` |
