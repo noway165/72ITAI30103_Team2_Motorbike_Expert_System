@@ -50,7 +50,7 @@ Chapter 3 applies these techniques to our knowledge base.
 - Aditya, M. N., Delimayanti, M. K., Musyono, A. D. N. I., Kriswanto, Naryanto, R. F., and Sukoco, I. (2022). Development of a mobile expert system for the diagnosis on motorcycle damage using forward chaining algorithm. Indonesian Journal of Electrical Engineering and Computer Science, 27(3), 1601-1609. https://doi.org/10.11591/ijeecs.v27.i3.pp1601-1609
 - Anggrawan, A., Satria, C., Triwijoyo, B. K., Priyanto, D., Hasbullah, H., and Rebecca, V. C. (2026). Expert system for motorcycle damage diagnosis using certainty factor and case-based reasoning methods. International Journal of Informatics and Communication Technology, 15(4), 1829-1840. https://doi.org/10.11591/ijict.v15i4.pp1829-1840
 - Buchanan, B. G., and Shortliffe, E. H. (Eds.) (1984). Rule-Based Expert Systems: The MYCIN Experiments of the Stanford Heuristic Programming Project. Addison-Wesley.
-- Russell, S., and Norvig, P. (2021). Artificial Intelligence: A Modern Approach (4th ed.). Pearson. Chapter 7, Logical Agents.
+- Russell, S., and Norvig, P. (2020). Artificial Intelligence: A Modern Approach (4th ed.). Pearson. Chapter 7, Logical Agents.
 - Shortliffe, E. H., and Buchanan, B. G. (1975). A model of inexact reasoning in medicine. Mathematical Biosciences, 23(3-4), 351-379. https://doi.org/10.1016/0025-5564(75)90047-4
 - Wang, H. (1960). Toward mechanical mathematics. IBM Journal of Research and Development, 4(1), 2-22.
 - World Health Organization (2024, November 25). WHO convenes global motorcycle safety experts in Viet Nam. https://www.who.int/news/item/25-11-2024-who-convenes-global-motorcycle-safety-experts-in-viet-nam
