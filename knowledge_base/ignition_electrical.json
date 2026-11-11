@@ -87,35 +87,35 @@
       "if": ["cranks_but_no_start", "fuel_level_ok", "spark_plug_overdue"],
       "then": "spark_plug_problem",
       "cf": 0.6,
-      "source": ""
+      "source": "E3 Spark Plugs, \"8 Signs It's Time To Replace Your Motorcycle's Spark Plug\", https://www.e3sparkplugs.com/blogs/news/8-signs-its-time-to-replace-your-motorcycles-spark-plug"
     },
     {
       "id": "IE02",
       "if": ["engine_misfires", "fuel_level_ok"],
       "then": "ignition_misfire_suspected",
       "cf": 0.8,
-      "source": ""
+      "source": "E3 Spark Plugs, \"8 Signs It's Time To Replace Your Motorcycle's Spark Plug\", https://www.e3sparkplugs.com/blogs/news/8-signs-its-time-to-replace-your-motorcycles-spark-plug"
     },
     {
       "id": "IE03",
       "if": ["ignition_misfire_suspected", "spark_plug_overdue"],
       "then": "spark_plug_problem",
       "cf": 0.8,
-      "source": ""
+      "source": "E3 Spark Plugs, \"8 Signs It's Time To Replace Your Motorcycle's Spark Plug\", https://www.e3sparkplugs.com/blogs/news/8-signs-its-time-to-replace-your-motorcycles-spark-plug"
     },
     {
       "id": "IE04",
       "if": ["battery_recently_replaced", "battery_goes_flat_repeatedly"],
       "then": "charging_system_problem",
       "cf": 0.75,
-      "source": ""
+      "source": "J.D. Power, \"How To Know if Your Regulator-Rectifier Is Bad\", https://www.jdpower.com/motorcycles/shopping-guides/how-to-know-if-regulator-rectifier-is-bad"
     },
     {
       "id": "IE05",
       "if": ["low_electrical_power", "battery_recently_replaced"],
       "then": "charging_system_problem",
       "cf": 0.6,
-      "source": "",
+      "source": "J.D. Power, \"How To Know if Your Regulator-Rectifier Is Bad\", https://www.jdpower.com/motorcycles/shopping-guides/how-to-know-if-regulator-rectifier-is-bad",
       "note": "A new battery that is already weak points to the battery not being charged."
     },
     {
@@ -123,14 +123,14 @@
       "if": ["headlight_off", "other_lights_work"],
       "then": "blown_headlight_bulb",
       "cf": 0.8,
-      "source": ""
+      "source": "Eagle Lights, \"How to Diagnose Motorcycle Lighting Problems\", https://eaglelights.com/blogs/news/how-to-diagnose-motorcycle-lighting-problems"
     },
     {
       "id": "IE07",
       "if": ["electrics_cut_out_over_bumps"],
       "then": "loose_battery_terminal",
       "cf": 0.7,
-      "source": ""
+      "source": "Eagle Lights, \"How to Diagnose Motorcycle Lighting Problems\", https://eaglelights.com/blogs/news/how-to-diagnose-motorcycle-lighting-problems; Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     }
   ]
 }

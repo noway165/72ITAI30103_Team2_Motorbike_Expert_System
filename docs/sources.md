@@ -33,6 +33,29 @@ Nguồn còn yếu, nên nói rõ trong báo cáo:
 - EN06: Honda nói trễ thay nhớt một chút không gây tiếng kêu lạ; tiếng gõ thường do khe hở xu-páp. CF đã giảm từ 0.6 xuống 0.5.
 - EN11: hướng dẫn của Mobil viết cho ô tô (họng ga hoạt động giống nhau).
 - EN12: sổ tay Honda chỉ nói về chỉnh ga-răng-ti, không nói trực tiếp về chết máy.
+
+## Khởi động, nhiên liệu (`starting_fuel.json`) và đánh lửa, điện (`ignition_electrical.json`) — Lâm
+
+| Nguồn | Dùng cho luật |
+|---|---|
+| Honda, "PCX150 Owner's Manual" (2015), mục Starting the Engine và Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf | SF01, SF04, SF05, SF06, SF07, SF08, SF09, SF10, SF13, IE07 |
+| Yuasa, "How to Know When to Replace a Powersports Battery", https://www.yuasabatteries.com/about/events-news/news/new-battery-when-to-replace/ | SF01, SF02, SF03, SF05, SF14 |
+| Yuasa, "How Long is a Motorcycle Battery's Shelf Life?", https://www.yuasabatteries.com/resources/guides/motorcycle-batterys-shelf-life/ | SF03 |
+| BikeBerry, "How to Diagnose a Flooded 2-Stroke Engine", https://www.bikeberry.com/blogs/learning-center/how-to-diagnose-a-flooded-2-stroke-engine | SF11 |
+| Haynes, "8 Symptoms Of Motorcycle Fuel Pump Failure That Occur Before A Breakdown", https://us.haynes.com/blogs/tips-tutorials/8-symptoms-of-motorcycle-fuel-pump-failure-that-occur-before-a-breakdown | SF12 |
+| E3 Spark Plugs, "8 Signs It's Time To Replace Your Motorcycle's Spark Plug", https://www.e3sparkplugs.com/blogs/news/8-signs-its-time-to-replace-your-motorcycles-spark-plug | IE01, IE02, IE03 |
+| J.D. Power, "How To Know if Your Regulator-Rectifier Is Bad", https://www.jdpower.com/motorcycles/shopping-guides/how-to-know-if-regulator-rectifier-is-bad | IE04, IE05 |
+| Eagle Lights, "How to Diagnose Motorcycle Lighting Problems", https://eaglelights.com/blogs/news/how-to-diagnose-motorcycle-lighting-problems | IE06, IE07 |
+
+Mọi luật SF/IE đều đã có nguồn. Tất cả link được mở và đọc nội dung ngày 11/11/2026. Sổ tay PCX150 ghi: "The starter motor will only work when the rear brake lever is pulled and the side stand is up", và danh sách kiểm tra khi đề không quay gồm cầu chì, cọc bình lỏng hoặc gỉ, tình trạng ắc quy.
+
+Nguồn còn yếu, nên nói rõ trong báo cáo:
+- SF01: Yuasa nêu đèn và đồng hồ mờ là dấu hiệu ắc quy yếu, không nói riêng về còi; còi dùng điện ắc quy nên luật suy ra tương tự.
+- SF02: Yuasa ghi ắc quy thường dùng 3–5 năm; mốc 2 năm của luật là để hỏi sớm, CF giữ 0.85 vì luật còn cần triệu chứng "điện yếu".
+- SF08: sổ tay chỉ ghi đã kiểm tra hết mà đề vẫn không quay thì mang ra đại lý; việc quy cho rơ-le hoặc mô-tơ đề là suy luận của nhóm (CF 0.6).
+- SF11: bài của BikeBerry viết cho động cơ 2 thì; hiện tượng ngộp xăng ở bình xăng con giống nhau.
+- SF06: sổ tay chỉ nói kiểm tra cầu chì khi mất điện; điều kiện "mới thay ắc quy" là kinh nghiệm của nhóm.
+- E3 Spark Plugs, Eagle Lights là trang của hãng bán phụ tùng, không phải sổ tay hãng xe.
 - TR02, TR12: Q9 và Louis là trang bán phụ tùng, không phải sổ tay hãng.
 
 ## Tài liệu chung

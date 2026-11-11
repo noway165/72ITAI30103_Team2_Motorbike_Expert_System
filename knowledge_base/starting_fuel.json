@@ -201,91 +201,91 @@
       "if": ["starter_clicks_or_silent", "horn_weak"],
       "then": "low_electrical_power",
       "cf": 0.9,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf; Yuasa, \"How to Know When to Replace a Powersports Battery\", https://www.yuasabatteries.com/about/events-news/news/new-battery-when-to-replace/"
     },
     {
       "id": "SF02",
       "if": ["low_electrical_power", "battery_older_than_2_years"],
       "then": "weak_battery",
       "cf": 0.85,
-      "source": ""
+      "source": "Yuasa, \"How to Know When to Replace a Powersports Battery\", https://www.yuasabatteries.com/about/events-news/news/new-battery-when-to-replace/"
     },
     {
       "id": "SF03",
       "if": ["low_electrical_power", "bike_unused_over_2_weeks"],
       "then": "weak_battery",
       "cf": 0.75,
-      "source": ""
+      "source": "Yuasa, \"How to Know When to Replace a Powersports Battery\", https://www.yuasabatteries.com/about/events-news/news/new-battery-when-to-replace/; Yuasa, \"How Long is a Motorcycle Battery's Shelf Life?\", https://www.yuasabatteries.com/resources/guides/motorcycle-batterys-shelf-life/"
     },
     {
       "id": "SF04",
       "if": ["dash_lights_off_key_on", "horn_silent"],
       "then": "no_electrical_power",
       "cf": 0.9,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     },
     {
       "id": "SF05",
       "if": ["no_electrical_power", "battery_older_than_2_years"],
       "then": "weak_battery",
       "cf": 0.7,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf; Yuasa, \"How to Know When to Replace a Powersports Battery\", https://www.yuasabatteries.com/about/events-news/news/new-battery-when-to-replace/"
     },
     {
       "id": "SF06",
       "if": ["no_electrical_power", "battery_recently_replaced"],
       "then": "blown_main_fuse",
       "cf": 0.65,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     },
     {
       "id": "SF07",
       "if": ["is_scooter", "starter_clicks_or_silent", "starting_without_brake"],
       "then": "start_procedure_error",
       "cf": 0.9,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     },
     {
       "id": "SF08",
       "if": ["starter_clicks_or_silent", "horn_normal", "brake_held_when_starting"],
       "then": "starter_relay_or_motor_problem",
       "cf": 0.6,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     },
     {
       "id": "SF09",
       "if": ["engine_cranks", "engine_wont_start"],
       "then": "cranks_but_no_start",
       "cf": 1.0,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     },
     {
       "id": "SF10",
       "if": ["cranks_but_no_start", "fuel_gauge_empty"],
       "then": "out_of_fuel",
       "cf": 0.95,
-      "source": ""
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf"
     },
     {
       "id": "SF11",
       "if": ["cranks_but_no_start", "fuel_level_ok", "is_carburetor", "strong_fuel_smell"],
       "then": "flooded_engine",
       "cf": 0.7,
-      "source": ""
+      "source": "BikeBerry, \"How to Diagnose a Flooded 2-Stroke Engine\", https://www.bikeberry.com/blogs/learning-center/how-to-diagnose-a-flooded-2-stroke-engine"
     },
     {
       "id": "SF12",
       "if": ["cranks_but_no_start", "fuel_level_ok", "is_fuel_injected", "no_fuel_pump_hum_key_on"],
       "then": "fuel_pump_problem",
       "cf": 0.75,
-      "source": ""
+      "source": "Haynes, \"8 Symptoms Of Motorcycle Fuel Pump Failure That Occur Before A Breakdown\", https://us.haynes.com/blogs/tips-tutorials/8-symptoms-of-motorcycle-fuel-pump-failure-that-occur-before-a-breakdown"
     },
     {
       "id": "SF13",
       "if": ["side_stand_down", "cranks_but_no_start"],
       "then": "side_stand_cutoff_active",
       "cf": 0.6,
-      "source": "",
+      "source": "Honda, \"PCX150 Owner's Manual\" (2015), Starting the Engine; Troubleshooting: Engine Will Not Start, https://cdn.powersports.honda.com/documentum/MWOM/ml.remawmom.2015_31k36a00_pcx150.pdf",
       "note": "Not every model cuts the engine with the stand down; keep the CF moderate."
     },
     {
@@ -293,7 +293,7 @@
       "if": ["low_electrical_power"],
       "then": "weak_battery",
       "cf": 0.6,
-      "source": "",
+      "source": "Yuasa, \"How to Know When to Replace a Powersports Battery\", https://www.yuasabatteries.com/about/events-news/news/new-battery-when-to-replace/",
       "note": "Fallback for the dead-end intermediate found in docs/scenario_analysis.md (SE10): a clicking starter with a weak horn is most often a flat battery, e.g. after the key was left on. SF02 and SF03 raise the CF when there is more evidence."
     }
   ]
