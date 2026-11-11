@@ -189,16 +189,15 @@
       "if": ["tyre_loses_air_quickly", "tyre_foreign_object"],
       "then": "tyre_puncture",
       "cf": 0.9,
-      "source": "",
-      "note": "Source to be added (tyre repair guide or manual)."
+      "source": "Pirelli, \"Punctured tyre on your bike? No problem\" (a tyre losing air slowly; the object is usually a screw or a nail and is often still in the tyre), https://www.pirelli.com/global/en-ww/road/motorcycles/tips/punctured-tyre-on-your-bike-no-problem-here-are-two-virtually-failsafe-methods-to-get-straight-back-on-the-road-62919/"
     },
     {
       "id": "TS05",
       "if": ["tyre_loses_air_quickly"],
       "then": "tyre_puncture",
       "cf": 0.55,
-      "source": "",
-      "note": "Other causes exist (valve, rim seal). Source to be added."
+      "source": "Dunlop Indonesia, \"Motorcycle Tires Often Puncture? Here Are Common Causes You Need to Know\" (slow leaks: sharp objects, damaged valve stem, bent rim), https://www.dunlop.co.id/en/news/ban-motor-sering-bocor-ini-penyebab-umum-yang-perlu-diketahui",
+      "note": "Moderate CF: the same source lists other causes of a slow leak (valve stem, rim)."
     },
     {
       "id": "TS06",
@@ -264,6 +263,14 @@
       "then": "worn_rear_shock",
       "cf": 0.85,
       "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\" (oil leaking down the shock body), https://brocksperformance.com/motorcycle-shocks"
+    },
+    {
+      "id": "TS15",
+      "if": ["suspension_damping_lost"],
+      "then": "worn_rear_shock",
+      "cf": 0.7,
+      "source": "Brock's Performance, \"Top 10 Signs Your Motorcycle Needs New Shocks\" (excessive bouncing and sitting lower than before are signs of worn shocks), https://brocksperformance.com/motorcycle-shocks",
+      "note": "Fallback rule (scenario BT10): lost damping alone already points to the rear shock. TS10 and TS11 add to the CF when the rider also reports uneven tyre wear or a clunk."
     }
   ]
 }

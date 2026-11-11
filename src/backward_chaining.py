@@ -21,6 +21,11 @@ Explanations:
     why - while a question is shown, the chain of rules being tried (WhyStep list)
     how - after the diagnosis, the facts and rules that led to a fault (result.how)
 
+Two ways to drive the engine:
+    BackwardChainer(kb, ask)  - calls ask(symptom, chain) and waits for the answer (console)
+    BackwardSession(kb)       - gives the next question, takes the answer, and repeats;
+                                nothing blocks, so a GUI can use it (gui_backward.py)
+
 Run from the repository root:
     python src/backward_chaining.py                       # ask the rider questions
     python src/backward_chaining.py --subsystem brakes    # only brake faults
@@ -193,6 +198,128 @@ def backward_chain(kb: KnowledgeBase, symptoms: Union[Iterable[str], Dict[str, A
         return answers.get(symptom, False)
 
     return BackwardChainer(kb, ask).diagnose(goals=goals, threshold=threshold)
+
+
+# ---------------------------------------------------------------------------
+# One question at a time (for the GUI): no input(), no callback that blocks
+# ---------------------------------------------------------------------------
+
+UNKNOWN = None  # the answer "I don't know"; the engine treats it as "no"
+
+
+@dataclass(frozen=True)
+class Question:
+    """The question the engine needs next, and the rules it is trying (for "why")."""
+
+    symptom: str
+    chain: List[WhyStep]
+    number: int  # 1 for the first question
+
+
+class _NeedAnswer(Exception):
+    def __init__(self, symptom: str, chain: List[WhyStep]) -> None:
+        super().__init__(symptom)
+        self.symptom = symptom
+        self.chain = chain
+
+
+class BackwardSession:
+    """Backward chaining as a loop: read `question`, call `answer(...)`, repeat until `finished`.
+
+        session = BackwardSession(kb, goals=["worn_rear_shock"])
+        while not session.finished:
+            q = session.question                 # q.symptom, q.chain
+            session.answer(True)                 # True / False / CF in (0, 1] / UNKNOWN
+        session.result                           # BackwardResult, same as BackwardChainer
+
+    After every answer the proof is run again from the start with the answers so far and
+    stops at the first symptom that has no answer. The engine is deterministic, so the
+    questions come in the same order as with BackwardChainer, and `undo()` is simply
+    "forget the last answer". The knowledge base is small, so the re-run costs nothing.
+    """
+
+    def __init__(self, kb: KnowledgeBase, goals: Optional[Iterable[str]] = None,
+                 threshold: float = DEFAULT_THRESHOLD,
+                 answers: Optional[Dict[str, Optional[Answer]]] = None) -> None:
+        self.kb = kb
+        self.goals = sorted(kb.faults) if goals is None else list(goals)
+        for g in self.goals:
+            if not kb.is_fault(g):
+                raise ValueError(f"unknown fault {g!r}")
+        self.threshold = threshold
+        self.answers: Dict[str, Optional[Answer]] = {}  # in the order the questions were asked
+        self.question: Optional[Question] = None
+        self.result: Optional[BackwardResult] = None
+        for symptom, value in (answers or {}).items():
+            self._check(symptom, value)
+            self.answers[symptom] = value
+        self._advance()
+
+    @property
+    def finished(self) -> bool:
+        return self.question is None
+
+    @property
+    def unknown(self) -> List[str]:
+        """Symptoms the rider answered "I don't know"."""
+        return [s for s, v in self.answers.items() if v is UNKNOWN]
+
+    def answer(self, value: Optional[Answer]) -> None:
+        """Answer the current question: True, False, a CF in (0, 1], or UNKNOWN."""
+        if self.question is None:
+            raise RuntimeError("the diagnosis is finished; there is no question to answer")
+        self._check(self.question.symptom, value)
+        self.answers[self.question.symptom] = value
+        self._advance()
+
+    def undo(self) -> bool:
+        """Forget the last answer and ask that question again. False if there is none."""
+        if not self.answers:
+            return False
+        self.answers.popitem()
+        self._advance()
+        return True
+
+    def remaining(self) -> List[str]:
+        """Goal faults that the answers so far have not ruled out (hypotheses still open)."""
+        memo: Dict[str, bool] = {}
+
+        def possible(symbol: str, path: tuple) -> bool:
+            if self.kb.is_askable(symbol):
+                if symbol not in self.answers:
+                    return True
+                value = self.answers[symbol]
+                return value is not UNKNOWN and _normalise(value)[0]
+            if symbol in memo:
+                return memo[symbol]
+            if symbol in path:
+                return False
+            ok = any(all(possible(p, path + (symbol,)) for p in rule.premises)
+                     for rule in self.kb.rules_concluding(symbol))
+            memo[symbol] = ok
+            return ok
+
+        return [g for g in self.goals if possible(g, ())]
+
+    def _check(self, symptom: str, value: Optional[Answer]) -> None:
+        if not self.kb.is_askable(symptom):
+            raise ValueError(f"{symptom!r} is not a symptom; only symptoms can be answered")
+        if value is not UNKNOWN:
+            _normalise(value)
+
+    def _advance(self) -> None:
+        def ask(symptom: str, chain: List[WhyStep]) -> Answer:
+            if symptom not in self.answers:
+                raise _NeedAnswer(symptom, chain)
+            value = self.answers[symptom]
+            return False if value is UNKNOWN else value
+
+        try:
+            self.result = BackwardChainer(self.kb, ask).diagnose(goals=self.goals, threshold=self.threshold)
+            self.question = None
+        except _NeedAnswer as need:
+            self.result = None
+            self.question = Question(need.symptom, need.chain, len(self.answers) + 1)
 
 
 # ---------------------------------------------------------------------------

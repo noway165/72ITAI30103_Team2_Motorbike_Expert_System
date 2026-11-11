@@ -62,6 +62,13 @@ Kiểm tra bằng thuật toán Wang, so với forward chaining trên các kịc
 python src/wang.py --scenarios --random 500
 ```
 
+Đánh giá cả hai bộ suy luận trên 30 kịch bản (top-1, top-3, số câu hỏi của backward chaining) và vẽ biểu đồ cho báo cáo vào `docs/report/figures/` (cần `pip install matplotlib` khi dùng `--charts`):
+
+```bash
+python src/evaluate.py                       # bảng từng kịch bản và tổng kết
+python src/evaluate.py --charts --markdown   # thêm 3 hình và docs/report/evaluation_results.md
+```
+
 Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chaining và cách tính CF: [docs/forward_chaining.md](docs/forward_chaining.md).
 
 ### Chạy chương trình

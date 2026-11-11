@@ -238,6 +238,14 @@
       "then": "sticking_brake_caliper",
       "cf": 0.75,
       "source": "Lazada PH practical guide, \"How to tell if your motorcycle brake caliper needs replacement\", https://auto.lazada.com.ph/how-to-tell-if-your-motorcycle-brake-caliper-needs-replacement-ph/"
+    },
+    {
+      "id": "BR13",
+      "if": ["brake_hydraulic_loss"],
+      "then": "brake_fluid_leak",
+      "cf": 0.6,
+      "source": "Demon Tweeks blog, \"Motorcycle Brake Issues - Causes and Fixes\" (fluid leaks out through cracked brake lines, worn seals or a faulty master cylinder), https://blog.demon-tweeks.com/motorcycle/motorcycle-brake-issues-causes-and-fixes/",
+      "note": "Fallback rule so that brake_hydraulic_loss is never a dead end: fluid that has gone missing has leaked somewhere, even if the rider has not seen the leak. Lower CF than BR06, where the leak is visible."
     }
   ]
 }
