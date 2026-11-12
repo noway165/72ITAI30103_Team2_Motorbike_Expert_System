@@ -400,19 +400,20 @@ class ChoiceCard(RoundCard):
     """Card with a radio mark: vehicle type, diagnosis method. Selected = lime_soft with accent border."""
 
     def __init__(self, parent, title: str, subtitle: str, selected: bool, command: Callable[[], None],
-                 note: str = "", badge: str = "", icon_name: str = "", bg: str = "surface"):
+                 note: str = "", badge: str = "", icon_name: str = "", bg: str = "surface", radio: bool = True):
         fill = "lime_soft" if selected else "surface"
         super().__init__(parent, fill=fill, border="accent" if selected else "border", radius=14, bg=bg, pad=16)
         b = self.body
         b.columnconfigure(2, weight=1)
-        radio_mark(b, selected, fill).grid(row=0, column=0, rowspan=3, sticky="n", padx=(0, px(12)), pady=px(4))
+        if radio:  # off for one-click choices (nothing stays selected)
+            radio_mark(b, selected, fill).grid(row=0, column=0, rowspan=3, sticky="n", padx=(0, px(12)), pady=px(4))
         if icon_name:
             icon(b, icon_name, 34, "accent", fill).grid(row=0, column=1, rowspan=3, sticky="n", padx=(0, px(12)))
         head = tk.Frame(b, bg=C[fill])
         head.grid(row=0, column=2, sticky="we")
-        label(head, title, "title", bg=fill).pack(side="left")
         if badge:
-            chip(head, badge, C["on_lime"], C["lime"]).pack(side="right")
+            chip(head, badge, C["on_lime"], C["lime"]).pack(side="right", anchor="n")
+        autowrap(label(head, title, "title", bg=fill)).pack(side="left", fill="x", expand=True)
         if subtitle:
             autowrap(label(b, subtitle, "body", "muted", bg=fill)).grid(row=1, column=2, sticky="we", pady=(px(2), 0))
         if note:

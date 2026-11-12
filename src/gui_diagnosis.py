@@ -64,6 +64,11 @@ TEXT = {
         "start": "Bắt đầu chẩn đoán",
         "e2a": "Hỏi đáp từng câu", "t2a": "Cùng thu hẹp dần.",
         "part": "Bộ phận", "all": "Tất cả",
+        "where": "Sự cố nằm ở đâu?", "where_sub": "Chọn bộ phận để chỉ hỏi những câu liên quan.",
+        "not_sure_part": "Chưa rõ, hỏi tất cả", "not_sure_part_sub": "Hỏi về cả 6 bộ phận, sẽ nhiều câu hơn.",
+        "where_why_sub": "Khi biết bộ phận, chương trình chỉ thử các lỗi của bộ phận "
+                                                        "đó: trung bình 9 câu thay vì khoảng 40 câu cho cả 40 lỗi.",
+        "where_note": "Số đo trên 30 kịch bản thử (evaluate.py). Sau đó vẫn đổi được bộ phận.",
         "question": "CÂU {n:02d}", "yes": "Có", "no": "Không", "skip": "Không chắc, bỏ qua câu này",
         "why": "Tại sao hỏi câu này?", "checking": "Đang kiểm tra: {goal}",
         "why_sub": "Câu trả lời của bạn quyết định luật bên dưới có chạy được hay không.",
@@ -92,7 +97,7 @@ TEXT = {
         "talk_reads": "Kể càng cụ thể, chương trình hiểu càng đúng. Nó tìm trong câu của bạn:",
         "talk_kinds": ["Triệu chứng: không nổ, chết máy, còi yếu…", "Âm thanh: tạch tạch, kêu rít, ken két…",
                        "Bộ phận: ắc quy, phanh, lốp, phuộc…"],
-        "analyze": "Phân tích", "understood": "Đã hiểu từ câu bạn kể", "understood_none":
+        "analyze": "Phân tích", "to_guided": "Chuyển sang hỏi đáp từng câu", "understood": "Đã hiểu từ câu bạn kể", "understood_none":
             "Chưa nhận ra triệu chứng nào. Thử kể rõ hơn, ví dụ “còi yếu”, “đề không nổ”.",
         "talk_why": "Câu này giúp phân biệt", "talk_why_sub": "Trợ lý chọn câu hỏi cho nhiều thông tin nhất "
                                                              "(information gain) giữa các lỗi đang nghi ngờ.",
@@ -138,6 +143,11 @@ TEXT = {
         "start": "Start diagnosis",
         "e2a": "Guided diagnosis", "t2a": "Let's narrow it down.",
         "part": "System", "all": "All",
+        "where": "Where is the problem?", "where_sub": "Pick a system so that only related questions are asked.",
+        "not_sure_part": "Not sure, ask about everything", "not_sure_part_sub": "Covers all 6 systems; more questions.",
+        "where_why_sub": "With a system chosen, only its faults are tested: 9 "
+                                                         "questions on average instead of about 40 for all 40 faults.",
+        "where_note": "Measured on the 30 test scenarios (evaluate.py). You can change the system later.",
         "question": "QUESTION {n:02d}", "yes": "Yes", "no": "No", "skip": "Not sure — skip this question",
         "why": "Why this question?", "checking": "Checking: {goal}",
         "why_sub": "Your answer decides whether the rule below can fire.",
@@ -166,7 +176,7 @@ TEXT = {
         "talk_reads": "The more specific you are, the better it understands. It looks for:",
         "talk_kinds": ["Symptoms: won't start, stalls, weak horn…", "Sounds: clicking, squealing, grinding…",
                        "Parts: battery, brakes, tyres, forks…"],
-        "analyze": "Analyse", "understood": "Understood from your text", "understood_none":
+        "analyze": "Analyse", "to_guided": "Switch to guided questions", "understood": "Understood from your text", "understood_none":
             "No symptom recognised yet. Try to be more specific, e.g. “weak horn”, “won't start”.",
         "talk_why": "This question separates", "talk_why_sub": "The assistant asks the question with the "
                                                                 "highest information gain among the suspected faults.",
@@ -203,7 +213,8 @@ VEHICLE = set(KINDS.values()) | set(FUELS.values())
 
 def new_dx() -> Dict[str, object]:
     """A fresh diagnosis (what app.state["dx"] holds)."""
-    return {"step": 1, "kind": "scooter", "fuel": "", "method": "guided", "part": ALL, "answers": [],
+    return {"step": 1, "kind": "scooter", "fuel": "", "method": "guided", "part": ALL, "part_asked": False,
+            "answers": [],
             "selected": [], "filter": "", "query": "", "text": "", "replies": [], "record": None, "wang": None}
 
 
@@ -230,6 +241,16 @@ def guided_session(kb: KnowledgeBase, dx: Dict[str, object]) -> BackwardSession:
     answers = dict(vehicle_answers(dx["kind"], dx["fuel"]))
     answers.update(dict(dx["answers"]))
     return BackwardSession(kb, goals_for(kb, dx["part"]), answers=answers)
+
+
+def needs_part(dx: Dict[str, object]) -> bool:
+    """Ask "where is the problem?" before the first question (9 questions instead of ~40)."""
+    return dx["method"] == "guided" and dx["part"] == ALL and not dx["answers"] and not dx.get("part_asked")
+
+
+def to_guided(dx: Dict[str, object]) -> None:
+    """Leave "describe in words" for the guided questions; the text is kept to come back to."""
+    dx.update(method="guided", step=2, part=ALL, part_asked=False, answers=[], record=None, wang=None)
 
 
 def answer_label(value, lang: str) -> str:
@@ -475,7 +496,7 @@ class DiagnosisPage(Page):
         PillButton(f, t["start"], self.start).pack(side="right")
 
     def start(self) -> None:
-        self.dx.update(step=2, answers=[], selected=[], replies=[], record=None, wang=None)
+        self.dx.update(step=2, answers=[], selected=[], replies=[], record=None, wang=None, part_asked=False)
         if self.dx["method"] != "talk":
             self.dx["text"] = ""
         self.render()
@@ -489,6 +510,8 @@ class DiagnosisPage(Page):
         part = t["all"] if dx["part"] == ALL else SUBSYSTEM_NAMES[lang][dx["part"]]
         self.header(page, t["e2a"], t["t2a"], " · ".join((bike_text(dx["kind"], dx["fuel"], lang),
                                                            t["guided_note"], part)), 2, compact=True)
+        if needs_part(dx):
+            return self.render_part_card(page)
         parts = tk.Frame(page, bg=C["bg"])
         parts.pack(fill="x", pady=(0, px(10)))
         label(parts, t["part"], "small_bold", "muted", bg="bg").pack(side="left", padx=(0, px(10)))
@@ -525,6 +548,32 @@ class DiagnosisPage(Page):
         f = self.footer(page)
         link(f, "← " + t["previous"], self.undo_guided, bg="bg", font="body").pack(side="left")
         link(f, t["change"], lambda: self.go(1), bg="bg", font="body").pack(side="left", padx=(px(24), 0))
+
+    def render_part_card(self, page) -> None:
+        t, lang = self.t, self.app.lang
+        card = RoundCard(page)  # full width: three columns of systems fit even the smallest window
+        card.pack(fill="x")
+        b = card.body
+        label(b, t["where"], "big").pack(anchor="w")
+        autowrap(label(b, t["where_sub"] + " " + t["where_why_sub"], "lead", "muted")).pack(
+            fill="x", pady=(px(4), px(14)))
+        grid = tk.Frame(b, bg=C["surface"])
+        grid.pack(fill="x")
+        counts = dict(subsystem_counts(self.app.kb))
+        for i, sub in enumerate(SUBSYSTEM_ORDER):
+            grid.columnconfigure(i % 3, weight=1, uniform="part")
+            ChoiceCard(grid, SUBSYSTEM_NAMES[lang][sub], t["n_faults"].format(n=counts[sub]), False,
+                       lambda s=sub: self.change_part(s), icon_name=SUBSYSTEM_ICONS[sub], radio=False).grid(
+                row=i // 3, column=i % 3, sticky="nsew", padx=(0 if i % 3 == 0 else px(10), 0), pady=(0, px(10)))
+        ChoiceCard(b, t["not_sure_part"], t["not_sure_part_sub"], False, self.ask_all, icon_name="info",
+                   radio=False).pack(fill="x")
+        autowrap(label(b, t["where_note"], "small", "muted")).pack(fill="x", pady=(px(12), 0))
+        f = self.footer(page)
+        link(f, "← " + t["change"], lambda: self.go(1), bg="bg", font="body").pack(side="left")
+
+    def ask_all(self) -> None:
+        self.dx["part_asked"] = True
+        self.render()
 
     def question_card(self, parent, number: int, text: str, hint: str, on_answer) -> None:
         t = self.t
@@ -563,7 +612,7 @@ class DiagnosisPage(Page):
                                              for c in chips.winfo_children() if isinstance(c, tk.Label)])
 
     def change_part(self, part: str) -> None:
-        self.dx.update(part=part, answers=[])
+        self.dx.update(part=part, answers=[], part_asked=True)
         self.render()
 
     def answer_guided(self, value) -> None:
@@ -678,6 +727,8 @@ class DiagnosisPage(Page):
         q = iv.next_question() if iv else None
         if iv is not None and q is None and dx["text"].strip() and (dx["replies"] or iv.result().diagnoses):
             return self.after_idle(self.finish)
+        if not found:  # nothing recognised: questions from scratch would not use the text; offer a way out instead
+            q = None
         left, right = self.columns(page)
         if q is None:  # nothing analysed yet, or no symptom recognised
             card = RoundCard(left)
@@ -699,6 +750,9 @@ class DiagnosisPage(Page):
             row = tk.Frame(card.body, bg=C["surface"])
             row.pack(fill="x", pady=(px(14), 0))
             PillButton(row, t["analyze"], self.analyze, bg="surface").pack(side="left")
+            if dx["text"].strip() and not found:
+                PillButton(row, t["to_guided"], self.switch_to_guided, style="outline", bg="surface").pack(
+                    side="left", padx=(px(12), 0))
         else:
             self.question_card(left, len(dx["replies"]) + 1, kb.question(q.symptom, lang),
                                kb.symbols[q.symptom].hint.get(lang, ""),
@@ -733,6 +787,10 @@ class DiagnosisPage(Page):
             link(f, "← " + t["previous"], self.undo_talk, bg="bg", font="body").pack(side="left")
         link(f, ("" if q is not None else "← ") + t["change"], lambda: self.go(1), bg="bg", font="body").pack(
             side="left", padx=(px(24) if q is not None else 0, 0))
+
+    def switch_to_guided(self) -> None:
+        to_guided(self.dx)
+        self.render()
 
     def use_example(self, sentence: str) -> None:
         self.text.delete("1.0", "end")
@@ -892,7 +950,7 @@ class DiagnosisPage(Page):
         self.render()
 
     def on_key(self, event) -> None:
-        if self.dx["step"] == 2 and self.dx["method"] == "guided":
+        if self.dx["step"] == 2 and self.dx["method"] == "guided" and not needs_part(self.dx):
             value = {"c": True, "y": True, "k": False, "n": False, "b": UNKNOWN, "u": UNKNOWN}.get(
                 event.keysym.lower(), "none")
             if value != "none":

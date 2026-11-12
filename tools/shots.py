@@ -69,6 +69,8 @@ def screens(root: tk.Tk, app, out: Path, tag: str) -> None:
     shot("1_setup")
     p = reset(app, method="guided")
     p.start()
+    shot("2a_part_card")
+    p.change_part("starting_fuel")
     shot("2a_guided_first")
     for v in (True, False, True):
         if p.dx["step"] == 2:
@@ -86,6 +88,11 @@ def screens(root: tk.Tk, app, out: Path, tag: str) -> None:
     p.dx.update(text=TALK[app.lang], replies=[])
     p.render()
     shot("2c_talk_analysed")
+    p = reset(app, method="talk")
+    p.start()
+    p.dx.update(text="xyz abc", replies=[])
+    p.render()
+    shot("2c_talk_not_understood")
     p = reset(app, method="symptoms")
     p.start()
     for sid in PICK:
@@ -111,7 +118,8 @@ def main() -> int:
     root = tk.Tk()
     root.attributes("-topmost", True)
     app = gui.App(root, langs[0])
-    default = root.geometry().split("+")[0]
+    sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()  # same size rule as gui.App
+    default = f"{min(w.px(theme.WINDOW_SIZE[0]), int(sw * 0.94))}x{min(w.px(theme.WINDOW_SIZE[1]), int(sh * 0.88))}"
     minimum = f"{w.px(theme.WINDOW_MIN_SIZE[0])}x{w.px(theme.WINDOW_MIN_SIZE[1])}"
     for lang in langs:
         app.set_lang(lang)
