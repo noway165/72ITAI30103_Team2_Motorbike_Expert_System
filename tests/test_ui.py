@@ -25,6 +25,18 @@ class PresentTest(unittest.TestCase):
     def setUpClass(cls):
         cls.kb = load_kb()
 
+    def test_model_notes_give_the_specs_that_matter_for_the_fault(self):
+        from present import model_notes, model_of
+        notes = model_notes(self.kb, "model_honda_vision", "weak_battery", "vi")
+        self.assertEqual(len(notes), 1)
+        self.assertIn("GTZ6V", notes[0])
+        self.assertIn("145", notes[0])  # page of the owner's manual
+        self.assertIn("25-35 mm", model_notes(self.kb, "model_honda_wave_alpha", "loose_or_worn_chain", "en")[0])
+        self.assertEqual(model_notes(self.kb, "model_honda_vision", "worn_brake_pads", "vi"), [])
+        self.assertEqual(model_notes(self.kb, "", "weak_battery", "vi"), [])
+        self.assertEqual(model_of(self.kb, {"model_honda_lead": True, "is_scooter": True}), "model_honda_lead")
+        self.assertEqual(model_of(self.kb, {"model_honda_lead": False}, "model_yamaha_exciter"), "model_yamaha_exciter")
+
     def test_short_removes_question_mark(self):
         self.assertFalse(short(self.kb, "horn_weak").endswith("?"))
 

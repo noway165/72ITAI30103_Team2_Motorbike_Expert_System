@@ -2,7 +2,7 @@
 
 Author: Kieu Bao Giang. Draft for the final report, 12/11/2026, for Lâm to merge.
 Limit: about 300 words and 1 figure. Numbers: [evaluation_results.md](evaluation_results.md) (Khoa) and
-[assistant_results.md](assistant_results.md) (Lâm), knowledge base of 79 rules.
+[assistant_results.md](assistant_results.md) (Lâm), knowledge base of 88 rules.
 
 ## 5.1 Where the system went wrong
 
@@ -19,7 +19,7 @@ them top-1 drops to 28/30. The more specific rules still rank first when the ext
 
 Backward chaining over every fault asks 39.7 questions per scenario and is right 30/30; choosing
 the part first cuts this to 9.0. The assistant reads the rider's own description and then asks only
-the most informative questions: 5.3 questions and 30/30 on the scenario descriptions, which were all
+the most informative questions: 5.5 questions and 30/30 on the scenario descriptions, which were all
 used while writing its phrase list. On ten held-out descriptions it is right 8/10 (Vietnamese) and
 7/10 (English) with about 11 questions, because a symptom said in words the list lacks is never
 read and may never be asked. The interface therefore keeps step-by-step questions

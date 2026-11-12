@@ -2,7 +2,7 @@
 
 Author: Kieu Bao Giang. Draft for the final report, 12/11/2026, for Lâm to merge into Chapter 3.
 Limit for this part: about 250 words and 3 figures. Section and figure numbers (3.y, 3.z) are fixed by Lâm when merging.
-Numbers: knowledge base of 79 rules and 40 faults; `python src/wang.py --scenarios --random 500`.
+Numbers: knowledge base of 88 rules and 40 faults; `python src/wang.py --scenarios --random 500`.
 
 ## 3.y Forward chaining and certainty factors
 
@@ -28,7 +28,7 @@ threshold set to 0) must equal the faults Wang proves; any difference reveals a 
 
 ## 3.w Chapter conclusion
 
-One knowledge base of 79 rules feeds two inference engines that share one CF model, a
+One knowledge base of 88 rules feeds two inference engines that share one CF model, a
 conversational assistant and an independent proof check. The MotoLogic interface lets the rider
 choose any of the three ways to diagnose and always shows the rules behind the answer. Chapter 4
 measures how well these methods work.

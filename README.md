@@ -51,7 +51,7 @@ Màn hình trong giao diện:
 
 ## 2. Kết quả chính
 
-Cơ sở tri thức: 73 triệu chứng (gồm 4 câu về loại xe), 9 kết luận trung gian, 40 lỗi, 79 luật. Lệnh `python src/kb.py` báo 0 lỗi, 0 cảnh báo. Mọi luật đều ghi nguồn tham khảo.
+Cơ sở tri thức: 79 triệu chứng (gồm 10 dữ kiện về xe: 4 câu loại xe và 6 dòng xe), 9 kết luận trung gian, 40 lỗi, 88 luật (9 luật riêng theo dòng xe). Lệnh `python src/kb.py` báo 0 lỗi, 0 cảnh báo. Mọi luật đều ghi nguồn tham khảo.
 
 | Phép đo | Kết quả |
 |---|---|
@@ -60,8 +60,8 @@ Cơ sở tri thức: 73 triệu chứng (gồm 4 câu về loại xe), 9 kết l
 | Wang so với forward chaining (30 kịch bản + 500 bộ triệu chứng ngẫu nhiên) | khớp 100% |
 | Backward chaining hỏi mọi lỗi | trung bình 39,7 câu, đúng 30/30 |
 | Backward chaining khi chọn đúng bộ phận trước | trung bình 9,0 câu |
-| Trợ lý, mô tả của 30 kịch bản (tiếng Việt / tiếng Anh) | 5,3 câu, 30/30 / 5,3 câu, 30/30 |
-| Trợ lý, 10 mô tả giữ riêng để kiểm tra (tiếng Việt / tiếng Anh) | 10,5 câu, 8/10 / 11,4 câu, 7/10 |
+| Trợ lý, mô tả của 30 kịch bản (tiếng Việt / tiếng Anh) | 5,5 câu, 30/30 / 5,5 câu, 30/30 |
+| Trợ lý, 10 mô tả giữ riêng để kiểm tra (tiếng Việt / tiếng Anh) | 10,8 câu, 8/10 / 11,5 câu, 7/10 |
 
 Các mô tả của 30 kịch bản đều đã được dùng khi viết bộ đọc câu (`src/nlu.py`), nên con số 30/30 của trợ lý là lạc quan. Tập 10 mô tả giữ riêng (`tests/data/heldout_descriptions.json`) được viết trước khi đọc `nlu.py` và không bao giờ dùng để sửa nó. Đây mới là ước lượng công bằng. Số liệu đầy đủ: [docs/report/evaluation_results.md](docs/report/evaluation_results.md) và [docs/report/assistant_results.md](docs/report/assistant_results.md).
 
@@ -155,8 +155,8 @@ Thanh bên trái:
 
 ### Bước 1: Khai báo xe
 
-- Chọn **xe tay ga** hoặc **xe số**.
-- Chọn kiểu cấp nhiên liệu: **phun xăng (FI)**, **bình xăng con** hoặc **không rõ**. Một số luật chỉ đúng với một loại xe, nên trả lời ở đây giúp bỏ bớt câu hỏi.
+- Chọn **dòng xe**: Honda Vision, Air Blade, Lead 125, Wave Alpha, Future 125 FI hoặc Yamaha Exciter 155. Dòng xe tự điền tay ga/xe số, phun xăng/bình xăng con và côn tay. Có thêm các luật riêng của dòng xe, và kết quả kèm thông số đúng xe (ắc quy, bugi, nhớt, áp suất lốp, độ chùng xích, cầu chì) lấy từ sách hướng dẫn của hãng.
+- Xe không có trong danh sách: chọn **Xe khác**, rồi chọn **xe tay ga** hoặc **xe số** và kiểu cấp nhiên liệu: **phun xăng (FI)**, **bình xăng con** hoặc **không rõ**. Một số luật chỉ đúng với một loại xe, nên trả lời ở đây giúp bỏ bớt câu hỏi.
 - Chọn một trong ba cách chẩn đoán, rồi bấm **Bắt đầu chẩn đoán**.
 
 ### Bước 2: Ba cách chẩn đoán
@@ -231,6 +231,9 @@ Mỗi bộ phận có một file. Mỗi file gồm:
 | `brakes.json` | 10 | 1 | 6 | 13 |
 | `tyres_suspension.json` | 12 | 1 | 7 | 15 |
 | `vehicle.json` (loại xe) | 4 | – | – | – |
+| `models.json` (dòng xe) | 6 | – | – | 9 |
+
+`models.json` còn có khối `models`: mỗi dòng xe ghi loại xe, nhiên liệu, côn tay và thông số bảo dưỡng, kèm trang trong sách hướng dẫn của hãng. Dòng xe là thông tin của bước 1 nên không bao giờ được hỏi như một câu hỏi.
 
 Cách viết luật: [docs/kb_format.md](docs/kb_format.md). Nguồn tham khảo: [docs/sources.md](docs/sources.md). `python src/kb.py` kiểm tra id trùng, triệu chứng không dùng, luật thiếu nguồn, vòng lặp…
 

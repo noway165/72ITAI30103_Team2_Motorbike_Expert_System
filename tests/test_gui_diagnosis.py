@@ -10,9 +10,9 @@ sys.path.insert(0, str(ROOT / "src"))
 import theme  # noqa: E402
 from backward_chaining import UNKNOWN  # noqa: E402
 from gui_backward import ALL  # noqa: E402
-from gui_diagnosis import (TEXT, VEHICLE, checklist, guided_session, make_record, needs_part, new_dx,  # noqa: E402
-                           session_number, subsystem_counts, summarize, talk_interview, to_guided, vehicle_answers,
-                           wang_check)
+from gui_diagnosis import (TEXT, VEHICLE, bike_text, checklist, guided_session, make_record, model_name,  # noqa: E402
+                           needs_part, new_dx, pick_model, session_number, subsystem_counts, summarize, talk_interview,
+                           to_guided, vehicle_answers, wang_check)
 from gui_history import reopen, rows  # noqa: E402
 from kb import load_kb  # noqa: E402
 from scenarios import load_scenarios  # noqa: E402
@@ -82,6 +82,28 @@ class LogicTest(unittest.TestCase):
         self.assertEqual(dx["text"], "xyz abc")
         self.assertTrue(needs_part(dx))
 
+    def test_choosing_a_bike_model(self):
+        dx = new_dx()
+        self.assertEqual(dx["model"], "")
+        pick_model(KB, dx, "model_yamaha_exciter")
+        self.assertEqual((dx["kind"], dx["fuel"]), ("manual", "fi"))
+        a = vehicle_answers(dx["kind"], dx["fuel"], dx["model"], KB.models)
+        self.assertTrue(a["model_yamaha_exciter"] and a["has_clutch_lever"] and a["is_manual"])
+        self.assertFalse(a["model_honda_vision"])
+        pick_model(KB, dx, "")  # another bike: type and fuel are chosen by hand, no listed model
+        self.assertFalse(any(v for m, v in vehicle_answers(dx["kind"], dx["fuel"], "", KB.models).items()
+                             if m.startswith("model_")))
+        self.assertEqual(bike_text("manual", "fi", "vi", model_name(KB, "model_yamaha_exciter")), "Yamaha Exciter 155")
+
+    def test_model_rule_ranks_the_model_fault_and_the_record_keeps_the_model(self):
+        dx = new_dx()
+        pick_model(KB, dx, "model_honda_lead")
+        dx.update(method="symptoms", step=2, selected=["judder_when_pulling_away"])
+        rec = make_record(KB, dx, 1)
+        self.assertEqual(rec.model, "model_honda_lead")
+        self.assertEqual(rec.result.diagnoses[0].fault, "worn_centrifugal_clutch")
+        self.assertIn("MD02", summarize(KB, rec, "vi").chain)
+
     def test_vehicle_answers(self):
         self.assertEqual(vehicle_answers("scooter", "fi"), {"is_scooter": True, "is_manual": False,
                                                             "is_fuel_injected": True, "is_carburetor": False})
@@ -114,7 +136,7 @@ class LogicTest(unittest.TestCase):
                 self.assertEqual(s.name, KB.text("weak_battery", "vi"))
                 self.assertTrue(wang_check(KB, rec, s.fault))
                 self.assertEqual(s.steps[-1].conclusion, "Ắc quy yếu hoặc hết điện")
-                self.assertEqual(s.observations, len([x for x in rec.yes if x not in VEHICLE]))
+                self.assertEqual(s.observations, len([x for x in rec.yes if KB.symbols[x].subsystem != "vehicle"]))
 
     def test_bt03_needs_a_mechanic(self):
         bt03 = SCENARIOS["BT03"]

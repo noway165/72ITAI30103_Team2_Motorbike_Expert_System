@@ -1,6 +1,6 @@
 # Spec: chẩn đoán cụ thể theo dòng xe (owner: Lâm)
 
-Ngày 12/11/2026. Nhánh `feature/lam-bike-models` (tách từ `main` = `ba53e10`). Trạng thái: **đã duyệt thiết kế, chưa code.**
+Ngày 12/11/2026. Nhánh `feature/lam-bike-models` (tách từ `main` = `ba53e10`). Trạng thái: **đã làm xong (12/11).** 6 dòng xe, 9 luật MD01–MD09, thông số từ sách hướng dẫn của hãng; chu kỳ thay nhớt và dây curoa chưa có (sách dùng biểu tượng hình, xem `docs/sources.md`).
 
 ## Mục tiêu
 

@@ -102,6 +102,11 @@ class ConversationTest(unittest.TestCase):
         how = "\n".join(respond(KB, dx, "làm sao biết?", "vi"))
         self.assertTrue(any(r.id in how for r in KB.rules_concluding(top)), how)
 
+    def test_fix_gives_the_specs_of_the_bike_named_in_the_text(self):
+        dx = chat("Vision sáng nay đề chỉ nghe tạch tạch, còi cũng yếu, ắc quy dùng hơn 2 năm rồi")
+        fix = "\n".join(respond(KB, dx, "sửa thế nào?", "vi"))
+        self.assertIn("GTZ6V", fix)  # Honda Vision battery, from its owner's manual
+
     def test_others_lists_the_beliefs(self):
         dx = chat(SE01)
         out = "\n".join(respond(KB, dx, "còn khả năng nào?", "vi"))

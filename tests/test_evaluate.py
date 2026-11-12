@@ -121,10 +121,10 @@ class RealScenariosTest(unittest.TestCase):
                 self.assertGreater(p.stat().st_size, 5000)
 
     def test_assistant_matches_evaluate_assistant_and_is_charted(self):
-        """The assistant column uses the same numbers as src/evaluate_assistant.py (5.3 questions, 30/30)."""
+        """The assistant column uses the same numbers as src/evaluate_assistant.py (5.5 questions, 30/30)."""
         runs = evaluate_assistant(self.kb, self.scenarios)
         self.assertEqual(len(runs), len(self.scenarios))
-        self.assertAlmostEqual(sum(r.questions for r in runs) / len(runs), 5.3, places=1)
+        self.assertAlmostEqual(sum(r.questions for r in runs) / len(runs), 5.5, places=1)
         self.assertEqual(sum(r.top1 for r in runs), 30)
         try:
             import matplotlib  # noqa: F401

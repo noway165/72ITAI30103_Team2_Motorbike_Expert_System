@@ -71,6 +71,28 @@ class RealKnowledgeBaseTest(unittest.TestCase):
                 self.assertIn(f.severity, ("self", "mechanic"))
 
 
+class ModelsTest(unittest.TestCase):
+    def test_bike_models_are_vehicle_facts_with_sourced_specs(self):
+        kb = load_kb()
+        self.assertEqual(len(kb.models), 6)
+        for mid, m in kb.models.items():
+            with self.subTest(model=mid):
+                self.assertEqual(kb.symbols[mid].subsystem, "vehicle")
+                self.assertIn(m["kind"], ("scooter", "manual"))
+                self.assertTrue(m["source"].startswith(("Honda", "Yamaha")))
+                self.assertTrue(kb.rules_using(mid), "every model has at least one model rule")
+                for spec in m["specs"].values():
+                    self.assertTrue(spec["vi"] and spec["en"] and spec["page"])
+
+    def test_a_model_without_source_or_fact_is_an_error(self):
+        bad = {"subsystem": "vehicle", "models": {"model_x": {"name": "X", "kind": "scooter", "fuel": "fi",
+                                                              "clutch": False, "specs": {}}}}
+        with TempKB({"t.json": small_kb(), "m.json": bad}) as d:
+            errors = " ".join(validate(load_kb(d)).errors)
+        self.assertIn("model_x", errors)
+        self.assertIn("source", errors)
+
+
 class LoadTest(unittest.TestCase):
     def test_loads_symbols_and_rules_across_files(self):
         other = {"subsystem": "other", "faults": {"g": fault()}, "rules": [rule("R3", ["a"], "g")]}

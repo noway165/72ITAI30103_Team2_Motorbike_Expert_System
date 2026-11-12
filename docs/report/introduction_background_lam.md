@@ -1,7 +1,7 @@
 # Introduction and Background
 
 Author: Tang Thoai Lam. Final draft, 12/11/2026, cut to the page budget in README.md (Chapter 1 about 170 words, Chapter 2 about 250 words).
-Numbers refer to the knowledge base of 12/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 79 rules).
+Numbers refer to the knowledge base of 12/11/2026 (79 symptoms, 9 intermediate facts, 40 faults, 88 rules).
 
 ## Chapter 1: Introduction
 
@@ -9,7 +9,7 @@ Numbers refer to the knowledge base of 12/11/2026 (73 symptoms, 9 intermediate f
 
 Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one breaks down, the rider must decide what to do with little to go on: a clicking starter with a weak horn usually needs only a battery charge, while leaking brake fluid means the motorbike should not be ridden.
 
-We built a rule-based expert system for common faults on scooters and manual motorbikes. Its knowledge base has 73 symptoms, 9 intermediate facts, 40 faults and 79 rules in six subsystems. From the rider's symptoms it ranks the likely faults by certainty factor, says which need a mechanic and explains each conclusion. Forward chaining starts from ticked symptoms, backward chaining asks yes/no questions, and a rule-based chat reads the rider's own words. A prover based on Wang's algorithm checks the conclusions, and 30 test scenarios measure the results (Figure 1.1.1).
+We built a rule-based expert system for common faults on scooters and manual motorbikes. Its knowledge base has 79 symptoms, 9 intermediate facts, 40 faults and 88 rules in six subsystems, with data for six popular models. From the rider's symptoms it ranks the likely faults by certainty factor, says which need a mechanic and explains each conclusion. Forward chaining starts from ticked symptoms, backward chaining asks yes/no questions, and a rule-based chat reads the rider's own words. A prover based on Wang's algorithm checks the conclusions, and 30 test scenarios measure the results (Figure 1.1.1).
 
 ![Figure 1.1.1](figures/fig_system_overview.png)
 

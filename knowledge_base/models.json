@@ -1,0 +1,103 @@
+{
+  "subsystem": "vehicle",
+  "description": "Popular bike models (owner: Lâm). Each model is a vehicle fact used by the model rules MD01-MD09; the 'models' block holds what step 1 fills in (type, fuel, clutch) and the maintenance data shown with a diagnosis. Specs are quoted from the maker's owner's manual (PDF page numbers); the model rules come from workshop and press articles (weaker sources, see docs/sources.md).",
+  "symptoms": {
+    "model_honda_vision": {"question": {"vi": "Xe của bạn là Honda Vision?", "en": "Is your motorbike a Honda Vision?"}},
+    "model_honda_air_blade": {"question": {"vi": "Xe của bạn là Honda Air Blade?", "en": "Is your motorbike a Honda Air Blade?"}},
+    "model_honda_lead": {"question": {"vi": "Xe của bạn là Honda Lead?", "en": "Is your motorbike a Honda Lead?"}},
+    "model_honda_wave_alpha": {"question": {"vi": "Xe của bạn là Honda Wave Alpha?", "en": "Is your motorbike a Honda Wave Alpha?"}},
+    "model_honda_future": {"question": {"vi": "Xe của bạn là Honda Future 125 FI?", "en": "Is your motorbike a Honda Future 125 FI?"}},
+    "model_yamaha_exciter": {"question": {"vi": "Xe của bạn là Yamaha Exciter 155?", "en": "Is your motorbike a Yamaha Exciter 155?"}}
+  },
+  "rules": [
+    {"id": "MD01", "if": ["model_honda_lead", "rich_running"], "then": "clogged_air_filter", "cf": 0.7,
+     "source": "VietNamNet (07/12/2018), Những lỗi thường gặp trên Honda Lead: tốn xăng, khói đen do lọc gió đặt thấp nên dễ bám bụi. https://vietnamnet.vn/nhung-loi-thuong-gap-tren-honda-lead-492108.html"},
+    {"id": "MD02", "if": ["model_honda_lead", "judder_when_pulling_away"], "then": "worn_centrifugal_clutch", "cf": 0.8,
+     "source": "VietNamNet (07/12/2018), Những lỗi thường gặp trên Honda Lead: giật cục do côn mòn, cháy guốc côn và chuông côn. https://vietnamnet.vn/nhung-loi-thuong-gap-tren-honda-lead-492108.html"},
+    {"id": "MD03", "if": ["model_honda_lead", "engine_overheating"], "then": "low_coolant", "cf": 0.7,
+     "source": "VietNamNet (07/12/2018), Những lỗi thường gặp trên Honda Lead: bình phụ nước làm mát nằm khuất sau mặt nạ nên hay bị cạn, máy quá nóng. https://vietnamnet.vn/nhung-loi-thuong-gap-tren-honda-lead-492108.html"},
+    {"id": "MD04", "if": ["model_honda_vision", "engine_ticking_noise"], "then": "low_engine_oil", "cf": 0.65,
+     "source": "shop2banh.vn, Các lỗi thường gặp trên xe Vision và cách khắc phục: động cơ kêu lạ do khô nhớt, quên thay nhớt định kỳ. https://shop2banh.vn/tu-van/cac-loi-thuong-gap-tren-xe-vision-va-cach-khac-phuc-4209.html"},
+    {"id": "MD05", "if": ["model_honda_air_blade", "judder_when_pulling_away"], "then": "worn_centrifugal_clutch", "cf": 0.8,
+     "source": "Tài Lộc Nguyễn (05/01/2016), Những lỗi hư vặt thường thấy trên xe Honda Airblade: giật khục, nồi bị nẩy, bố và chuông bắt không đều. https://tailocnguyen.vn/Tin-tuc/Nhung-loi-hu-vat-thuong-thay-tren-xe-Honda-Airblade-235.html"},
+    {"id": "MD06", "if": ["model_yamaha_exciter", "clicking_noise_from_rear"], "then": "loose_or_worn_chain", "cf": 0.75,
+     "source": "exciter.vn, Những lỗi thường gặp trên xe Exciter 155: nhông sên dĩa phải tăng chỉnh sau vài trăm km, không bảo dưỡng thì kêu lớn. https://exciter.vn/tu-van/nhung-loi-thuong-gap-tren-xe-exciter-155-va-cach-khac-phuc-305.html"},
+    {"id": "MD07", "if": ["model_yamaha_exciter", "steering_heavy"], "then": "worn_steering_head_bearings", "cf": 0.65,
+     "source": "exciter.vn, Những lỗi thường gặp trên xe Exciter 155: bộ chén cổ hao mòn sau thời gian ngắn, tay lái cứng hơn. https://exciter.vn/tu-van/nhung-loi-thuong-gap-tren-xe-exciter-155-va-cach-khac-phuc-305.html"},
+    {"id": "MD08", "if": ["model_honda_future", "hard_to_shift_gears"], "then": "low_engine_oil", "cf": 0.6,
+     "source": "shop2banh.vn, Các lỗi thường gặp trên xe Future 125 Fi: khó về số do thiếu nhớt, không thay nhớt định kỳ. https://shop2banh.vn/tu-van/cac-loi-thuong-gap-tren-xe-future-125-fi-va-cach-khac-phuc-4201.html"},
+    {"id": "MD09", "if": ["model_honda_wave_alpha", "clicking_noise_from_rear"], "then": "loose_or_worn_chain", "cf": 0.7,
+     "source": "Xe máy Hưng Thịnh (09/05/2025), 6 lỗi thường gặp khi đi xe Wave: dây xích kêu do xích chùng, khô dầu, mòn. https://xemayhungthinh.vn/loi-thuong-gap-xe-wave-thai-binh/"}
+  ],
+  "models": {
+    "model_honda_vision": {
+      "name": "Honda Vision", "kind": "scooter", "fuel": "fi", "clutch": false,
+      "source": "Honda Việt Nam, Sách hướng dẫn sử dụng Vision (12/2025). https://cdn.honda.com.vn/motorbike-manual/December2025/FgO9EU07CB768QM5Adl7.pdf",
+      "specs": {
+        "battery": {"vi": "Ắc quy GTZ6V hoặc WTZ6VIS, 12 V-5 Ah", "en": "Battery GTZ6V or WTZ6VIS, 12 V-5 Ah", "page": "145-147"},
+        "spark_plug": {"vi": "Bugi NGK MR7C-9N, khe hở 0,8-0,9 mm", "en": "Spark plug NGK MR7C-9N, gap 0.8-0.9 mm", "page": "149"},
+        "oil": {"vi": "Nhớt SAE 10W-30, JASO MB; 0,65-0,7 L khi thay (tùy phiên bản)", "en": "Oil SAE 10W-30, JASO MB; 0.65-0.7 L at an oil change (by version)", "page": "150"},
+        "tyre_pressure": {"vi": "Áp suất lốp: trước 200 kPa (29 psi), sau 225 kPa (33 psi)", "en": "Tyre pressure: front 200 kPa (29 psi), rear 225 kPa (33 psi)", "page": "149"},
+        "fuse": {"vi": "Cầu chì chính 30 A", "en": "Main fuse 30 A", "page": "150"}
+      }
+    },
+    "model_honda_air_blade": {
+      "name": "Honda Air Blade", "kind": "scooter", "fuel": "fi", "clutch": false,
+      "source": "Honda Việt Nam, Sách hướng dẫn sử dụng Air Blade 125/160 (09/2025). https://cdn.honda.com.vn/motorbike-manual/September2025/NC8346r3AExXZtAvFuMG.pdf",
+      "specs": {
+        "battery": {"vi": "Ắc quy GTZ6V hoặc WTZ6V, 12 V-5,0 Ah", "en": "Battery GTZ6V or WTZ6V, 12 V-5.0 Ah", "page": "143"},
+        "spark_plug": {"vi": "Bugi NGK LMAR8L-9, khe hở 0,8-0,9 mm", "en": "Spark plug NGK LMAR8L-9, gap 0.8-0.9 mm", "page": "143"},
+        "oil": {"vi": "Nhớt máy 0,80 L khi thay", "en": "Engine oil 0.80 L at an oil change", "page": "144"},
+        "tyre_pressure": {"vi": "Áp suất lốp: trước 200 kPa (29 psi), sau 225 kPa (33 psi)", "en": "Tyre pressure: front 200 kPa (29 psi), rear 225 kPa (33 psi)", "page": "143"},
+        "fuse": {"vi": "Cầu chì chính 20 A", "en": "Main fuse 20 A", "page": "144"}
+      }
+    },
+    "model_honda_lead": {
+      "name": "Honda Lead 125", "kind": "scooter", "fuel": "fi", "clutch": false,
+      "source": "Honda Việt Nam, Sách hướng dẫn sử dụng LEAD 125 (11/2025). https://cdn.honda.com.vn/motorbike-manual/November2025/a1ImE0kmkoA3Vj3r5eVr.pdf",
+      "specs": {
+        "battery": {"vi": "Ắc quy WTZ6VIS hoặc GTZ6V (tùy phiên bản), 12 V-5 Ah", "en": "Battery WTZ6VIS or GTZ6V (by version), 12 V-5 Ah", "page": "159"},
+        "spark_plug": {"vi": "Bugi NGK LMAR8L-9, khe hở 0,8-0,9 mm", "en": "Spark plug NGK LMAR8L-9, gap 0.8-0.9 mm", "page": "159"},
+        "oil": {"vi": "Nhớt SAE 10W-30; 0,8 L khi thay", "en": "Oil SAE 10W-30; 0.8 L at an oil change", "page": "92, 160"},
+        "tyre_pressure": {"vi": "Áp suất lốp: trước 175 kPa (25 psi), sau 225 kPa (33 psi)", "en": "Tyre pressure: front 175 kPa (25 psi), rear 225 kPa (33 psi)", "page": "159"},
+        "fuse": {"vi": "Cầu chì chính 20 A", "en": "Main fuse 20 A", "page": "160"}
+      }
+    },
+    "model_honda_wave_alpha": {
+      "name": "Honda Wave Alpha", "kind": "manual", "fuel": "carb", "clutch": false,
+      "source": "Honda Việt Nam, Sách hướng dẫn sử dụng Wave Alpha (09/2025). https://cdn.honda.com.vn/motorbike-manual/September2025/P8qeKg7vdU5RIqpRvC4v.pdf",
+      "specs": {
+        "battery": {"vi": "Ắc quy YTZ4V, GTZ4V, WTZ4V hoặc PTZ4V, 12 V-3 Ah", "en": "Battery YTZ4V, GTZ4V, WTZ4V or PTZ4V, 12 V-3 Ah", "page": "94"},
+        "spark_plug": {"vi": "Bugi NGK CPR6EA-9S hoặc DENSO U20EPR9S, khe hở 0,8-0,9 mm", "en": "Spark plug NGK CPR6EA-9S or DENSO U20EPR9S, gap 0.8-0.9 mm", "page": "95"},
+        "oil": {"vi": "Nhớt SAE 10W-30, JASO MA; 0,8 L khi thay", "en": "Oil SAE 10W-30, JASO MA; 0.8 L at an oil change", "page": "95"},
+        "tyre_pressure": {"vi": "Áp suất lốp: trước 200 kPa (29 psi); sau 225 kPa (33 psi), chở người 280 kPa (41 psi)", "en": "Tyre pressure: front 200 kPa (29 psi); rear 225 kPa (33 psi), 280 kPa (41 psi) with a passenger", "page": "95"},
+        "chain": {"vi": "Độ chùng xích tải 25-35 mm", "en": "Drive chain slack 25-35 mm", "page": "95"},
+        "fuse": {"vi": "Cầu chì chính 10 A", "en": "Main fuse 10 A", "page": "96"}
+      }
+    },
+    "model_honda_future": {
+      "name": "Honda Future 125 FI", "kind": "manual", "fuel": "fi", "clutch": false,
+      "source": "Honda Việt Nam, Sách hướng dẫn sử dụng Future 125 FI (10/2025). https://cdn.honda.com.vn/motorbike-manual/October2025/4S8C4gHZTWoGUUdFaj0K.pdf",
+      "specs": {
+        "battery": {"vi": "Ắc quy GTZ4V, 12 V-3 Ah", "en": "Battery GTZ4V, 12 V-3 Ah", "page": "92"},
+        "spark_plug": {"vi": "Bugi NGK CPR6EA-9, khe hở 0,8-0,9 mm", "en": "Spark plug NGK CPR6EA-9, gap 0.8-0.9 mm", "page": "93"},
+        "oil": {"vi": "Nhớt SAE 10W-30, JASO MA; 0,7 L khi thay", "en": "Oil SAE 10W-30, JASO MA; 0.7 L at an oil change", "page": "93"},
+        "tyre_pressure": {"vi": "Áp suất lốp: trước 200 kPa (29 psi); sau 225 kPa (33 psi), chở người 280 kPa (41 psi)", "en": "Tyre pressure: front 200 kPa (29 psi); rear 225 kPa (33 psi), 280 kPa (41 psi) with a passenger", "page": "93"},
+        "chain": {"vi": "Độ chùng xích tải 25-35 mm", "en": "Drive chain slack 25-35 mm", "page": "93"},
+        "fuse": {"vi": "Cầu chì chính 15 A", "en": "Main fuse 15 A", "page": "94"}
+      }
+    },
+    "model_yamaha_exciter": {
+      "name": "Yamaha Exciter 155", "kind": "manual", "fuel": "fi", "clutch": true,
+      "source": "Yamaha Motor, Owner's Manual T155 Exciter (BNV-F8199-E0, 2023). https://yamahamaldives.com/wp-content/uploads/2025/07/EXCITER-155_Warranty-Booklet-Owners-Manual.pdf",
+      "specs": {
+        "battery": {"vi": "Ắc quy GTZ5S, 12 V-3,5 Ah", "en": "Battery GTZ5S, 12 V-3.5 Ah", "page": "116"},
+        "spark_plug": {"vi": "Bugi NGK CPR8EA9, khe hở 0,8-0,9 mm", "en": "Spark plug NGK CPR8EA9, gap 0.8-0.9 mm", "page": "77"},
+        "oil": {"vi": "Nhớt SAE 10W-40, JASO MA; 0,85 L khi thay", "en": "Oil SAE 10W-40, JASO MA; 0.85 L at an oil change", "page": "115"},
+        "tyre_pressure": {"vi": "Áp suất lốp: trước 225 kPa (33 psi), sau 225 kPa (33 psi)", "en": "Tyre pressure: front 225 kPa (33 psi), rear 225 kPa (33 psi)", "page": "85"},
+        "chain": {"vi": "Độ chùng xích tải 35-45 mm", "en": "Drive chain slack 35-45 mm", "page": "92"},
+        "fuse": {"vi": "Cầu chì chính 15 A (bản STD) hoặc 20 A (bản DX, T155-A)", "en": "Main fuse 15 A (STD) or 20 A (DX, T155-A)", "page": "100"}
+      }
+    }
+  }
+}

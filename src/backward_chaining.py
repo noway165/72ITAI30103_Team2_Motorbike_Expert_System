@@ -153,7 +153,8 @@ class BackwardChainer:
         if fact is None:  # not asked yet
             answer = self.ask(symptom, list(self._chain))
             value, cf = _normalise(answer)
-            self.questions_asked += 1
+            if symptom not in self.kb.models:  # the bike model is chosen in step 1, not a question
+                self.questions_asked += 1
             self.wm.tell(symptom, value, cf=cf)
             fact = self.wm.get(symptom)
         return fact.cf if fact.value else 0.0

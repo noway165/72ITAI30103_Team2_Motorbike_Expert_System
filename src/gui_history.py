@@ -12,7 +12,7 @@ from typing import List
 import tkinter as tk
 
 from gui_diagnosis import TEXT as DX_TEXT
-from gui_diagnosis import Record, bike_text, new_dx
+from gui_diagnosis import Record, bike_text, model_name, new_dx
 from gui_widgets import (SUBSYSTEM_ICONS, Page, PillButton, RoundCard, ScrollFrame, autowrap, bind_tree, chip,
                          eyebrow, icon, label, px)
 from kb import KnowledgeBase
@@ -49,7 +49,7 @@ def rows(kb: KnowledgeBase, history: List[Record], lang: str) -> List[Row]:
     for i, rec in enumerate(history):
         ds = rec.result.diagnoses
         top = ds[0] if ds else None
-        out.append(Row(i, t["session"].format(n=rec.number), rec.time, bike_text(rec.kind, rec.fuel, lang),
+        out.append(Row(i, t["session"].format(n=rec.number), rec.time, bike_text(rec.kind, rec.fuel, lang, model_name(kb, rec.model)),
                        DX_TEXT[lang]["method_" + rec.method], kb.text(top.fault, lang) if top else t["no_fault"],
                        top.cf if top else 0.0, kb.symbols[top.fault].subsystem if top else ""))
     return out[::-1]
@@ -58,7 +58,8 @@ def rows(kb: KnowledgeBase, history: List[Record], lang: str) -> List[Row]:
 def reopen(state: dict, index: int) -> None:
     """Show step 3 of a past session on the Diagnosis screen."""
     rec = state["history"][index]
-    state["dx"] = dict(new_dx(), kind=rec.kind, fuel=rec.fuel, method=rec.method, step=3, record=index)
+    state["dx"] = dict(new_dx(), kind=rec.kind, fuel=rec.fuel, model=rec.model, method=rec.method, step=3,
+                       record=index)
 
 
 class HistoryPage(Page):
