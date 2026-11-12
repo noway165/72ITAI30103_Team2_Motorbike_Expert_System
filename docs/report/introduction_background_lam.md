@@ -1,7 +1,7 @@
 # Introduction and Background (draft)
 
 Author: Tang Thoai Lam. Draft for the final report, 09/11/2026. Cut to the page budget in README.md.
-Numbers refer to the knowledge base of 09/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 77 rules).
+Numbers refer to the knowledge base of 09/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 79 rules).
 
 ## Chapter 1: Introduction
 
@@ -9,7 +9,7 @@ Numbers refer to the knowledge base of 09/11/2026 (73 symptoms, 9 intermediate f
 
 Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one breaks down, the rider must decide what to do with little to go on. A clicking starter with a weak horn usually needs only a battery charge, while leaking brake fluid means the motorbike should not be ridden.
 
-We built a rule-based expert system for common faults on scooters and manual motorbikes. From the symptoms a rider reports, it ranks the likely faults by certainty factor, says which need a mechanic and gives the action to take. Its knowledge base has 73 symptoms, 9 intermediate facts, 40 faults and 77 rules in six subsystems. Forward chaining starts from the selected symptoms; backward chaining asks yes/no questions and can explain why and how. We check forward chaining against a prover based on Wang's algorithm and evaluate the system on 30 scenarios, each written by a team member who did not write the rules under test (Figure 1.1.1).
+We built a rule-based expert system for common faults on scooters and manual motorbikes. From the symptoms a rider reports, it ranks the likely faults by certainty factor, says which need a mechanic and gives the action to take. Its knowledge base has 73 symptoms, 9 intermediate facts, 40 faults and 79 rules in six subsystems. Forward chaining starts from the selected symptoms; backward chaining asks yes/no questions and can explain why and how. A conversational assistant also reads the rider's own description in Vietnamese or English and asks only the most informative questions. We check forward chaining against a prover based on Wang's algorithm and evaluate the system on 30 scenarios, each written by a team member who did not write the rules under test (Figure 1.1.1).
 
 ![Figure 1.1.1](figures/fig_system_overview.png)
 

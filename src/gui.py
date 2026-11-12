@@ -3,7 +3,8 @@
 Run from the repository root:
     python src/gui.py            (add --lang=en for English)
 
-The window is a sidebar plus one screen at a time (Ctrl+1 ... Ctrl+4):
+The window is a sidebar plus one screen at a time (Ctrl+1 ... Ctrl+5):
+    0. Trợ lý chẩn đoán    gui_assistant.py, class AssistantPage  (Lâm): free text, adaptive questions
     1. Theo triệu chứng   src/gui_forward.py,  class ForwardPage   (Giang)
     2. Hỏi đáp từng câu    src/gui_backward.py, class BackwardPage  (Khoa)
     3. Cơ sở tri thức      KBPage below: rules and the rule checker (Lâm)
@@ -25,6 +26,7 @@ from tkinter import ttk
 
 import gui_widgets as w
 import theme
+from gui_assistant import AssistantPage
 from gui_widgets import (CFBar, HintEntry, Page, Panel, ScrollFrame, autowrap, chip, data_root, dot,
                          fold, label, link, page_header, px, round_rect, tile)
 from kb import KnowledgeBase, load_kb, validate
@@ -44,9 +46,9 @@ S = {
         "app": "Chẩn đoán lỗi xe máy",
         "app_sub": "Hệ chuyên gia dựa trên luật · Nhóm 2",
         "sec_diag": "CHẨN ĐOÁN", "sec_other": "HỆ THỐNG",
-        "nav_forward": "Theo triệu chứng", "nav_backward": "Hỏi đáp từng câu",
+        "nav_assistant": "Trợ lý chẩn đoán", "nav_forward": "Theo triệu chứng", "nav_backward": "Hỏi đáp từng câu",
         "nav_kb": "Cơ sở tri thức", "nav_about": "Giới thiệu",
-        "lang": "Ngôn ngữ", "n_rules": "{r} luật · {f} lỗi",
+        "lang": "Ngôn ngữ", "n_rules": "{r} luật · {f} lỗi", "mode": "Giao diện", "light": "Sáng", "dark": "Tối",
         "todo_title": "Màn hình đang được làm",
         "todo_body": "Màn hình này do {owner} phụ trách. Tạo file src/{module}.py có class {cls}(Page); "
                      "cửa sổ sẽ tự hiện màn hình khi file có mặt. Hướng dẫn: docs/ui_guide.md, mục 9.",
@@ -69,9 +71,9 @@ S = {
         "app": "Motorbike Fault Diagnosis",
         "app_sub": "Rule-based expert system · Group 2",
         "sec_diag": "DIAGNOSIS", "sec_other": "SYSTEM",
-        "nav_forward": "By symptoms", "nav_backward": "Step-by-step questions",
+        "nav_assistant": "Diagnosis assistant", "nav_forward": "By symptoms", "nav_backward": "Step-by-step questions",
         "nav_kb": "Knowledge base", "nav_about": "About",
-        "lang": "Language", "n_rules": "{r} rules · {f} faults",
+        "lang": "Language", "n_rules": "{r} rules · {f} faults", "mode": "Theme", "light": "Light", "dark": "Dark",
         "todo_title": "Screen in progress",
         "todo_body": "{owner} builds this screen. Create src/{module}.py with class {cls}(Page); "
                      "the window shows it as soon as the file exists. Guide: docs/ui_guide.md, section 9.",
@@ -101,7 +103,7 @@ ABOUT = {
                        "Kiều Bảo Giang: suy diễn tiến, CF, thuật toán Wang, màn hình Theo triệu chứng\n"
                        "Nguyễn Nam Khoa: suy diễn lùi, giải thích why / how, màn hình Hỏi đáp, đánh giá"),
         ("Lưu ý", "Kết quả chỉ mang tính tham khảo; lỗi “Cần mang ra thợ” nên được kiểm tra tại tiệm."),
-        ("Phím tắt", "Ctrl+1 … Ctrl+4: chuyển màn hình"),
+        ("Phím tắt", "Ctrl+1 … Ctrl+5: chuyển màn hình"),
     ],
     "en": [
         ("Project", "An expert system that diagnoses common motorbike faults. The knowledge base holds IF … THEN … "
@@ -111,7 +113,7 @@ ABOUT = {
                  "Kiều Bảo Giang: forward chaining, CF, Wang's algorithm, By symptoms screen\n"
                  "Nguyễn Nam Khoa: backward chaining, why / how, Step-by-step screen, evaluation"),
         ("Note", "Results are advice only; faults marked “Take it to a mechanic” should be checked at a workshop."),
-        ("Shortcuts", "Ctrl+1 … Ctrl+4: change screen"),
+        ("Shortcuts", "Ctrl+1 … Ctrl+5: change screen"),
     ],
 }
 
@@ -308,11 +310,11 @@ class AboutPage(Page):
 # ---------------------------------------------------------------------------
 
 NAV = [  # (section, [(key, nav text key), ...])
-    ("sec_diag", [("forward", "nav_forward"), ("backward", "nav_backward")]),
+    ("sec_diag", [("assistant", "nav_assistant"), ("forward", "nav_forward"), ("backward", "nav_backward")]),
     ("sec_other", [("kb", "nav_kb"), ("about", "nav_about")]),
 ]
 PAGES = [key for _, items in NAV for key, _ in items]
-OWN_PAGES = {"kb": KBPage, "about": AboutPage}
+OWN_PAGES = {"assistant": AssistantPage, "kb": KBPage, "about": AboutPage}
 
 
 class App:
@@ -326,7 +328,7 @@ class App:
             self.scenarios = load_scenarios(data_root() / "scenarios")
         except (OSError, ValueError, KeyError):
             self.scenarios = []
-        self.state: Dict[str, object] = {"page": "forward"}  # shared by all screens; add your own keys
+        self.state: Dict[str, object] = {"page": "assistant"}  # shared by all screens; add your own keys
         w.K = max(1.0, root.winfo_fpixels("1i") / 96)  # scale pixel sizes on 125 % / 150 % screens
         theme.apply(root)
         sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
@@ -390,6 +392,16 @@ class App:
                          highlightthickness=1, highlightbackground=C["sidebar_muted"])
             b.pack(side="left")
             b.bind("<Button-1>", lambda e, c=code: self.set_lang(c))
+        tk.Label(bottom, text=self.s("mode"), font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"]).pack(anchor="w")
+        modes = tk.Frame(bottom, bg=C["sidebar"])
+        modes.pack(anchor="w", pady=(4, 10))
+        for mode in ("light", "dark"):
+            on = mode == theme.MODE
+            b = tk.Label(modes, text=self.s(mode), font=F["small_bold"], padx=10, pady=2, cursor="hand2",
+                         bg="#FFFFFF" if on else C["sidebar"], fg=C["sidebar"] if on else C["sidebar_text"],
+                         highlightthickness=1, highlightbackground=C["sidebar_muted"])
+            b.pack(side="left")
+            b.bind("<Button-1>", lambda e, m=mode: self.set_mode(m))
         tk.Label(bottom, text=self.s("n_rules").format(r=len(self.kb.rules), f=len(self.kb.faults)),
                  font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"]).pack(anchor="w")
 
@@ -442,7 +454,7 @@ class App:
         self.state["page"] = key
         for k, paint in self.nav.items():
             if k == key:
-                paint(C["sidebar_active"], "#FFFFFF", "#7FD3E0")
+                paint(C["sidebar_active"], "#FFFFFF", C["highlight"])
             else:
                 paint(C["sidebar"])
         for p in self.pages.values():
@@ -452,6 +464,13 @@ class App:
         page = self.pages[key]
         page.pack(fill="both", expand=True)
         page.on_show()
+
+    def set_mode(self, mode: str) -> None:
+        """Light or dark colours; every screen is built again with the new palette."""
+        if mode != theme.MODE:
+            theme.set_mode(mode)
+            theme.apply(self.root)
+            self.build()
 
     def set_lang(self, lang: str) -> None:
         if lang != self.lang:

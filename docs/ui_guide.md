@@ -24,16 +24,17 @@ Chỉ có một màu chính là xanh dầu `accent`. Xanh lá và đỏ chỉ d�
 | `accent` | `#0E5E6F` | Nút chính, thanh CF, lỗi xếp hạng 1, tiêu đề |
 | `accent_hover` | `#0A4A58` | Nút chính khi rê chuột hoặc nhấn |
 | `accent_soft` | `#DCECEF` | Khung “Tại sao?”, mục đang chọn |
-| `bg` | `#EEF2F3` | Nền cửa sổ |
+| `bg` | `#E9EEF0` | Nền cửa sổ |
 | `surface` | `#FFFFFF` | Panel, thẻ kết quả, ô nhập |
-| `chrome` | `#DDE4E6` | Thanh trạng thái, rãnh thanh CF, nút bị tắt |
-| `border` | `#CBD5D8` | Viền 1 px của panel, thẻ, ô nhập |
-| `text` | `#17252A` | Chữ chính |
+| `chrome` | `#DAE3E6` | Thanh trạng thái, rãnh thanh CF, nút bị tắt |
+| `border` | `#C8D3D7` | Viền 1 px của panel, thẻ, ô nhập |
+| `text` | `#132228` | Chữ chính |
 | `muted` | `#5B6B70` | Chữ phụ, gợi ý, số đếm |
 | `ok` / `ok_soft` | `#2E7D4F` / `#E3F1E8` | “Tự xử lý được”, nút Có, Wang khớp |
 | `danger` / `danger_soft` | `#B3261E` / `#F8E1DF` | “Cần mang ra thợ”, nút Không, lỗi |
 | `warn` / `warn_soft` | `#8A5A00` / `#FBEFD6` | Chưa đủ dữ kiện để kết luận |
-| `sidebar` | `#0B3D49` | Thanh điều hướng bên trái của GUI |
+| `sidebar` | `#082E37` | Thanh điều hướng bên trái của GUI |
+| `highlight` / `highlight_soft` | `#E9A23B` / `#FCEFD9` | Mục đang chọn ở thanh bên, gạch dưới tiêu đề màn hình, điểm nhấn màn Tổng quan |
 
 ### Màu theo bộ phận (`SUBSYSTEM_COLORS`)
 
@@ -58,7 +59,7 @@ GUI chỉ dùng **Segoe UI** (có sẵn trên mọi máy Windows, nên file .exe
 
 | Tên trong `FONTS` | Font | Cỡ | Dùng cho |
 |---|---|---|---|
-| `display` | Segoe UI đậm | 20 | Tiêu đề màn hình, số lớn |
+| `display` | Segoe UI đậm | 22 | Tiêu đề màn hình, số lớn |
 | `title` | Segoe UI đậm | 12 | Tên chương trình, tên lỗi trên thẻ |
 | `question` | Segoe UI đậm | 13 | Câu hỏi ở chế độ hỏi đáp |
 | `heading` | Segoe UI đậm | 10 | Tiêu đề panel, chữ trên nút |
@@ -140,6 +141,7 @@ Khung cửa sổ (`src/gui.py`, Lâm) có thanh bên trái và 4 màn hình. Hai
 
 | Màn hình | File | Class | Người làm |
 |---|---|---|---|
+| Trợ lý chẩn đoán (lời kể, câu hỏi thông minh) | `src/gui_assistant.py` | `AssistantPage` | Lâm |
 | Theo triệu chứng (forward, Wang) | `src/gui_forward.py` | `ForwardPage` | Giang |
 | Hỏi đáp từng câu (backward, why/how) | `src/gui_backward.py` | `BackwardPage` | Khoa |
 | Cơ sở tri thức | `src/gui.py` | `KBPage` | Lâm |
@@ -183,4 +185,4 @@ class ForwardPage(Page):
 
 Thành phần có sẵn trong `src/gui_widgets.py` (dùng thay cho widget tk thường để mọi màn hình giống nhau): `Page`, `Panel`, `ScrollFrame`, `Segmented`, `HintEntry`, `page_header`, `tile`, `label`, `autowrap`, `link`, `chip`, `severity_chip`, `rank_badge`, `CFBar`, `dot`, `px` (nhân kích thước theo độ phân giải màn hình), `fold` (tìm kiếm không dấu). Hàm chuyển kết quả thành chữ cho người dùng: `src/present.py` (`how_rows`, `near_misses`, `short`).
 
-Chạy thử: `python src/gui.py`. Phần logic (không vẽ) nên tách thành hàm riêng để viết unit test.
+Chạy thử: `python src/gui.py`. Có nút Sáng/Tối ở thanh bên: khi đổi, `theme.set_mode()` thay giá trị trong `COLORS` rồi dựng lại mọi màn hình, nên màn hình nào chỉ dùng `C["..."]` sẽ tự đổi màu; đừng tự gõ mã màu. Phần logic (không vẽ) nên tách thành hàm riêng để viết unit test.
