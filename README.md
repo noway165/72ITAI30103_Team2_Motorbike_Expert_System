@@ -177,12 +177,24 @@ Thanh bên trái:
 3. Tick mọi triệu chứng bạn chắc chắn. Triệu chứng không tick được coi là chưa biết, không phải "không".
 4. Bấm **Tìm lỗi phù hợp**.
 
-**c. Kể bằng lời (trợ lý chẩn đoán)**
+**c. Kể bằng lời (trò chuyện với MotoLogic)**
 
-1. Gõ tình trạng xe như khi kể với thợ, tiếng Việt có hoặc không dấu, hoặc tiếng Anh. Ví dụ: "Sáng nay đề chỉ nghe tạch tạch, còi cũng yếu, ắc quy dùng hơn 2 năm rồi". Có thể bấm một câu ví dụ để điền sẵn.
-2. Bấm **Phân tích**. Khối bên phải cho thấy chương trình đã hiểu những triệu chứng nào (✓ có, ✕ không).
-3. Trợ lý hỏi thêm những câu có information gain cao nhất, rồi tự chuyển sang kết quả khi đủ chắc.
-4. Nếu không nhận ra triệu chứng nào, ô nhập vẫn giữ nguyên và có nút **Chuyển sang hỏi đáp từng câu**.
+1. Gõ tình trạng xe như khi kể với thợ, tiếng Việt có hoặc không dấu, hoặc tiếng Anh, rồi bấm **Phân tích**. Có thể bấm một câu ví dụ để điền sẵn.
+2. Màn chuyển thành khung chat. Bot nhắc lại những triệu chứng đã đọc được, rồi hỏi câu có information gain cao nhất. Câu hỏi lấy từ cơ sở tri thức, kèm các lỗi mà câu đó giúp phân biệt.
+3. Mỗi lượt có thể gõ (hoặc bấm nút nhanh):
+   - **trả lời**: "có", "ừ", "chắc vậy", "không", "ko", "không rõ"… Bot báo luật nào vừa chạy được, hoặc luật nào không dùng được nữa;
+   - **kể thêm**: "à còi cũng yếu". Câu trả lời và phần kể thêm có thể chung một câu: "có, mà đèn pha cũng không sáng";
+   - **hỏi lại**:
+     - "tại sao hỏi vậy?": các luật dùng câu đó, mỗi điều kiện đánh dấu ✓ đã có, ✗ không, ? đang hỏi, · chưa biết;
+     - "làm sao biết?": chuỗi luật tới lỗi dẫn đầu;
+     - "sửa thế nào?": cách xử lý và luật đã chứng minh;
+     - "còn khả năng nào?": 3 lỗi có khả năng nhất, và lỗi nào đã được luật chứng minh;
+     - "đứt cầu chì tổng là gì?": lỗi đó, các luật kết luận ra nó và các luật dùng nó;
+   - **lệnh**: "xem kết quả" sang bước 3; "làm lại" bắt đầu lại.
+4. Khi không còn câu đáng hỏi, bot nêu kết luận, độ tin cậy, chuỗi luật, kết quả kiểm tra chéo bằng thuật toán Wang và cách xử lý. Bấm **Xem kết quả đầy đủ** để sang bước 3.
+5. Nếu câu đầu không nhận ra triệu chứng nào, ô nhập vẫn giữ nguyên và có nút **Chuyển sang hỏi đáp từng câu**.
+
+Mọi nội dung bot trả lời đều sinh từ luật (`src/chat.py`). Chỉ các chữ nối như "NẾU / VÀ / THÌ", "Ghi nhận" là cố định. Kết luận luôn do forward chaining đưa ra; chat không tự thêm lỗi nào ngoài luật.
 
 ### Bước 3: Kết quả
 
@@ -291,6 +303,7 @@ Cách đọc số đo của bộ đọc câu:
 │   ├── wang.py            # thuật toán Wang
 │   ├── nlu.py             # đọc câu người lái kể
 │   ├── interview.py       # chọn câu hỏi theo information gain
+│   ├── chat.py            # hội thoại Kể bằng lời: hiểu ý câu gõ, trả lời từ luật
 │   ├── present.py         # dựng giải thích why / how cho CLI và giao diện
 │   ├── scenarios.py       # đọc kịch bản
 │   ├── evaluate.py        # đánh giá forward / backward, biểu đồ
