@@ -261,3 +261,305 @@ class Page(tk.Frame):
 
     def on_show(self) -> None:
         pass
+
+
+# ---------------------------------------------------------------------------
+# MotoLogic components (owner: Giang; spec: docs/design/motologic_spec.md, section 2)
+# Tk has no rounded frames, so each one is a Canvas that draws round_rect and holds a Frame.
+# ---------------------------------------------------------------------------
+
+def bind_tree(widget, sequence: str, func) -> None:
+    """Bind an event on a widget and every widget inside it (a click anywhere on a card)."""
+    widget.bind(sequence, func, add="+")
+    for child in widget.winfo_children():
+        bind_tree(child, sequence, func)
+
+
+def eyebrow(parent, text: str, bg: str = "bg", fg: str = "accent") -> tk.Frame:
+    """Small capital label with a dot in front, above a screen or panel title."""
+    f = tk.Frame(parent, bg=C[bg])
+    dot(f, C[fg], bg=bg, size=6).pack(side="left", padx=(0, px(8)))
+    label(f, text.upper(), "eyebrow", fg, bg=bg).pack(side="left")
+    return f
+
+
+class RoundCard(tk.Canvas):
+    """Rounded card. Put widgets in `.body` (background C[fill]).
+
+    The height follows the content, unless grow=True: then the card fills the height
+    its parent gives it (a right-hand panel as tall as the card next to it).
+    """
+
+    def __init__(self, parent, fill: str = "surface", border: Optional[str] = "border", radius: int = 18,
+                 bg: str = "bg", pad: int = 22, grow: bool = False):
+        super().__init__(parent, bg=C[bg], highlightthickness=0, bd=0, height=px(40), width=px(40))
+        self.fill, self.border, self.radius, self.pad, self.grow = fill, border, px(radius), px(pad), grow
+        self.body = tk.Frame(self, bg=C[fill])
+        self._win = self.create_window(self.pad, self.pad, window=self.body, anchor="nw")
+        self.bind("<Configure>", self._draw)
+        self.body.bind("<Configure>", self._fit)
+
+    def _fit(self, _=None) -> None:
+        # request the height of the content; a grow card may still be stretched taller by its parent
+        h = self.body.winfo_reqheight() + 2 * self.pad
+        if abs(int(self.cget("height")) - h) > 1:
+            self.configure(height=h)
+
+    def _draw(self, _=None) -> None:
+        w, h = self.winfo_width(), self.winfo_height()
+        self.delete("card")
+        outline = C[self.border] if self.border else C[self.fill]
+        round_rect(self, 1, 1, w - 1, h - 1, self.radius, fill=C[self.fill], outline=outline, tags="card")
+        self.tag_lower("card")
+        self.itemconfigure(self._win, width=max(1, w - 2 * self.pad))
+        if self.grow:
+            self.itemconfigure(self._win, height=max(1, h - 2 * self.pad))
+
+
+class PillButton(tk.Canvas):
+    """Rounded button. style "dark": panel colour with a lime arrow box; "lime"; "outline"."""
+
+    STYLES = {"dark": ("panel", "on_panel", "accent"), "lime": ("lime", "on_lime", "highlight"),
+              "outline": ("surface", "accent", "chrome")}
+
+    def __init__(self, parent, text: str, command: Callable[[], None], style: str = "dark", bg: str = "bg",
+                 arrow: bool = True, height: int = 48, width: int = 0):
+        import tkinter.font as tkfont
+        font = (theme.UI_FONT, 11, "bold")
+        h = px(height)
+        box = h - px(16) if arrow else 0
+        w = max(px(width), tkfont.Font(font=font).measure(text) + px(48) + (box + px(12) if arrow else 0))
+        super().__init__(parent, width=w, height=h, bg=C[bg], highlightthickness=0, bd=0, cursor="hand2")
+        self.command, self.enabled = command, True
+        self.colors = self.STYLES[style]
+        fill, fg, _ = self.colors
+        self._bg = round_rect(self, 1, 1, w - 1, h - 1, px(14), fill=C[fill],
+                              outline=C["border"] if style == "outline" else C[fill])
+        self._text = self.create_text(px(24), h / 2, text=text, anchor="w", font=font, fill=C[fg])
+        if arrow:
+            x0 = w - px(8) - box
+            round_rect(self, x0, px(8), x0 + box, px(8) + box, px(9), fill=C["lime"], outline="")
+            self.create_text(x0 + box / 2, h / 2, text="→", font=(theme.UI_FONT, 12, "bold"), fill=C["on_lime"])
+        self.bind("<Button-1>", lambda e: self.enabled and self.command())
+        self.bind("<Enter>", lambda e: self.enabled and self.itemconfigure(self._bg, fill=C[self.colors[2]]))
+        self.bind("<Leave>", lambda e: self.itemconfigure(
+            self._bg, fill=C[self.colors[0]] if self.enabled else C["chrome"]))
+
+    def set_enabled(self, on: bool) -> None:
+        self.enabled = on
+        self.configure(cursor="hand2" if on else "arrow")
+        self.itemconfigure(self._bg, fill=C[self.colors[0]] if on else C["chrome"])
+        self.itemconfigure(self._text, fill=C[self.colors[1]] if on else C["muted"])
+
+
+class Stepper(tk.Frame):
+    """The 3 steps at the top of the diagnosis screen: done ✓, current (lime), still to do."""
+
+    def __init__(self, parent, steps, current: int, bg: str = "bg"):
+        super().__init__(parent, bg=C[bg])
+        d = px(30)
+        for i, text in enumerate(steps, 1):
+            self.columnconfigure(i - 1, weight=1, uniform="step")
+            col = tk.Frame(self, bg=C[bg])
+            col.grid(row=0, column=i - 1, sticky="we", padx=(0 if i == 1 else px(10), 0))
+            row = tk.Frame(col, bg=C[bg])
+            row.pack(fill="x", pady=(0, px(10)))
+            c = tk.Canvas(row, width=d, height=d, bg=C[bg], highlightthickness=0, bd=0)
+            done, now = i < current, i == current
+            c.create_oval(1, 1, d - 1, d - 1, outline="",
+                          fill=C["lime"] if now else C["accent_soft"] if done else C["chrome"])
+            c.create_text(d / 2, d / 2, text="✓" if done else f"{i:02d}", font=F["small_bold"],
+                          fill=C["accent"] if done else C["on_lime"] if now else C["muted"])
+            c.pack(side="left")
+            label(row, text + (" ✓" if done else ""), "heading" if now else "body",
+                  "text" if now else "muted", bg=bg).pack(side="left", padx=(px(10), 0))
+            tk.Frame(col, bg=C["accent"] if i <= current else C["border"], height=px(2)).pack(fill="x")
+
+
+def radio_mark(parent, on: bool, bg: str, size: int = 16, dark: bool = False) -> tk.Canvas:
+    d = px(size)
+    c = tk.Canvas(parent, width=d, height=d, bg=C[bg], highlightthickness=0, bd=0)
+    if on:
+        c.create_oval(2, 2, d - 2, d - 2, fill=C["lime"] if dark else C["accent"], outline="")
+    else:
+        c.create_oval(2, 2, d - 2, d - 2, outline=C["muted"], width=max(1, px(1.5)))
+    return c
+
+
+class ChoiceCard(RoundCard):
+    """Card with a radio mark: vehicle type, diagnosis method. Selected = lime_soft with accent border."""
+
+    def __init__(self, parent, title: str, subtitle: str, selected: bool, command: Callable[[], None],
+                 note: str = "", badge: str = "", icon_name: str = "", bg: str = "surface"):
+        fill = "lime_soft" if selected else "surface"
+        super().__init__(parent, fill=fill, border="accent" if selected else "border", radius=14, bg=bg, pad=16)
+        b = self.body
+        b.columnconfigure(2, weight=1)
+        radio_mark(b, selected, fill).grid(row=0, column=0, rowspan=3, sticky="n", padx=(0, px(12)), pady=px(4))
+        if icon_name:
+            icon(b, icon_name, 34, "accent", fill).grid(row=0, column=1, rowspan=3, sticky="n", padx=(0, px(12)))
+        head = tk.Frame(b, bg=C[fill])
+        head.grid(row=0, column=2, sticky="we")
+        label(head, title, "title", bg=fill).pack(side="left")
+        if badge:
+            chip(head, badge, C["on_lime"], C["lime"]).pack(side="right")
+        if subtitle:
+            autowrap(label(b, subtitle, "body", "muted", bg=fill)).grid(row=1, column=2, sticky="we", pady=(px(2), 0))
+        if note:
+            label(b, note, "small", "accent", bg=fill).grid(row=2, column=2, sticky="w", pady=(px(4), 0))
+        self.configure(cursor="hand2")
+        bind_tree(self, "<Button-1>", lambda e: command())
+
+
+class CheckRow(RoundCard):
+    """One symptom with a tick box (MotoLogic symptom checklist)."""
+
+    def __init__(self, parent, text: str, checked: bool, command: Callable[[], None], bg: str = "surface"):
+        fill = "lime_soft" if checked else "surface"
+        super().__init__(parent, fill=fill, border="border", radius=10, bg=bg, pad=12)
+        d = px(20)
+        box = tk.Canvas(self.body, width=d, height=d, bg=C[fill], highlightthickness=0, bd=0)
+        if checked:
+            round_rect(box, 1, 1, d - 1, d - 1, px(4), fill=C["panel"], outline="")
+            box.create_line(d * .27, d * .52, d * .45, d * .7, d * .75, d * .32, fill=C["lime"], width=px(2))
+        else:
+            round_rect(box, 1, 1, d - 1, d - 1, px(4), fill=C["surface"], outline=C["muted"])
+        box.pack(side="left", padx=(0, px(12)))
+        autowrap(label(self.body, text, "lead", bg=fill)).pack(side="left", fill="x", expand=True)
+        self.configure(cursor="hand2")
+        bind_tree(self, "<Button-1>", lambda e: command())
+
+
+class Gauge(tk.Canvas):
+    """CF as a speedometer: half circle from 0 to 1.0 with a needle."""
+
+    def __init__(self, parent, cf: float, size: int = 150, bg: str = "panel"):
+        import math
+        on_panel = bg == "panel"
+        fg, soft = ("on_panel", "panel_muted") if on_panel else ("text", "muted")
+        w = px(size)
+        r = w / 2 - px(10)
+        super().__init__(parent, width=w, height=int(r + px(46)), bg=C[bg], highlightthickness=0, bd=0)
+        cx, cy, thick = w / 2, r + px(10), px(10)
+        box = (cx - r, cy - r, cx + r, cy + r)
+        self.create_arc(*box, start=0, extent=180, style="arc", width=thick,
+                        outline=C["panel_soft"] if on_panel else C["chrome"])
+        cf = max(0.0, min(1.0, cf))
+        if cf > 0:
+            self.create_arc(*box, start=180, extent=-180 * cf, style="arc", outline=C["lime"], width=thick)
+        for v in (0, 0.25, 0.5, 0.75, 1.0):  # ticks, as on a speedometer
+            a = math.radians(180 - 180 * v)
+            r1, r2 = r - thick, r - thick - px(6)
+            self.create_line(cx + r1 * math.cos(a), cy - r1 * math.sin(a), cx + r2 * math.cos(a),
+                             cy - r2 * math.sin(a), fill=C[soft])
+        a = math.radians(180 - 180 * cf)
+        self.create_line(cx, cy, cx + (r - px(18)) * math.cos(a), cy - (r - px(18)) * math.sin(a),
+                         fill=C[fg], width=px(3), capstyle="round")
+        self.create_oval(cx - px(6), cy - px(6), cx + px(6), cy + px(6), fill=C["lime"], outline="")
+        self.create_text(cx - r, cy + px(14), text="0", font=F["small"], fill=C[soft])
+        self.create_text(cx + r, cy + px(14), text="1.0", font=F["small"], fill=C[soft])
+        self.create_text(cx, cy + px(28), text=f"CF {cf:.2f}", font=(theme.UI_FONT, 13, "bold"), fill=C[fg])
+
+
+# Icons drawn with lines in a 0..1 box, so they scale and follow the light / dark colours (no images).
+def _draw_icon(c: tk.Canvas, name: str, s: float, color: str) -> None:
+    lw = max(1.5, s / 14)
+
+    def P(*xy):
+        return [v * s for v in xy]
+
+    def line(*xy, width=None):
+        c.create_line(*P(*xy), fill=color, width=width or lw, capstyle="round", joinstyle="round")
+
+    def oval(x0, y0, x1, y1, fill=""):
+        c.create_oval(*P(x0, y0, x1, y1), outline=color, width=lw, fill=fill)
+
+    def rect(x0, y0, x1, y1):
+        c.create_rectangle(*P(x0, y0, x1, y1), outline=color, width=lw)
+
+    if name in ("scooter", "manual"):
+        oval(.06, .58, .34, .86)
+        oval(.66, .58, .94, .86)
+        if name == "scooter":
+            line(.2, .72, .38, .58, .7, .58, .8, .72)
+            line(.66, .58, .6, .22, .76, .22)
+            line(.28, .5, .5, .5)
+        else:
+            line(.2, .72, .42, .44, .68, .44, .8, .72)
+            line(.42, .44, .5, .72, .6, .72)
+            line(.68, .44, .64, .24, .78, .24)
+            line(.4, .36, .6, .36)
+    elif name == "battery":
+        rect(.12, .3, .88, .82)
+        rect(.24, .2, .36, .3)
+        rect(.64, .2, .76, .3)
+        line(.24, .56, .4, .56)
+        line(.32, .48, .32, .64)
+        line(.6, .56, .76, .56)
+    elif name == "spark_plug":
+        rect(.42, .06, .58, .2)
+        rect(.36, .2, .64, .46)
+        rect(.4, .46, .6, .7)
+        line(.5, .7, .5, .84, .62, .84)
+        line(.7, .74, .8, .66)
+        line(.72, .9, .84, .9)
+    elif name == "engine":
+        rect(.16, .36, .8, .84)
+        rect(.3, .18, .66, .36)
+        for y in (.48, .6, .72):
+            line(.8, y, .92, y)
+        line(.04, .6, .16, .6)
+    elif name == "chain":
+        oval(.06, .3, .46, .7)
+        oval(.62, .4, .86, .64)
+        line(.26, .3, .74, .4)
+        line(.26, .7, .74, .64)
+    elif name == "brake_disc":
+        oval(.08, .08, .92, .92)
+        oval(.36, .36, .64, .64)
+        for x, y in ((.5, .2), (.8, .5), (.5, .8), (.2, .5)):
+            oval(x - .04, y - .04, x + .04, y + .04)
+    elif name == "tyre":
+        oval(.06, .06, .94, .94)
+        oval(.3, .3, .7, .7)
+        for xy in ((.5, .06, .5, .3), (.5, .7, .5, .94), (.06, .5, .3, .5), (.7, .5, .94, .5)):
+            line(*xy)
+    elif name == "wrench":
+        line(.2, .82, .62, .4, width=lw * 1.6)
+        c.create_arc(*P(.52, .1, .92, .5), start=200, extent=270, style="arc", outline=color, width=lw * 1.4)
+    elif name == "shield":
+        line(.5, .06, .86, .2, .82, .56, .5, .92, .18, .56, .14, .2, .5, .06)
+        line(.32, .5, .46, .64, .7, .38)
+    elif name == "pulse":
+        line(.04, .55, .3, .55, .4, .25, .55, .82, .66, .45, .96, .45)
+    elif name == "history":
+        rect(.18, .1, .82, .9)
+        for y in (.32, .5, .68):
+            line(.32, y, .68, y)
+    elif name == "layers":
+        line(.5, .14, .9, .34, .5, .54, .1, .34, .5, .14)
+        line(.1, .52, .5, .72, .9, .52)
+        line(.1, .7, .5, .9, .9, .7)
+    elif name == "search":
+        oval(.12, .12, .62, .62)
+        line(.56, .56, .88, .88)
+    elif name == "info":
+        oval(.1, .1, .9, .9)
+        line(.5, .44, .5, .7)
+        oval(.47, .27, .53, .33, fill=color)
+    else:  # "check" and any other name
+        line(.18, .52, .4, .74, .82, .28)
+
+
+ICONS = ("scooter", "manual", "battery", "spark_plug", "engine", "chain", "brake_disc", "tyre", "wrench",
+         "shield", "pulse", "history", "layers", "search", "info", "check")
+SUBSYSTEM_ICONS = {"starting_fuel": "battery", "ignition_electrical": "spark_plug", "engine": "engine",
+                   "transmission": "chain", "brakes": "brake_disc", "tyres_suspension": "tyre"}
+
+
+def icon(parent, name: str, size: int = 24, color: str = "text", bg: str = "surface") -> tk.Canvas:
+    """A small line icon (vehicle, part of the motorbike, wrench, shield, ...) drawn on a Canvas."""
+    s = px(size)
+    c = tk.Canvas(parent, width=s, height=s, bg=C[bg], highlightthickness=0, bd=0)
+    _draw_icon(c, name, s, C[color])
+    return c

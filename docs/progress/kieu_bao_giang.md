@@ -2,7 +2,7 @@
 
 Phần chính: forward chaining, xếp hạng bằng certainty factor. Phần phụ: kiểm tra bằng thuật toán Wang. Hệ thống xe: động cơ, truyền động. Phần báo cáo: Methodology (forward chaining, xếp hạng, Wang), Discussion.
 
-Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo lịch trình ngày 02/10 và danh sách việc ngày 09/11.
+Cập nhật lần cuối: 12/11/2026 (nhánh `feature/motologic`). Theo lịch trình ngày 02/10 và phân công ngày 09/11, 12/11.
 
 ## Theo lịch
 
@@ -29,32 +29,29 @@ Cập nhật lần cuối: 09/11/2026 (nhánh `feature/forward-chaining`). Theo 
 | | Thử file .exe (`build_exe.bat`, 09/11): chọn kịch bản mẫu trên màn Theo triệu chứng | Xong: 7 kịch bản đều đúng như khi chạy bằng Python (bảng dưới) |
 | 7 (16/11–22/11) | Thuyết trình Oral 19/11; kiểm tra trích dẫn phần mình | Chưa tới |
 
+## Phân công ngày 12/11 (PhanCong_Nhom2_12-11.pdf)
+
+| Việc | Trạng thái |
+|---|---|
+| A. Bảng màu MotoLogic trong `src/theme.py` (giữ khoá cũ; thêm `panel`, `panel_soft`, `on_panel`, `panel_muted`, `lime`, `lime_soft`, `on_lime`), Sáng và Tối cùng bộ khoá | Xong |
+| A. `src/gui_widgets.py`: `RoundCard`, `PillButton`, `Stepper`, `ChoiceCard`, `CheckRow`, `Gauge` (đồng hồ CF), icon vẽ tay cho xe và 6 bộ phận | Xong |
+| A. `src/gui.py`: thanh bên sáng (MotoLogic, Làm việc / Màn cũ, thẻ số luật và lỗi lấy từ cơ sở tri thức, VI/EN, Sáng/Tối), thanh trên (đường dẫn, mã phiên, "Chạy offline"); màn mở đầu là Chẩn đoán | Xong |
+| A. `src/gui_diagnosis.py`: 3 bước, 3 cách (hỏi đáp của Khoa, chọn triệu chứng, kể bằng lời của Lâm), kết quả có đồng hồ CF, chuỗi luật, bước tiếp theo, Wang, "Cũng có thể là", gợi ý khi chưa đủ dữ kiện | Xong |
+| A. `src/gui_history.py`: lịch sử phiên, bấm để mở lại kết quả | Xong |
+| A. `tests/test_gui_diagnosis.py`: SE01 bằng cả 3 cách ra Ắc quy yếu và Wang ✓; BT03 ra Rò rỉ dầu phanh, cần thợ; đổi VI/EN và Sáng/Tối giữa chừng không mất câu trả lời; toàn bộ test qua; `build_exe.bat` build được | Xong |
+| B. Methodology còn 247 từ + Chapter conclusion (`docs/report/methodology_giang.md`) | Xong |
+| B. Discussion còn 280 từ + Chapter conclusion, thêm đoạn đánh đổi của Trợ lý (5,8 câu, 27/30 so với 39,7 câu, 30/30) | Xong |
+| B. Số liệu mới: 79 luật, top-1 30/30 | Xong |
+| B. 3 hình: `fig_cf_example.png`, `fig_wang_proof.png`, `fig_dead_end.png` (`python src/report_figures.py`, mọi số lấy từ cơ sở tri thức) | Xong |
+| B. 4 ảnh MotoLogic: `docs/report/figures/fig_motologic_1_setup.png` … `_4_result.png` | Xong |
+| C. Slide và lời thoại phần Forward + Wang theo số mới, kèm kịch bản demo SE01 và BT03 (`docs/slides/`) | Xong |
+
 ## Kết quả hiện tại
 
-- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **77 luật** (Giang 30: EN01–EN18, TR01–TR12). `python src/kb.py`: 0 lỗi.
-- Unit test: 83 test qua, 1 bỏ qua (`python -m unittest discover tests`).
-- 30 kịch bản (BT, SE, ET): forward chaining top-1 29/30, top-3 29/30. Backward chaining cho cùng kết quả.
-- Wang và forward chaining khớp trên 30 kịch bản và 500 bộ triệu chứng ngẫu nhiên.
-- Nguồn: cả 30 luật EN/TR đã có nguồn đã kiểm tra (`docs/sources.md`).
+- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **79 luật**. `python src/kb.py`: 0 lỗi.
+- 30 kịch bản: top-1 30/30 với forward và backward chaining; Wang khớp forward chaining trên 30 kịch bản và 500 bộ ngẫu nhiên.
 
-Thử `dist\MotorbikeExpert.exe` (09/11), màn Theo triệu chứng, ô Kịch bản mẫu:
+## Còn lại
 
-| Kịch bản | Kết quả hạng 1 | CF | Luật | Wang |
-|---|---|---|---|---|
-| BT01 | Má phanh mòn | 0.90 | BR01 | chứng minh được |
-| BT10 | Chưa đủ dữ kiện; hiện TS09 → giảm xóc mất giảm chấn và 2 triệu chứng gợi ý thêm | | TS09 | khớp |
-| ET03 | Thiếu nhớt máy hoặc nhớt quá hạn | 0.88 | EN06, EN16 | chứng minh được |
-| ET07 | Dây curoa mòn hoặc chai | 0.86 | TR01, TR02, TR12 | chứng minh được |
-| SE01 | Ắc quy yếu hoặc hết điện | 0.89 | SF01, SF02, SF14 | chứng minh được |
-| SE02 | Đề không đúng thao tác (chưa bóp phanh) | 0.90 | SF07 | chứng minh được |
-| SE10 | Ắc quy yếu hoặc hết điện | 0.54 | SF01, SF14 | chứng minh được |
-
-## Cần người khác
-
-- **Khoa:** thêm luật TS15 (sửa BT10, kịch bản sai duy nhất còn lại). Khi script đánh giá trong `results/` xong, đối chiếu với số trong `docs/report/discussion.md`.
-- **Lâm:** merge `feature/sf14` trước nhánh này; ghép slide `docs/slides/giang_forward_wang.pptx`.
-
-## Còn tồn đọng
-
-- Lâm thử file .exe trên máy khác (11/11, việc của Lâm).
-- Sửa phần viết theo góp ý của Lâm; thuyết trình Oral 19/11.
+- Gửi Lâm phần báo cáo và hình (đã có trong PR); Lâm duyệt, merge, build `.exe` cuối (tối 14/11).
+- Tập demo 2 phút theo `docs/slides/giang_script.md`; vấn đáp 16/11.

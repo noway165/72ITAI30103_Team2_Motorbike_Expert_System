@@ -18,16 +18,16 @@ For charts (evaluation script):
 
 from __future__ import annotations
 
-COLORS = {
-    "accent": "#0E5E6F",        # title bar, primary button, CF bar, result #1
-    "accent_hover": "#0A4A58",  # primary button when hovered / pressed
-    "accent_soft": "#DCECEF",   # "why" box, selected item
-    "bg": "#E9EEF0",            # window background
-    "surface": "#FFFFFF",       # panels, result cards, entries
-    "chrome": "#DAE3E6",        # status bar, CF bar trough, disabled button
-    "border": "#C8D3D7",        # 1 px border of panels, cards, entries
-    "text": "#132228",
-    "muted": "#5B6B70",         # hints, counts, status bar text
+COLORS = {  # MotoLogic palette (docs/design/motologic_spec.md); keys kept for older screens
+    "accent": "#1F6B57",        # emphasised text, border of a selected card, stepper line
+    "accent_hover": "#17543F",  # primary button when hovered / pressed
+    "accent_soft": "#E3EFE7",   # "why" box, selected item
+    "bg": "#F2F3EC",            # window background (cream)
+    "surface": "#FFFFFF",       # white rounded cards, entries
+    "chrome": "#E7EAE0",        # chips, CF bar trough, disabled button
+    "border": "#DCE1D6",        # 1 px border of cards and entries
+    "text": "#14352C",
+    "muted": "#5F6F67",         # hints, counts, status bar text
     "on_accent": "#FFFFFF",     # text on accent / ok / danger
     "ok": "#2E7D4F",            # severity "self", Yes button, Wang agrees
     "ok_soft": "#E3F1E8",
@@ -35,14 +35,21 @@ COLORS = {
     "danger_soft": "#F8E1DF",
     "warn": "#8A5A00",          # not enough evidence for any fault
     "warn_soft": "#FBEFD6",
-    "sidebar": "#082E37",       # left navigation
-    "sidebar_hover": "#0E3E49",
-    "sidebar_active": "#11505D",
-    "sidebar_text": "#D5E6EA",
-    "sidebar_muted": "#8FB1B9",
-    "highlight": "#E9A23B",     # selected nav item, title underline, home screen accents
-    "highlight_soft": "#FCEFD9",
-    "hero": "#0A4652",          # dark end of the home screen banner
+    "sidebar": "#FFFFFF",       # left navigation (light, as in the MotoLogic design)
+    "sidebar_hover": "#F2F3EC",
+    "sidebar_active": "#DDF57A",
+    "sidebar_text": "#14352C",
+    "sidebar_muted": "#5F6F67",
+    "highlight": "#A9C93A",     # title underline, highlighted words
+    "highlight_soft": "#EEF7CF",
+    "hero": "#1B3B33",          # dark banners
+    "panel": "#1B3B33",         # dark moss blocks: right-hand panels, number cards, result banner
+    "panel_soft": "#24493F",    # box inside a dark block
+    "on_panel": "#FFFFFF",      # text on panel
+    "panel_muted": "#B9CCC4",   # secondary text on panel
+    "lime": "#DDF57A",          # selected nav item, arrow buttons, highlighted numbers
+    "lime_soft": "#EEF7CF",     # selected card, "Recommended" chip
+    "on_lime": "#14352C",       # text on lime
 }
 
 # One colour per subsystem: group dots in the GUI and charts by subsystem.
@@ -57,7 +64,7 @@ SUBSYSTEM_COLORS = {
 
 # One colour per inference method in every chart and slide.
 ENGINE_COLORS = {
-    "forward": COLORS["accent"],
+    "forward": "#0E5E6F",
     "backward": "#C98A0B",
     "wang": "#4A5BA8",
 }
@@ -90,6 +97,11 @@ UI_FONT = "Segoe UI"   # installed on every Windows machine
 MONO_FONT = "Consolas"
 
 FONTS = {
+    "hero": (UI_FONT, 26, "bold"),      # MotoLogic screen titles
+    "big": (UI_FONT, 21, "bold"),       # MotoLogic question, fault name, big numbers
+    "h2": (UI_FONT, 15, "bold"),        # MotoLogic card titles
+    "lead": (UI_FONT, 11),              # MotoLogic subtitles and body
+    "eyebrow": (UI_FONT, 9, "bold"),    # small capital label above a title
     "display": (UI_FONT, 22, "bold"),   # page titles, big numbers on tiles
     "title": (UI_FONT, 12, "bold"),     # program name, card titles
     "question": (UI_FONT, 13, "bold"),  # question in step-by-step mode
@@ -103,9 +115,9 @@ FONTS = {
 
 PAD = {"xs": 4, "s": 8, "m": 12, "l": 16}
 
-WINDOW_SIZE = (1200, 760)
+WINDOW_SIZE = (1280, 820)
 WINDOW_MIN_SIZE = (1040, 660)
-SIDEBAR_WIDTH = 216
+SIDEBAR_WIDTH = 236
 LEFT_COLUMN_WIDTH = 360
 MAX_RESULTS = 5
 
@@ -125,14 +137,16 @@ def severity_colors(severity: str | None):
 
 LIGHT = dict(COLORS)
 DARK = {
-    "accent": "#2E9AAD", "accent_hover": "#45B2C5", "accent_soft": "#163A42",
-    "bg": "#0F191C", "surface": "#172428", "chrome": "#22343A", "border": "#2E464D",
-    "text": "#E3EEF0", "muted": "#93A9AF", "on_accent": "#FFFFFF",
+    "accent": "#4FB394", "accent_hover": "#6CC7AA", "accent_soft": "#1E3A30",
+    "bg": "#0F1B17", "surface": "#17261F", "chrome": "#22342C", "border": "#2C4038",
+    "text": "#E3EEEA", "muted": "#93A9A0", "on_accent": "#0B1612",
     "ok": "#4CB57F", "ok_soft": "#173A28", "danger": "#E5675E", "danger_soft": "#3E1F1D",
     "warn": "#E2A84B", "warn_soft": "#3A2E17",
-    "sidebar": "#081317", "sidebar_hover": "#10242A", "sidebar_active": "#163A43",
-    "sidebar_text": "#D5E6EA", "sidebar_muted": "#7E9AA1",
-    "highlight": "#E9A23B", "highlight_soft": "#3A2E17", "hero": "#0B2F37",
+    "sidebar": "#0B1612", "sidebar_hover": "#17261F", "sidebar_active": "#C9E86A",
+    "sidebar_text": "#E3EEEA", "sidebar_muted": "#93A9A0",
+    "highlight": "#C9E86A", "highlight_soft": "#26341C", "hero": "#0B1612",
+    "panel": "#0B1612", "panel_soft": "#16271F", "on_panel": "#E6F0EC", "panel_muted": "#8FA89F",
+    "lime": "#C9E86A", "lime_soft": "#26341C", "on_lime": "#0F1B17",
 }
 MODE = "light"
 
