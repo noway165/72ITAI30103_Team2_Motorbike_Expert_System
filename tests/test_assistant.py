@@ -131,6 +131,7 @@ class AssistantScreenTest(unittest.TestCase):
     def test_dark_theme_builds_every_screen_and_keeps_the_conversation(self):
         import gui
         app = gui.App(self.root)
+        app.show("assistant")  # the MotoLogic Diagnosis screen opens first now
         app.page.use_example("Còi yếu, đề chỉ nghe tạch tạch")
         app.set_mode("dark")
         self.assertEqual(theme.MODE, "dark")

@@ -3,11 +3,14 @@
 Run from the repository root:
     python src/gui.py            (add --lang=en for English)
 
-The window is a sidebar plus one screen at a time (Ctrl+1 ... Ctrl+5):
-    0. Trợ lý chẩn đoán    gui_assistant.py, class AssistantPage  (Lâm): free text, adaptive questions
-    1. Theo triệu chứng   src/gui_forward.py,  class ForwardPage   (Giang)
-    2. Hỏi đáp từng câu    src/gui_backward.py, class BackwardPage  (Khoa)
+The window is the MotoLogic sidebar, a top bar and one screen at a time (Ctrl+1 ... Ctrl+7):
+    1. Chẩn đoán          gui_diagnosis.py, class DiagnosisPage (Giang): 3 steps, 3 methods
+    2. Lịch sử phiên       gui_history.py, class HistoryPage (Giang)
     3. Cơ sở tri thức      KBPage below: rules and the rule checker (Lâm)
+    Classic screens:
+    4. Trợ lý chẩn đoán    gui_assistant.py, class AssistantPage  (Lâm): free text, adaptive questions
+    5. Theo triệu chứng   src/gui_forward.py,  class ForwardPage   (Giang)
+    6. Hỏi đáp từng câu    src/gui_backward.py, class BackwardPage  (Khoa)
     4. Giới thiệu          AboutPage below (Lâm)
 
 Screens 1 and 2 are plugged in: while their file does not exist yet, the
@@ -27,8 +30,10 @@ from tkinter import ttk
 import gui_widgets as w
 import theme
 from gui_assistant import AssistantPage
-from gui_widgets import (CFBar, HintEntry, Page, Panel, ScrollFrame, autowrap, chip, data_root, dot,
-                         fold, label, link, page_header, px, round_rect, tile)
+from gui_diagnosis import DiagnosisPage, session_number
+from gui_history import HistoryPage
+from gui_widgets import (CFBar, HintEntry, Page, Panel, RoundCard, ScrollFrame, Segmented, autowrap, bind_tree,
+                         chip, data_root, dot, fold, icon, label, link, page_header, px, tile)
 from kb import KnowledgeBase, load_kb, validate
 from present import short
 from scenarios import load_scenarios
@@ -48,6 +53,12 @@ S = {
         "sec_diag": "CHẨN ĐOÁN", "sec_other": "HỆ THỐNG",
         "nav_assistant": "Trợ lý chẩn đoán", "nav_forward": "Theo triệu chứng", "nav_backward": "Hỏi đáp từng câu",
         "nav_kb": "Cơ sở tri thức", "nav_about": "Giới thiệu",
+        "nav_diagnosis": "Chẩn đoán", "nav_history": "Lịch sử phiên",
+        "sec_workspace": "LÀM VIỆC", "sec_legacy": "MÀN CŨ", "workspace": "Làm việc",
+        "session": "Phiên {n:03d}", "offline": "Chạy offline",
+        "transparent": "Minh bạch từ thiết kế.", "transparent_sub": "Mọi kết luận đều dẫn về câu trả lời của bạn.",
+        "rules": "luật", "faults": "lỗi", "proto": "ACADEMIC PROTOTYPE", "proto_group": "Nhóm 2 · Đề tài A",
+        "proto_note": "Luật minh hoạ. Không thay cho việc kiểm tra của thợ.",
         "lang": "Ngôn ngữ", "n_rules": "{r} luật · {f} lỗi", "mode": "Giao diện", "light": "Sáng", "dark": "Tối",
         "todo_title": "Màn hình đang được làm",
         "todo_body": "Màn hình này do {owner} phụ trách. Tạo file src/{module}.py có class {cls}(Page); "
@@ -73,6 +84,12 @@ S = {
         "sec_diag": "DIAGNOSIS", "sec_other": "SYSTEM",
         "nav_assistant": "Diagnosis assistant", "nav_forward": "By symptoms", "nav_backward": "Step-by-step questions",
         "nav_kb": "Knowledge base", "nav_about": "About",
+        "nav_diagnosis": "Diagnosis", "nav_history": "Session history",
+        "sec_workspace": "WORKSPACE", "sec_legacy": "CLASSIC SCREENS", "workspace": "Workspace",
+        "session": "Session {n:03d}", "offline": "Local mode",
+        "transparent": "Transparent by design.", "transparent_sub": "Every conclusion connects back to your answers.",
+        "rules": "rules", "faults": "faults", "proto": "ACADEMIC PROTOTYPE", "proto_group": "Group 2 · Topic A",
+        "proto_note": "Illustrative rules. Not a mechanic's inspection.",
         "lang": "Language", "n_rules": "{r} rules · {f} faults", "mode": "Theme", "light": "Light", "dark": "Dark",
         "todo_title": "Screen in progress",
         "todo_body": "{owner} builds this screen. Create src/{module}.py with class {cls}(Page); "
@@ -103,7 +120,7 @@ ABOUT = {
                        "Kiều Bảo Giang: suy diễn tiến, CF, thuật toán Wang, màn hình Theo triệu chứng\n"
                        "Nguyễn Nam Khoa: suy diễn lùi, giải thích why / how, màn hình Hỏi đáp, đánh giá"),
         ("Lưu ý", "Kết quả chỉ mang tính tham khảo; lỗi “Cần mang ra thợ” nên được kiểm tra tại tiệm."),
-        ("Phím tắt", "Ctrl+1 … Ctrl+5: chuyển màn hình"),
+        ("Phím tắt", "Ctrl+1 … Ctrl+7: chuyển màn hình"),
     ],
     "en": [
         ("Project", "An expert system that diagnoses common motorbike faults. The knowledge base holds IF … THEN … "
@@ -113,7 +130,7 @@ ABOUT = {
                  "Kiều Bảo Giang: forward chaining, CF, Wang's algorithm, By symptoms screen\n"
                  "Nguyễn Nam Khoa: backward chaining, why / how, Step-by-step screen, evaluation"),
         ("Note", "Results are advice only; faults marked “Take it to a mechanic” should be checked at a workshop."),
-        ("Shortcuts", "Ctrl+1 … Ctrl+5: change screen"),
+        ("Shortcuts", "Ctrl+1 … Ctrl+7: change screen"),
     ],
 }
 
@@ -309,12 +326,15 @@ class AboutPage(Page):
 # Application shell: sidebar + one screen at a time
 # ---------------------------------------------------------------------------
 
-NAV = [  # (section, [(key, nav text key), ...])
-    ("sec_diag", [("assistant", "nav_assistant"), ("forward", "nav_forward"), ("backward", "nav_backward")]),
-    ("sec_other", [("kb", "nav_kb"), ("about", "nav_about")]),
+NAV = [  # (section, [(key, nav text key, icon or "" for a small item), ...])
+    ("sec_workspace", [("diagnosis", "nav_diagnosis", "pulse"), ("history", "nav_history", "history"),
+                       ("kb", "nav_kb", "layers")]),
+    ("sec_legacy", [("assistant", "nav_assistant", ""), ("forward", "nav_forward", ""),
+                    ("backward", "nav_backward", ""), ("about", "nav_about", "")]),
 ]
-PAGES = [key for _, items in NAV for key, _ in items]
-OWN_PAGES = {"assistant": AssistantPage, "kb": KBPage, "about": AboutPage}
+PAGES = [key for _, items in NAV for key, _, _ in items]
+OWN_PAGES = {"diagnosis": DiagnosisPage, "history": HistoryPage, "assistant": AssistantPage, "kb": KBPage,
+             "about": AboutPage}
 
 
 class App:
@@ -328,7 +348,7 @@ class App:
             self.scenarios = load_scenarios(data_root() / "scenarios")
         except (OSError, ValueError, KeyError):
             self.scenarios = []
-        self.state: Dict[str, object] = {"page": "assistant"}  # shared by all screens; add your own keys
+        self.state: Dict[str, object] = {"page": "diagnosis"}  # shared by all screens; add your own keys
         w.K = max(1.0, root.winfo_fpixels("1i") / 96)  # scale pixel sizes on 125 % / 150 % screens
         theme.apply(root)
         sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
@@ -351,95 +371,96 @@ class App:
 
     # --- layout ---
     def build(self) -> None:
+        # pending after() calls of the old screens would run on destroyed widgets (or on a reused callback name)
+        for job in self.root.tk.splitlist(self.root.tk.call("after", "info")):
+            self.root.tk.call("after", "cancel", job)  # Tcl only: destroy() still deletes the Python callbacks
         for child in self.root.winfo_children():
             child.destroy()
         self.root.title(self.s("app"))
         side = tk.Frame(self.root, bg=C["sidebar"], width=px(theme.SIDEBAR_WIDTH))
         side.pack(side="left", fill="y")
         side.pack_propagate(False)
-        top = tk.Frame(side, bg=C["sidebar"], padx=18, pady=18)
-        top.pack(fill="x")
-        q = w.K
-        logo = tk.Canvas(top, width=34 * q, height=34 * q, bg=C["sidebar"], highlightthickness=0)
-        round_rect(logo, 0, 0, 34 * q, 34 * q, 9 * q, fill=C["accent"], outline="")
-        # two wheels and a frame: a small motorbike mark
-        logo.create_oval(6 * q, 16 * q, 15 * q, 25 * q, outline=C["on_accent"], width=2 * q)
-        logo.create_oval(19 * q, 16 * q, 28 * q, 25 * q, outline=C["on_accent"], width=2 * q)
-        logo.create_line(10 * q, 20 * q, 15 * q, 11 * q, 22 * q, 11 * q, 24 * q, 20 * q,
-                         fill=C["on_accent"], width=2 * q)
-        logo.pack(anchor="w")
-        tk.Label(top, text=self.s("app"), font=F["title"], fg="#FFFFFF", bg=C["sidebar"], anchor="w",
-                 justify="left", wraplength=px(180)).pack(anchor="w", pady=(10, 0))
-        tk.Label(top, text=self.s("app_sub"), font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"],
-                 anchor="w", justify="left", wraplength=px(180)).pack(anchor="w")
-        self.nav = {}
-        n = 0
-        for sec, items in NAV:
-            tk.Label(side, text=self.s(sec), font=F["small_bold"], fg=C["sidebar_muted"], bg=C["sidebar"],
-                     anchor="w", padx=18).pack(fill="x", pady=(14, 4))
-            for key, text_key in items:
-                n += 1
-                self.nav[key] = self._nav_item(side, key, self.s(text_key), f"Ctrl+{n}")
-        bottom = tk.Frame(side, bg=C["sidebar"], padx=18, pady=16)
+        tk.Frame(self.root, bg=C["border"], width=1).pack(side="left", fill="y")
+        brand = tk.Frame(side, bg=C["sidebar"], padx=px(20), pady=px(14))
+        brand.pack(fill="x")
+        label(brand, "MotoLogic", "big", "sidebar_text", bg="sidebar").pack(anchor="w")
+        label(brand, "MOTORBIKE EXPERT SYSTEM", "eyebrow", "sidebar_muted", bg="sidebar").pack(anchor="w")
+        # packed before the navigation so that a short window clips the cards, never the switches
+        bottom = tk.Frame(side, bg=C["sidebar"], padx=px(12), pady=px(10))
         bottom.pack(side="bottom", fill="x")
-        tk.Label(bottom, text=self.s("lang"), font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"]).pack(anchor="w")
-        langs = tk.Frame(bottom, bg=C["sidebar"])
-        langs.pack(anchor="w", pady=(4, 10))
-        for code in ("vi", "en"):
-            on = code == self.lang
-            b = tk.Label(langs, text=code.upper(), font=F["small_bold"], padx=10, pady=2, cursor="hand2",
-                         bg="#FFFFFF" if on else C["sidebar"], fg=C["sidebar"] if on else C["sidebar_text"],
-                         highlightthickness=1, highlightbackground=C["sidebar_muted"])
-            b.pack(side="left")
-            b.bind("<Button-1>", lambda e, c=code: self.set_lang(c))
-        tk.Label(bottom, text=self.s("mode"), font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"]).pack(anchor="w")
-        modes = tk.Frame(bottom, bg=C["sidebar"])
-        modes.pack(anchor="w", pady=(4, 10))
-        for mode in ("light", "dark"):
-            on = mode == theme.MODE
-            b = tk.Label(modes, text=self.s(mode), font=F["small_bold"], padx=10, pady=2, cursor="hand2",
-                         bg="#FFFFFF" if on else C["sidebar"], fg=C["sidebar"] if on else C["sidebar_text"],
-                         highlightthickness=1, highlightbackground=C["sidebar_muted"])
-            b.pack(side="left")
-            b.bind("<Button-1>", lambda e, m=mode: self.set_mode(m))
-        tk.Label(bottom, text=self.s("n_rules").format(r=len(self.kb.rules), f=len(self.kb.faults)),
-                 font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"]).pack(anchor="w")
+        self.navbox = tk.Frame(side, bg=C["sidebar"])
+        self.navbox.pack(fill="x")
 
-        self.content = tk.Frame(self.root, bg=C["bg"], padx=24, pady=20)
-        self.content.pack(side="left", fill="both", expand=True)
+        card = RoundCard(side, fill="panel", border=None, radius=16, bg="sidebar", pad=14)
+        card.pack(fill="x", padx=px(12), pady=(px(10), 0))
+        b = card.body
+        autowrap(label(b, self.s("transparent"), "title", "on_panel", bg="panel")).pack(fill="x")
+        autowrap(label(b, self.s("transparent_sub"), "small", "panel_muted", bg="panel")).pack(
+            fill="x", pady=(px(4), 0))
+        tk.Frame(b, bg=C["panel_soft"], height=1).pack(fill="x", pady=px(10))
+        nums = tk.Frame(b, bg=C["panel"])
+        nums.pack(fill="x")
+        for n, cap in ((len(self.kb.rules), self.s("rules")), (len(self.kb.faults), self.s("faults"))):
+            col = tk.Frame(nums, bg=C["panel"])
+            col.pack(side="left", padx=(0, px(28)))
+            label(col, str(n), "big", "lime", bg="panel").pack(anchor="w")
+            label(col, cap, "small", "panel_muted", bg="panel").pack(anchor="w")
+
+        proto = RoundCard(bottom, fill="bg", border=None, radius=14, bg="sidebar", pad=12)
+        proto.pack(fill="x")
+        label(proto.body, self.s("proto"), "eyebrow", "accent", bg="bg").pack(anchor="w")
+        label(proto.body, self.s("proto_group"), "body", "text", bg="bg").pack(anchor="w", pady=(px(4), px(2)))
+        autowrap(label(proto.body, self.s("proto_note"), "small", "muted", bg="bg")).pack(fill="x")
+        toggles = tk.Frame(bottom, bg=C["sidebar"])
+        toggles.pack(fill="x", pady=(px(10), 0))
+        Segmented(toggles, [("vi", "VI"), ("en", "EN")], self.lang, self.set_lang, bg="sidebar").pack(side="left")
+        Segmented(toggles, [("light", self.s("light")), ("dark", self.s("dark"))], theme.MODE, self.set_mode,
+                  bg="sidebar").pack(side="right")
+
+        main = tk.Frame(self.root, bg=C["bg"])
+        main.pack(side="left", fill="both", expand=True)
+        self.topbar = tk.Frame(main, bg=C["bg"], padx=px(28), pady=px(12))
+        self.topbar.pack(fill="x")
+        tk.Frame(main, bg=C["border"], height=1).pack(fill="x")
+        self.content = tk.Frame(main, bg=C["bg"], padx=px(28), pady=px(18))
+        self.content.pack(fill="both", expand=True)
         self.pages: Dict[str, Page] = {}
         self.show(self.state["page"])
 
-    def _nav_item(self, parent, key: str, text: str, shortcut: str):
-        row = tk.Frame(parent, bg=C["sidebar"], cursor="hand2")
-        row.pack(fill="x")
-        bar = tk.Frame(row, bg=C["sidebar"], width=4)
-        bar.pack(side="left", fill="y")
-        lbl = tk.Label(row, text=text, font=F["body"], fg=C["sidebar_text"], bg=C["sidebar"], anchor="w",
-                       padx=14, pady=8)
-        lbl.pack(side="left", fill="x", expand=True)
-        sc = tk.Label(row, text=shortcut, font=F["small"], fg=C["sidebar_muted"], bg=C["sidebar"], padx=10)
-        sc.pack(side="right")
-        parts = (row, lbl, sc)
+    def draw_nav(self) -> None:
+        for child in self.navbox.winfo_children():
+            child.destroy()
+        n = 0
+        for sec, items in NAV:
+            label(self.navbox, self.s(sec), "small_bold", "sidebar_muted", bg="sidebar").pack(
+                anchor="w", padx=px(20), pady=(px(8), px(2)))
+            for key, text_key, icon_name in items:
+                n += 1
+                on = key == self.state["page"]
+                fill = "sidebar_active" if on else "sidebar"
+                item = RoundCard(self.navbox, fill=fill, border=None, radius=12, bg="sidebar",
+                                 pad=9 if icon_name else 4)
+                item.pack(fill="x", padx=px(12), pady=px(1))
+                fg = "on_lime" if on else "sidebar_text" if icon_name else "sidebar_muted"
+                if icon_name:
+                    icon(item.body, icon_name, 18, fg, fill).pack(side="left", padx=(px(4), px(12)))
+                label(item.body, self.s(text_key), "lead" if icon_name else "body", fg, bg=fill).pack(
+                    side="left", padx=(0 if icon_name else px(4), 0))
+                label(item.body, f"Ctrl+{n}", "small", "on_lime" if on else "sidebar_muted", bg=fill).pack(
+                    side="right")
+                item.configure(cursor="hand2")
+                bind_tree(item, "<Button-1>", lambda e, k=key: self.show(k))
 
-        def paint(bg, fg=C["sidebar_text"], ind=C["sidebar"]):
-            for part in parts:
-                part.configure(bg=bg)
-            lbl.configure(fg=fg)
-            bar.configure(bg=ind)
-
-        def enter(_):
-            if self.state["page"] != key:
-                paint(C["sidebar_hover"])
-
-        def leave(_):
-            if self.state["page"] != key:
-                paint(C["sidebar"])
-        for part in parts:
-            part.bind("<Button-1>", lambda e: self.show(key))
-            part.bind("<Enter>", enter)
-            part.bind("<Leave>", leave)
-        return paint
+    def refresh_topbar(self) -> None:
+        """Breadcrumb, session number and the "offline" chip."""
+        for child in self.topbar.winfo_children():
+            child.destroy()
+        names = {k: text_key for _, items in NAV for k, text_key, _ in items}
+        crumb = self.s("workspace") + "   /   " + self.s(names[self.state["page"]])
+        label(self.topbar, crumb, "lead", "muted", bg="bg").pack(side="left")
+        chip(self.topbar, "●  " + self.s("offline"), C["accent"], C["chrome"]).pack(side="right")
+        label(self.topbar, self.s("session").format(n=session_number(self.state)), "lead", "muted",
+              bg="bg").pack(side="right", padx=px(20))
 
     def make_page(self, key: str) -> Page:
         if key in OWN_PAGES:
@@ -452,11 +473,8 @@ class App:
     def show(self, key: str) -> None:
         """Switch to a screen; the screen is built the first time it is shown."""
         self.state["page"] = key
-        for k, paint in self.nav.items():
-            if k == key:
-                paint(C["sidebar_active"], "#FFFFFF", C["highlight"])
-            else:
-                paint(C["sidebar"])
+        self.draw_nav()
+        self.refresh_topbar()
         for p in self.pages.values():
             p.pack_forget()
         if key not in self.pages:
