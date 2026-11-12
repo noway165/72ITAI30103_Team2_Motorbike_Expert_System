@@ -46,7 +46,7 @@ TEXT = {
         "steps_done": ["Đã khai báo xe", "Đã xem triệu chứng", "Hiểu kết quả"],
         "e1": "Cùng tìm nguyên nhân", "t1": "Trả lời rõ hơn. Bước tiếp theo đúng hơn.",
         "s1": "Cho biết bạn thấy gì. Chương trình nối các triệu chứng lại và giải thích vì sao.",
-        "bike": "Xe của bạn",
+        "bike": "Xe của bạn", "other_bike": "Xe khác", "for_model": "Riêng cho {name}",
         "scooter": "Xe tay ga", "scooter_sub": "Tự động / dây curoa CVT",
         "manual": "Xe số", "manual_sub": "Có số / truyền động xích",
         "fuel": "Nhiên liệu", "fi": "Phun xăng (FI)", "carb": "Bình xăng con", "unsure": "Không rõ",
@@ -129,7 +129,7 @@ TEXT = {
         "steps_done": ["Bike set up", "Symptoms reviewed", "Understand the result"],
         "e1": "Let's find the cause", "t1": "A clearer answer. A better next step.",
         "s1": "Tell us what you notice. We'll connect the symptoms and explain the reasoning.",
-        "bike": "Your motorbike",
+        "bike": "Your motorbike", "other_bike": "Another bike", "for_model": "For your {name}",
         "scooter": "Scooter", "scooter_sub": "Automatic / CVT belt",
         "manual": "Manual motorbike", "manual_sub": "Gears / chain drive",
         "fuel": "Fuel system", "fi": "Fuel injection", "carb": "Carburettor", "unsure": "Not sure",
@@ -474,24 +474,40 @@ class DiagnosisPage(Page):
 
     # --- step 1 ---
     def render_setup(self, page) -> None:
-        t, dx = self.t, self.dx
+        t, kb, dx = self.t, self.app.kb, self.dx
         self.header(page, t["e1"], t["t1"], t["s1"], 1, compact=True)
         card = RoundCard(page)  # full width: the 3 methods sit side by side and Start shows without scrolling
         card.pack(fill="x")
         b = card.body
         label(b, t["bike"], "h2").pack(anchor="w", pady=(0, px(12)))
-        kinds = tk.Frame(b, bg=C["surface"])
-        kinds.pack(fill="x")
-        for i, k in enumerate(("scooter", "manual")):
-            kinds.columnconfigure(i, weight=1, uniform="kind")
-            ChoiceCard(kinds, t[k], t[k + "_sub"], dx["kind"] == k, lambda k=k: self.set(kind=k),
-                       icon_name=k).grid(row=0, column=i, sticky="we", padx=(0 if i == 0 else px(10), 0))
+        models = tk.Frame(b, bg=C["surface"])  # a listed model fills in type, fuel and clutch (models.json)
+        models.pack(fill="x")
+        choices = [(m, kb.models[m]["name"]) for m in sorted(kb.models, key=lambda m: (kb.models[m]["kind"] != "scooter",
+                                                                                      kb.models[m]["name"]))]
+        for i, (m, name) in enumerate(choices + [("", t["other_bike"])]):
+            models.columnconfigure(i, weight=1, uniform="model")
+            on = dx.get("model", "") == m
+            c = tk.Label(models, text=name, font=F["small_bold" if on else "small"], cursor="hand2", anchor="w",
+                         justify="left", bg=C["panel"] if on else C["surface"], fg=C["on_panel"] if on else C["text"],
+                         padx=px(10), pady=px(7), highlightthickness=1,
+                         highlightbackground=C["panel"] if on else C["border"])
+            autowrap(c, pad=px(24))
+            c.grid(row=0, column=i, sticky="nsew", padx=(0, px(8)))
+            c.bind("<Button-1>", lambda e, m=m: self.choose_model(m))
+        if not dx.get("model"):  # another bike: type by hand
+            kinds = tk.Frame(b, bg=C["surface"])
+            kinds.pack(fill="x", pady=(px(12), 0))
+            for i, k in enumerate(("scooter", "manual")):
+                kinds.columnconfigure(i, weight=1, uniform="kind")
+                ChoiceCard(kinds, t[k], t[k + "_sub"], dx["kind"] == k, lambda k=k: self.set(kind=k),
+                           icon_name=k).grid(row=0, column=i, sticky="we", padx=(0 if i == 0 else px(10), 0))
         fuel = tk.Frame(b, bg=C["surface"])
         fuel.pack(fill="x", pady=(px(12), 0))
         fuel.columnconfigure(2, weight=1)
-        label(fuel, t["fuel"], "small_bold", "muted").grid(row=0, column=0, padx=(0, px(10)))
-        Segmented(fuel, [("fi", t["fi"]), ("carb", t["carb"]), ("", t["unsure"])], dx["fuel"],
-                  lambda v: self.dx.update(fuel=v)).grid(row=0, column=1)
+        if not dx.get("model"):  # another bike: fuel by hand
+            label(fuel, t["fuel"], "small_bold", "muted").grid(row=0, column=0, padx=(0, px(10)))
+            Segmented(fuel, [("fi", t["fi"]), ("carb", t["carb"]), ("", t["unsure"])], dx["fuel"],
+                      lambda v: self.dx.update(fuel=v)).grid(row=0, column=1)
         safe = tk.Frame(fuel, bg=C["surface"])
         safe.grid(row=0, column=2, sticky="e", padx=(px(24), 0))
         icon(safe, "shield", 20, "accent").pack(side="left", padx=(0, px(8)))
