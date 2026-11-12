@@ -33,7 +33,7 @@ from kb import ROOT, load_kb
 from nlu import answers, extract
 from scenarios import load_scenarios
 
-DEV, ANALYSED, HELD_OUT = ("SE", "ET"), ("BT",), ("HO",)
+DEV, ANALYSED, HELD_OUT, MODELS = ("SE", "ET"), ("BT",), ("HO",), ("MS",)
 HELD_OUT_DIR = Path(ROOT) / "tests" / "data"
 
 
@@ -82,9 +82,28 @@ def held_out(kb, scenarios) -> List[dict]:
     return rows
 
 
+def model_rows(kb, scenarios) -> List[dict]:
+    """Bike-model scenarios (MS): each engine with the model, and forward chaining without it."""
+    from forward_chaining import forward_chain
+    from wang import entails
+    rows = []
+    for sc in scenarios:
+        top = lambda ds: [d.fault for d in ds][:1] == [sc.expected]  # noqa: E731
+        plain = [s for s in sc.symptoms if s not in kb.models]
+        row = {"fw": top(forward_chain(kb, sc.symptoms).diagnoses), "fw_plain": top(forward_chain(kb, plain).diagnoses),
+               "bw": top(backward_chain(kb, sc.symptoms).diagnoses), "wang": entails(kb, sc.symptoms, sc.expected).valid}
+        for lang in ("vi", "en"):
+            iv, q = simulate(kb, sc.symptoms, answers(sc.description[lang], kb.symptoms))
+            row[lang + "_q"], row[lang + "_ok"] = q, top(iv.result().diagnoses)
+        rows.append(row)
+    return rows
+
+
 def report(kb, scenarios, heldout=()) -> str:
     out = ["# Diagnosis assistant: results", "",
-           f"Knowledge base: {kb.summary()}. {len(scenarios)} scenarios, {len(heldout)} held-out descriptions. "
+           f"Knowledge base: {kb.summary()}. {len(scenarios)} scenarios, "
+           f"{sum(s.id.startswith(HELD_OUT) for s in heldout)} held-out descriptions, "
+           f"{sum(s.id.startswith(MODELS) for s in heldout)} bike-model scenarios. "
            "Produced by `python src/evaluate_assistant.py --write`.", "",
            "## 1. Understanding the rider's description", "",
            "| Descriptions | Language | Precision | Recall | F1 |", "|---|---|---|---|---|"]
@@ -114,6 +133,8 @@ def report(kb, scenarios, heldout=()) -> str:
         mark = lambda b: "✓" if b else "✕"  # noqa: E731
         out.append(f"| {r['id']} | {r['expected']} | {r['bw_all']} / {r['bw_sub']} | {r['cold_q']} {mark(r['cold_ok'])} "
                    f"| {r['vi_q']} {mark(r['vi_ok'])} | {r['en_q']} {mark(r['en_ok'])} |")
+    ms = [s for s in heldout if s.id.startswith(MODELS)]
+    heldout = [s for s in heldout if s.id.startswith(HELD_OUT)]
     if heldout:
         ho = held_out(kb, heldout)
         m = len(ho)
@@ -122,6 +143,18 @@ def report(kb, scenarios, heldout=()) -> str:
         for lang, name in (("vi", "Vietnamese"), ("en", "English")):
             out.append(f"| {name} | {sum(r[lang + '_q'] for r in ho) / m:.1f} | "
                        f"{sum(r[lang + '_ok'] for r in ho)}/{m} |")
+    if ms:
+        rows, n = model_rows(kb, ms), len(ms)
+        ok = lambda k: f"{sum(r[k] for r in rows)}/{n}"  # noqa: E731
+        out += ["", "## 5. Bike-model scenarios (MS, tests/data/model_scenarios.json)", "",
+                "One scenario per model rule MD01-MD09, written by the author of the rules.", "",
+                "| Method | Top-1 correct | Average questions |", "|---|---|---|",
+                f"| Forward chaining, bike model given | {ok('fw')} | – |",
+                f"| Forward chaining, bike model left out | {ok('fw_plain')} | – |",
+                f"| Backward chaining | {ok('bw')} | – |",
+                f"| Wang's algorithm proves the expected fault | {ok('wang')} | – |",
+                f"| Assistant, Vietnamese description | {ok('vi_ok')} | {sum(r['vi_q'] for r in rows) / n:.1f} |",
+                f"| Assistant, English description | {ok('en_ok')} | {sum(r['en_q'] for r in rows) / n:.1f} |"]
     return "\n".join(out) + "\n"
 
 

@@ -25,6 +25,7 @@ TEXT = {
         "nothing_derived": "Các triệu chứng đã chọn chưa khớp luật nào. Hãy chọn thêm triệu chứng "
                            "hoặc chuyển sang chế độ hỏi đáp.",
         "questions": "Đã hỏi {q} câu, đã thử {r} luật",
+        "manual": "sách hướng dẫn, tr. {page}",
     },
     "en": {
         "you_chose": "you said",
@@ -39,6 +40,7 @@ TEXT = {
         "nothing_derived": "The symptoms you chose do not match any rule. Add more symptoms "
                            "or switch to step-by-step questions.",
         "questions": "{q} questions asked, {r} rules tried",
+        "manual": "owner's manual, p. {page}",
     },
 }
 
@@ -50,6 +52,30 @@ def t(key: str, lang: str = "vi", **kwargs) -> str:
 def short(kb: KnowledgeBase, symbol: str, lang: str = "vi") -> str:
     """Display text of a symbol without the trailing question mark."""
     return kb.text(symbol, lang).rstrip(" ?")
+
+
+# Maintenance data of a bike model (knowledge_base/models.json) that matters for a fault
+MODEL_SPECS = {
+    "weak_battery": ("battery",), "charging_system_problem": ("battery",), "loose_battery_terminal": ("battery",),
+    "blown_main_fuse": ("fuse",), "spark_plug_problem": ("spark_plug",),
+    "low_engine_oil": ("oil",), "engine_burning_oil": ("oil",),
+    "underinflated_tyre": ("tyre_pressure",), "tyre_puncture": ("tyre_pressure",),
+    "loose_or_worn_chain": ("chain",), "chain_needs_lubrication": ("chain",),
+}
+
+
+def model_of(kb: KnowledgeBase, answers: dict, chosen: str = "") -> str:
+    """The bike model: the one chosen in step 1, else the one the rider named ("" if none)."""
+    if chosen in kb.models:
+        return chosen
+    return next((m for m in kb.models if answers.get(m)), "")
+
+
+def model_notes(kb: KnowledgeBase, model: str, fault: str, lang: str = "vi") -> List[str]:
+    """The model's specs that matter for this fault, each with its owner's manual page."""
+    specs = kb.models.get(model, {}).get("specs", {})
+    return [f"{specs[k][lang]} ({t('manual', lang, page=specs[k]['page'])})"
+            for k in MODEL_SPECS.get(fault, ()) if k in specs]
 
 
 @dataclass

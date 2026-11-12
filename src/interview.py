@@ -102,7 +102,7 @@ def _entropy(probs) -> float:
 def _p_yes(h: Hypothesis, s: str) -> float:
     if s in h.symptoms:
         return 1 - MISS
-    return 0.5 if s in NEUTRAL else NOISE
+    return 0.5 if s in NEUTRAL or s.startswith("model_") else NOISE
 
 
 @dataclass
@@ -118,16 +118,22 @@ class Interview:
 
     def __init__(self, kb: KnowledgeBase, answers: Optional[Dict[str, bool]] = None):
         self.kb = kb
+        self.models = set(kb.models)  # bike models: given in step 1 or the text, never asked, one at most
         self.hyps = hypotheses(kb)
         self.answers: Dict[str, bool] = {}
         self.skipped: set = set()
         self.asked: List[str] = []
         for s, v in (answers or {}).items():
             self._set(s, v)
+        for m in self.models:  # no model given (step 1 or the text): not one of the listed models
+            self.answers.setdefault(m, False)
 
     # --- answers ---------------------------------------------------------------
     def _set(self, symptom: str, value: bool) -> None:
         self.answers[symptom] = value
+        if value and symptom in self.models:
+            for other in self.models - {symptom}:
+                self.answers.setdefault(other, False)
         if value:
             for group in EXCLUSIVE:
                 if symptom in group:
@@ -185,7 +191,7 @@ class Interview:
             candidates = set(h_best.symptoms)
         else:
             candidates = {s for h, p in zip(self.hyps, post) if p > 1e-4 for s in h.symptoms}
-        candidates -= set(self.answers) | self.skipped
+        candidates -= set(self.answers) | self.skipped | self.models
         h_now = _entropy(fs.values())
         best: Optional[Question] = None
         for s in sorted(candidates):

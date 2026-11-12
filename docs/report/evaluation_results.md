@@ -2,7 +2,7 @@
 
 Written by `python src/evaluate.py --markdown`; do not edit by hand.
 
-Knowledge base: 73 symptoms, 9 intermediates, 40 faults, 79 rules. Fallback rules: BR13, EN18, SF14, TS15.
+Knowledge base: 79 symptoms, 9 intermediates, 40 faults, 88 rules. Fallback rules: BR13, EN18, SF14, TS15.
 
 ## Summary by scenario group
 
@@ -14,7 +14,7 @@ Knowledge base: 73 symptoms, 9 intermediates, 40 faults, 79 rules. Fallback rule
 | **All** | 30 | 30 (100.0%) | 30 (100.0%) | 30 | 28 | 0.79 | 39.7 | 9.0 |
 
 - Backward chaining gives the same faults and CF as forward chaining on 30/30 scenarios.
-- Checking only the correct part needs 4.4 times fewer questions (9.0 instead of 39.7; the knowledge base has 73 symptoms).
+- Checking only the correct part needs 4.4 times fewer questions (9.0 instead of 39.7; the knowledge base has 79 symptoms).
 - Without the fallback rules, top-1 is 28/30; with them, 30/30.
 
 ## Every scenario

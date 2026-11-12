@@ -28,7 +28,7 @@ from typing import Dict, List, Optional, Tuple
 
 from kb import KnowledgeBase
 from nlu import extract, fold
-from present import how_rows, near_misses, short
+from present import how_rows, model_notes, model_of, near_misses, short
 from theme import SEVERITY_TEXT
 from wang import entails
 
@@ -51,6 +51,7 @@ TEXT = {
         "fix": "Cách xử lý {fault}: {action} ({severity}).",
         "fix_maybe": "Nếu đúng là {fault} (chưa luật nào chứng minh): {action} ({severity}).",
         "proved_by": "Lỗi này được chứng minh bởi luật {rules}.",
+        "for_model": "Riêng cho {name}:",
         "others": "Các khả năng lúc này:",
         "other_row": "{fault}: {p:.0%}, {state}",
         "proved": "luật đã chứng minh (CF {cf:.2f})", "not_proved": "chưa đủ điều kiện luật nào",
@@ -86,6 +87,7 @@ TEXT = {
         "fix": "What to do about {fault}: {action} ({severity}).",
         "fix_maybe": "If it is {fault} (no rule has proved it yet): {action} ({severity}).",
         "proved_by": "This fault is proved by rule {rules}.",
+        "for_model": "For your {name}:",
         "others": "The possibilities now:",
         "other_row": "{fault}: {p:.0%}, {state}",
         "proved": "proved by the rules (CF {cf:.2f})", "not_proved": "no rule satisfied yet",
@@ -228,17 +230,25 @@ def how(kb: KnowledgeBase, iv, lang: str) -> str:
     return t["nothing"]
 
 
-def fix(kb: KnowledgeBase, iv, lang: str) -> str:
+def fix(kb: KnowledgeBase, iv, lang: str, model: str = "") -> str:
+    """What to do about the leading fault, with the specs of the rider's bike model that matter for it."""
     t, res = TEXT[lang], iv.result()
+    model = model_of(kb, iv.answers, model)
     if res.diagnoses:
         top = res.diagnoses[0].fault
         rules = ", ".join(dict.fromkeys(r for r in res.wm.get(top).by.split(",") if r))
-        return "\n".join([t["fix"].format(fault=kb.text(top, lang), action=kb.action(top, lang),
-                                          severity=SEVERITY_TEXT[lang][kb.symbols[top].severity or "self"]),
-                          t["proved_by"].format(rules=rules)])
-    top = iv.beliefs(1)[0][0]
-    return t["fix_maybe"].format(fault=kb.text(top, lang), action=kb.action(top, lang),
-                                 severity=SEVERITY_TEXT[lang][kb.symbols[top].severity or "self"])
+        lines = [t["fix"].format(fault=kb.text(top, lang), action=kb.action(top, lang),
+                                 severity=SEVERITY_TEXT[lang][kb.symbols[top].severity or "self"]),
+                 t["proved_by"].format(rules=rules)]
+    else:
+        top = iv.beliefs(1)[0][0]
+        lines = [t["fix_maybe"].format(fault=kb.text(top, lang), action=kb.action(top, lang),
+                                       severity=SEVERITY_TEXT[lang][kb.symbols[top].severity or "self"])]
+    notes = model_notes(kb, model, top, lang)
+    if notes:
+        lines.append(t["for_model"].format(name=kb.models[model]["name"]))
+        lines += ["• " + n for n in notes]
+    return "\n".join(lines)
 
 
 def others(kb: KnowledgeBase, iv, lang: str) -> str:
@@ -283,7 +293,7 @@ def what(kb: KnowledgeBase, text: str, iv, lang: str) -> str:
     return "\n".join(lines)
 
 
-def final(kb: KnowledgeBase, iv, lang: str) -> str:
+def final(kb: KnowledgeBase, iv, lang: str, model: str = "") -> str:
     """The conclusion when nothing is worth asking: fault, CF, rule chain, Wang's check, what to do."""
     t, res = TEXT[lang], iv.result()
     if not res.diagnoses:
@@ -292,12 +302,13 @@ def final(kb: KnowledgeBase, iv, lang: str) -> str:
     chain = " → ".join(row.label for row in how_rows(kb, res.wm, top.fault, lang) if row.is_rule)
     proved = entails(kb, [s for s, v in iv.answers.items() if v], top.fault).valid
     return "\n".join([t["final"].format(fault=kb.text(top.fault, lang), cf=top.cf, chain=chain),
-                      t["wang_yes"] if proved else t["wang_no"], fix(kb, iv, lang).split("\n")[0]])
+                      t["wang_yes"] if proved else t["wang_no"]]
+                     + [ln for i, ln in enumerate(fix(kb, iv, lang, model).split("\n")) if i != 1])  # not "proved by"
 
 
-def _next(kb: KnowledgeBase, iv, lang: str) -> List[str]:
+def _next(kb: KnowledgeBase, iv, lang: str, model: str = "") -> List[str]:
     q = iv.next_question()
-    return [ask(kb, iv, q, lang)] if q is not None else [final(kb, iv, lang)]
+    return [ask(kb, iv, q, lang)] if q is not None else [final(kb, iv, lang, model)]
 
 
 def _effect(kb: KnowledgeBase, before, iv, lang: str, noted: str, value, added) -> str:
@@ -335,7 +346,7 @@ def start(kb: KnowledgeBase, dx, text: str, lang: str) -> List[str]:
     t = TEXT[lang]
     read = [t["read"]] + ["• " + ("" if m.value else t["no"] + " ") + short(kb, m.symptom, lang) for m in found] \
         if found else [t["read_none"]]
-    out = ["\n".join(read)] + (_next(kb, iv, lang) if found else [])
+    out = ["\n".join(read)] + (_next(kb, iv, lang, dx.get("model", "")) if found else [])
     for m in out:
         _log(dx, "bot", m)
     return out
@@ -358,10 +369,11 @@ def respond(kb: KnowledgeBase, dx, text: str, lang: str) -> List[str]:
 def _reply(kb: KnowledgeBase, dx, text: str, kind: Optional[str], lang: str) -> List[str]:
     iv, _ = _interview(kb, dx)
     q = iv.next_question()
+    model = dx.get("model", "")
     if kind == "result":
-        return [final(kb, iv, lang)]
+        return [final(kb, iv, lang, model)]
     if kind in ("fix", "others", "what"):
-        return [{"fix": lambda: fix(kb, iv, lang), "others": lambda: others(kb, iv, lang),
+        return [{"fix": lambda: fix(kb, iv, lang, model), "others": lambda: others(kb, iv, lang),
                  "what": lambda: what(kb, text, iv, lang)}[kind]()]
     if kind == "how" or (kind == "why" and q is None):
         return [how(kb, iv, lang)]
@@ -380,4 +392,4 @@ def _reply(kb: KnowledgeBase, dx, text: str, kind: Optional[str], lang: str) -> 
     if added:
         dx["text"] = f"{dx['text']}. {rest}".strip(". ")
     iv, _ = _interview(kb, dx)
-    return [_effect(kb, before, iv, lang, noted, value, added)] + _next(kb, iv, lang)
+    return [_effect(kb, before, iv, lang, noted, value, added)] + _next(kb, iv, lang, model)

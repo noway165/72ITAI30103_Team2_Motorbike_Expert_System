@@ -4,7 +4,7 @@ Author: Nguyen Nam Khoa. Final draft for the report, 13/11/2026 (cut from 377 to
 assistant table of Lâm, `assistant_lam.md` section 4.x, is merged into Table 4.2.1).
 Numbers: `python src/evaluate.py --charts` and `python src/evaluate_assistant.py`
 ([evaluation_results.md](evaluation_results.md), [assistant_results.md](assistant_results.md));
-knowledge base of 12/11/2026: 73 symptoms, 40 faults, 79 rules.
+knowledge base of 12/11/2026: 79 symptoms, 40 faults, 88 rules.
 
 ## 4.1 Experimental setup
 
@@ -18,9 +18,9 @@ the assistant also starts from the scenario's Vietnamese or English description.
 |---|---|---|
 | Backward chaining, every part | 39.7 | 30/30 |
 | Backward chaining, correct part chosen first | 9.0 | 30/30 |
-| Assistant, Vietnamese description | 5.3 | 30/30 |
-| Assistant, English description | 5.3 | 30/30 |
-| Assistant, 10 held-out descriptions (vi / en) | 10.5 / 11.4 | 8/10 / 7/10 |
+| Assistant, Vietnamese description | 5.5 | 30/30 |
+| Assistant, English description | 5.5 | 30/30 |
+| Assistant, 10 held-out descriptions (vi / en) | 10.8 / 11.5 | 8/10 / 7/10 |
 
 Table 4.2.1: Questions asked and top-1 accuracy of each way of asking.
 
@@ -28,7 +28,8 @@ Forward and backward chaining return the same faults and CFs and rank the expect
 30 scenarios; without the four fallback rules, two scenarios fail (Figure 4.2.1). Choosing the part
 first shortens the dialogue 4.4 times. The assistant asks about seven times fewer questions on the
 30 scenarios, whose descriptions were all used while writing it; on ten held-out descriptions it
-misses two or three brake and suspension faults (Figure 4.2.2).
+misses two or three brake and suspension faults (Figure 4.2.2). Nine scenarios for the bike-model rules, written by
+their author, are ranked first by both engines and proved by Wang; without the bike model only four reach a fault.
 
 Figure 4.2.1: Top-1 accuracy by scenario group, with and without the fallback rules.
 File: `figures/fig_accuracy_by_group.png`.

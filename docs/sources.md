@@ -58,6 +58,32 @@ Nguồn còn yếu, nên nói rõ trong báo cáo:
 - E3 Spark Plugs, Eagle Lights là trang của hãng bán phụ tùng, không phải sổ tay hãng xe.
 - TR02, TR12: Q9 và Louis là trang bán phụ tùng, không phải sổ tay hãng.
 
+## Dòng xe (`models.json`) — Lâm
+
+Thông số bảo dưỡng (ắc quy, bugi, nhớt, áp suất lốp, độ chùng xích, cầu chì) lấy từ sách hướng dẫn sử dụng của hãng. Số trang trong `models.json` là số trang của file PDF. Các file được tải và đọc ngày 12/11/2026.
+
+| Nguồn | Dùng cho |
+|---|---|
+| Honda Việt Nam, Sách hướng dẫn sử dụng Vision (12/2025), https://cdn.honda.com.vn/motorbike-manual/December2025/FgO9EU07CB768QM5Adl7.pdf | thông số Vision |
+| Honda Việt Nam, Sách hướng dẫn sử dụng Air Blade 125/160 (09/2025), https://cdn.honda.com.vn/motorbike-manual/September2025/NC8346r3AExXZtAvFuMG.pdf | thông số Air Blade |
+| Honda Việt Nam, Sách hướng dẫn sử dụng LEAD 125 (11/2025), https://cdn.honda.com.vn/motorbike-manual/November2025/a1ImE0kmkoA3Vj3r5eVr.pdf | thông số Lead |
+| Honda Việt Nam, Sách hướng dẫn sử dụng Wave Alpha (09/2025), https://cdn.honda.com.vn/motorbike-manual/September2025/P8qeKg7vdU5RIqpRvC4v.pdf | thông số Wave Alpha |
+| Honda Việt Nam, Sách hướng dẫn sử dụng Future 125 FI (10/2025), https://cdn.honda.com.vn/motorbike-manual/October2025/4S8C4gHZTWoGUUdFaj0K.pdf | thông số Future |
+| Yamaha Motor, Owner's Manual T155 Exciter (BNV-F8199-E0, 2023), https://yamahamaldives.com/wp-content/uploads/2025/07/EXCITER-155_Warranty-Booklet-Owners-Manual.pdf | thông số Exciter |
+| VietNamNet (07/12/2018), "Những lỗi thường gặp trên Honda Lead", https://vietnamnet.vn/nhung-loi-thuong-gap-tren-honda-lead-492108.html | MD01, MD02, MD03 |
+| shop2banh.vn, "Các lỗi thường gặp trên xe Vision và cách khắc phục", https://shop2banh.vn/tu-van/cac-loi-thuong-gap-tren-xe-vision-va-cach-khac-phuc-4209.html | MD04 |
+| Tài Lộc Nguyễn (05/01/2016), "Những lỗi hư vặt thường thấy trên xe Honda Airblade", https://tailocnguyen.vn/Tin-tuc/Nhung-loi-hu-vat-thuong-thay-tren-xe-Honda-Airblade-235.html | MD05 |
+| exciter.vn, "Những lỗi thường gặp trên xe Exciter 155 và cách khắc phục", https://exciter.vn/tu-van/nhung-loi-thuong-gap-tren-xe-exciter-155-va-cach-khac-phuc-305.html | MD06, MD07 |
+| shop2banh.vn, "Các lỗi thường gặp trên xe Future 125 Fi và cách khắc phục", https://shop2banh.vn/tu-van/cac-loi-thuong-gap-tren-xe-future-125-fi-va-cach-khac-phuc-4201.html | MD08 |
+| Xe máy Hưng Thịnh (09/05/2025), "6 lỗi thường gặp khi đi xe Wave", https://xemayhungthinh.vn/loi-thuong-gap-xe-wave-thai-binh/ | MD09 |
+
+Nguồn còn yếu, nên nói rõ trong báo cáo:
+- MD01–MD09 dựa trên bài của báo, tiệm sửa xe và trang bán phụ tùng, không phải tài liệu của hãng. CF đặt cao hơn luật chung cùng lỗi 0.05–0.2, là ước lượng của nhóm.
+- MD04: bài viết cho rằng Vision tắt máy khi giảm ga là do "chế hòa khí" thiếu gió, trong khi Vision là xe phun xăng; nhóm chỉ dùng ý "máy kêu do khô nhớt".
+- MD09: bài viết nói chung cho dòng Wave, không riêng Wave Alpha.
+- Thông số Exciter lấy từ sách tiếng Anh của Yamaha cho đời T155 (cùng mẫu với xe bán ở Việt Nam), vì thư viện sách của Yamaha Việt Nam chỉ mở được bằng ứng dụng web.
+- Lịch thay nhớt và kiểm tra dây curoa trong sách dùng biểu tượng hình, đọc chữ không ra mốc km, nên chưa đưa vào.
+
 ## Phanh (`brakes.json`) và lốp, giảm xóc (`tyres_suspension.json`) — Khoa
 
 | Nguồn | Dùng cho luật |

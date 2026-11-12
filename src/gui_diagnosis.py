@@ -33,7 +33,7 @@ from gui_widgets import (SUBSYSTEM_ICONS, CheckRow, ChoiceCard, Gauge, HintEntry
 from interview import Interview
 from kb import KnowledgeBase
 from nlu import extract
-from present import how_rows, near_misses, short
+from present import how_rows, model_notes, model_of, near_misses, short
 from present import t as present_text
 from theme import COLORS as C
 from theme import FONTS as F
@@ -220,19 +220,36 @@ VEHICLE = set(KINDS.values()) | set(FUELS.values())
 
 def new_dx() -> Dict[str, object]:
     """A fresh diagnosis (what app.state["dx"] holds)."""
-    return {"step": 1, "kind": "scooter", "fuel": "", "method": "guided", "part": ALL, "part_asked": False,
+    return {"step": 1, "kind": "scooter", "fuel": "", "model": "", "method": "guided", "part": ALL, "part_asked": False,
             "answers": [],
             "selected": [], "filter": "", "query": "", "text": "", "replies": [], "chat": [], "record": None,
             "wang": None}
 
 
-def vehicle_answers(kind: str, fuel: str) -> Dict[str, bool]:
-    """Answers given by step 1: the chosen type is yes, the other one no; "" = not sure."""
+def vehicle_answers(kind: str, fuel: str, model: str = "", models: Optional[Dict[str, dict]] = None
+                    ) -> Dict[str, bool]:
+    """Answers given by step 1: the chosen type is yes, the other one no; "" = not sure.
+    With the knowledge base's `models`, every listed model is answered too, and a model gives its clutch."""
     out: Dict[str, bool] = {}
     for choice, table in ((kind, KINDS), (fuel, FUELS)):
         if choice:
             out.update({sym: key == choice for key, sym in table.items()})
+    if models:
+        out.update({m: m == model for m in models})
+        if model in models:
+            out["has_clutch_lever"] = bool(models[model]["clutch"])
     return out
+
+
+def pick_model(kb: KnowledgeBase, dx: Dict[str, object], model: str) -> None:
+    """Step 1: a listed model fills in its type and fuel; "" = another bike (type and fuel chosen by hand)."""
+    dx["model"] = model
+    if model:
+        dx.update(kind=kb.models[model]["kind"], fuel=kb.models[model]["fuel"])
+
+
+def model_name(kb: KnowledgeBase, model: str) -> str:
+    return kb.models.get(model, {}).get("name", "")
 
 
 def subsystem_counts(kb: KnowledgeBase) -> List[Tuple[str, int]]:
@@ -246,7 +263,7 @@ def subsystem_counts(kb: KnowledgeBase) -> List[Tuple[str, int]]:
 # --- step 2a: step-by-step questions (Khoa's BackwardSession) ---------------------------------------------
 def guided_session(kb: KnowledgeBase, dx: Dict[str, object]) -> BackwardSession:
     """The backward session for the answers kept in dx (rebuilt each time: the engine is deterministic)."""
-    answers = dict(vehicle_answers(dx["kind"], dx["fuel"]))
+    answers = dict(vehicle_answers(dx["kind"], dx["fuel"], dx.get("model", ""), kb.models))
     answers.update(dict(dx["answers"]))
     return BackwardSession(kb, goals_for(kb, dx["part"]), answers=answers)
 
@@ -282,7 +299,7 @@ def checklist(kb: KnowledgeBase, lang: str, query: str = "", part: str = "") -> 
 def talk_interview(kb: KnowledgeBase, dx: Dict[str, object]):
     """(Interview, matches) for the text and the replies kept in dx."""
     found = extract(dx["text"], kb.symptoms) if dx["text"].strip() else []
-    start = dict(vehicle_answers(dx["kind"], dx["fuel"]))
+    start = dict(vehicle_answers(dx["kind"], dx["fuel"], dx.get("model", ""), kb.models))
     start.update({m.symptom: m.value for m in found})
     iv = Interview(kb, start)
     for symptom, value in dx["replies"]:
@@ -301,6 +318,7 @@ class Record:
     method: str
     yes: List[str]          # every "yes" answer, vehicle type included (what Wang uses)
     result: object          # ForwardResult or BackwardResult: .diagnoses and .wm
+    model: str = ""         # bike model (models.json), "" for another bike
 
 
 def make_record(kb: KnowledgeBase, dx: Dict[str, object], number: int) -> Record:
@@ -315,9 +333,11 @@ def make_record(kb: KnowledgeBase, dx: Dict[str, object], number: int) -> Record
         yes = [s for s, v in iv.answers.items() if v]
         result = iv.result()
     else:
-        yes = [s for s, v in vehicle_answers(dx["kind"], dx["fuel"]).items() if v] + list(dx["selected"])
+        yes = [s for s, v in vehicle_answers(dx["kind"], dx["fuel"], dx.get("model", ""), kb.models).items() if v] \
+            + list(dx["selected"])
         result = forward_chain(kb, yes)
-    return Record(number, _dt.datetime.now().strftime("%H:%M"), dx["kind"], dx["fuel"], method, yes, result)
+    model = model_of(kb, {s: True for s in yes}, dx.get("model", ""))  # chosen in step 1, or named in the text
+    return Record(number, _dt.datetime.now().strftime("%H:%M"), dx["kind"], dx["fuel"], method, yes, result, model)
 
 
 @dataclass
@@ -376,7 +396,9 @@ def session_number(state: Dict[str, object]) -> int:
     return len(history) + 1
 
 
-def bike_text(kind: str, fuel: str, lang: str) -> str:
+def bike_text(kind: str, fuel: str, lang: str, name: str = "") -> str:
+    if name:  # a listed model says it all
+        return name
     t = TEXT[lang]
     parts = [t[kind]] if kind else [t["unknown_bike"]]
     if fuel:
@@ -487,6 +509,10 @@ class DiagnosisPage(Page):
         label(f, t["no_sensor"], "body", "muted", bg="bg").pack(side="left")
         PillButton(f, t["start"], self.start).pack(side="right")
 
+    def choose_model(self, model: str) -> None:
+        pick_model(self.app.kb, self.dx, model)
+        self.render()
+
     def start(self) -> None:
         self.dx.update(step=2, answers=[], selected=[], replies=[], chat=[], record=None, wang=None, part_asked=False)
         if self.dx["method"] != "talk":
@@ -500,7 +526,7 @@ class DiagnosisPage(Page):
         t, kb, dx, lang = self.t, self.app.kb, self.dx, self.app.lang
         session = guided_session(kb, dx)
         part = t["all"] if dx["part"] == ALL else SUBSYSTEM_NAMES[lang][dx["part"]]
-        self.header(page, t["e2a"], t["t2a"], " · ".join((bike_text(dx["kind"], dx["fuel"], lang),
+        self.header(page, t["e2a"], t["t2a"], " · ".join((bike_text(dx["kind"], dx["fuel"], lang, model_name(kb, dx["model"])),
                                                            t["guided_note"], part)), 2, compact=True)
         if needs_part(dx):
             return self.render_part_card(page)
@@ -690,7 +716,7 @@ class DiagnosisPage(Page):
         panel.pack(fill="x")
         p = panel.body
         autowrap(label(p, t["observations"], "h2", "on_panel", bg="panel")).pack(fill="x")
-        autowrap(label(p, f"{bike_text(dx['kind'], dx['fuel'], lang)} · {t['symptoms_note']}", "body", "panel_muted",
+        autowrap(label(p, f"{bike_text(dx['kind'], dx['fuel'], lang, model_name(kb, dx['model']))} · {t['symptoms_note']}", "body", "panel_muted",
                        bg="panel")).pack(fill="x", pady=(px(4), px(12)))
         chip(p, t["n_selected"].format(n=len(dx["selected"])), C["on_lime"], C["lime"]).pack(anchor="w")
         if not dx["selected"]:
@@ -851,7 +877,7 @@ class DiagnosisPage(Page):
         t, kb, lang = self.t, self.app.kb, self.app.lang
         rec: Record = self.app.state["history"][self.dx["record"]]
         s = summarize(kb, rec, lang)
-        self.header(page, t["e3"], t["t3"], " · ".join((bike_text(rec.kind, rec.fuel, lang),
+        self.header(page, t["e3"], t["t3"], " · ".join((bike_text(rec.kind, rec.fuel, lang, model_name(kb, rec.model)),
                                                          t["method_" + rec.method])), 3, compact=True)
         banner = RoundCard(page, fill="panel", border=None, pad=22)
         banner.pack(fill="x")
@@ -915,6 +941,12 @@ class DiagnosisPage(Page):
             icon(sev, "wrench" if mech else "shield", 20, "danger" if mech else "ok", "lime_soft").pack(side="left")
             label(sev, SEVERITY_TEXT[lang].get(s.severity or "self", ""), "heading", "danger" if mech else "ok",
                   bg="lime_soft").pack(side="left", padx=(px(8), 0))
+            notes = model_notes(kb, rec.model, s.fault, lang)
+            if notes:
+                label(n, t["for_model"].format(name=model_name(kb, rec.model)), "heading", bg="lime_soft").pack(
+                    anchor="w", pady=(px(12), px(2)))
+                for note in notes:
+                    autowrap(label(n, "•  " + note, "body", bg="lime_soft")).pack(fill="x", pady=px(1))
             wc = RoundCard(right)
             wc.pack(fill="x", pady=(px(14), 0))
             w = wc.body
@@ -966,7 +998,7 @@ class DiagnosisPage(Page):
         self.render()
 
     def new_diagnosis(self) -> None:
-        keep = {k: self.dx[k] for k in ("kind", "fuel", "method")}
+        keep = {k: self.dx.get(k, "") for k in ("kind", "fuel", "model", "method")}
         self.app.state["dx"] = self.dx = dict(new_dx(), **keep)
         self.refresh_topbar()
         self.render()

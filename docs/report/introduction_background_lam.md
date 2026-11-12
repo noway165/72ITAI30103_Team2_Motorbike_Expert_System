@@ -1,15 +1,15 @@
 # Introduction and Background
 
 Author: Tang Thoai Lam. Final draft, 12/11/2026, cut to the page budget in README.md (Chapter 1 about 170 words, Chapter 2 about 250 words).
-Numbers refer to the knowledge base of 12/11/2026 (73 symptoms, 9 intermediate facts, 40 faults, 79 rules).
+Numbers refer to the knowledge base of 12/11/2026 (79 symptoms, 9 intermediate facts, 40 faults, 88 rules).
 
 ## Chapter 1: Introduction
 
 ### 1.1 Problem and goals
 
-Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one breaks down, the rider must decide what to do with little to go on: a clicking starter with a weak horn usually needs only a battery charge, while leaking brake fluid means the motorbike should not be ridden.
+Viet Nam has about 74 million motorcycles, more than it has adults [WHO 2024]. When one breaks down, the rider has little to go on: a clicking starter with a weak horn usually needs only a battery charge, while leaking brake fluid means the motorbike should not be ridden.
 
-We built a rule-based expert system for common faults on scooters and manual motorbikes. Its knowledge base has 73 symptoms, 9 intermediate facts, 40 faults and 79 rules in six subsystems. From the rider's symptoms it ranks the likely faults by certainty factor, says which need a mechanic and explains each conclusion. Forward chaining starts from ticked symptoms, backward chaining asks yes/no questions, and a rule-based chat reads the rider's own words. A prover based on Wang's algorithm checks the conclusions, and 30 test scenarios measure the results (Figure 1.1.1).
+We built a rule-based expert system for common faults on scooters and manual motorbikes. Its knowledge base has 79 symptoms, 9 intermediate facts, 40 faults and 88 rules in six subsystems, with data for six popular models. From the rider's symptoms it ranks the likely faults by certainty factor, says which need a mechanic and explains each conclusion. Forward chaining starts from ticked symptoms, backward chaining asks yes/no questions, and a rule-based chat reads the rider's own words. A prover based on Wang's algorithm checks the conclusions, and 30 test scenarios measure the results (Figure 1.1.1).
 
 ![Figure 1.1.1](figures/fig_system_overview.png)
 
@@ -23,7 +23,7 @@ Symptom-based diagnosis suits a rule-based system that can explain its advice.
 
 ### 2.1 Expert systems and certainty factors
 
-A rule-based expert system keeps domain knowledge as IF ... THEN rules, and an inference engine applies them to the facts in working memory. MYCIN, a 1970s system for bacterial infections, attached to each rule a certainty factor (CF), an estimate of how strongly the premises support the conclusion, and could explain why it asked a question and how it reached a conclusion [Shortliffe and Buchanan 1975; Buchanan and Shortliffe 1984]. We use both ideas.
+A rule-based expert system keeps domain knowledge as IF ... THEN rules, and an inference engine applies them to the facts in working memory. MYCIN, a 1970s medical system, attached to each rule a certainty factor (CF), an estimate of how strongly the premises support the conclusion, and could explain why it asked a question and how it reached a conclusion [Shortliffe and Buchanan 1975; Buchanan and Shortliffe 1984]. We use both ideas.
 
 ### 2.2 Forward and backward chaining
 
@@ -35,11 +35,11 @@ Figure 2.2.1: Forward and backward chaining on rules SF01 and SF02
 
 ### 2.3 Wang's algorithm
 
-Wang's algorithm decides whether a propositional sequent is valid by removing one connective at a time until only atoms remain [Wang 1960]. Whether the rules and the answers entail a fault is such a sequent, and the prover shares no code with our engines, so a disagreement reveals a bug.
+Wang's algorithm decides whether a propositional sequent is valid by removing one connective at a time until only atoms remain [Wang 1960]. Whether the rules and answers entail a fault is such a sequent; the prover shares no code with our engines.
 
 ### 2.4 Related work
 
-Aditya et al. [2022] used forward chaining in a mobile application for automatic motorcycles, and Anggrawan et al. [2026] compared certainty factors with case-based reasoning. We run both chaining directions on one knowledge base and add explanations and an independent proof check.
+Aditya et al. [2022] used forward chaining in a mobile application for automatic motorcycles, and Anggrawan et al. [2026] compared certainty factors with case-based reasoning. We add both chaining directions, explanations and an independent proof check.
 
 ### 2.5 Chapter conclusion
 

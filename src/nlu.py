@@ -35,6 +35,12 @@ PHRASES: Dict[str, List[str]] = {
                          "vision", "air blade", "airblade", "lead", "sh", "pcx", "vario", "nvx", "grande", "janus",
                          "winner", "exciter"],
     "is_carburetor": ["bình xăng con", "chế hòa khí", "carburetor", "carburettor", "carb", "dream"],
+    "model_honda_vision": ["vision"],
+    "model_honda_air_blade": ["air blade", "airblade"],
+    "model_honda_lead": ["lead"],
+    "model_honda_wave_alpha": ["wave alpha", "wave a", "alpha"],
+    "model_honda_future": ["future"],
+    "model_yamaha_exciter": ["exciter"],
     "has_clutch_lever": ["côn tay", "tay côn", "có côn", "clutch lever", "exciter", "winner", "raider", "satria"],
     # --- starting and fuel --------------------------------------------------
     "starter_clicks_or_silent": ["tạch tạch", "tạch", "lạch cạch khi đề", "đề không quay", "đề không lên",

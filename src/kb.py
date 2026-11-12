@@ -73,9 +73,12 @@ class Rule:
 
 
 class KnowledgeBase:
-    def __init__(self, symbols: Dict[str, Symbol], rules: List[Rule], problems: List[str]):
+    def __init__(self, symbols: Dict[str, Symbol], rules: List[Rule], problems: List[str],
+                 models: Optional[Dict[str, dict]] = None):
         self.symbols = symbols
         self.rules = rules
+        # Bike models (models.json): type, fuel, clutch and maintenance specs, keyed by their vehicle fact
+        self.models: Dict[str, dict] = models or {}
         # Problems found while reading the files (bad JSON, missing fields, duplicates).
         # validate() reports them as errors.
         self.problems = problems
@@ -168,6 +171,7 @@ def load_kb(kb_dir: Path | str = DEFAULT_KB_DIR) -> KnowledgeBase:
     symbols: Dict[str, Symbol] = {}
     rules: List[Rule] = []
     problems: List[str] = []
+    models: Dict[str, dict] = {}
     seen_rule_ids: Dict[str, str] = {}
 
     files = sorted(kb_dir.rglob("*.json"))
@@ -186,6 +190,10 @@ def load_kb(kb_dir: Path | str = DEFAULT_KB_DIR) -> KnowledgeBase:
             continue
 
         subsystem = data.get("subsystem") or path.stem
+        for mid, spec in (data.get("models") or {}).items():
+            if mid in models:
+                problems.append(f"{name}: model '{mid}' is already defined")
+            models[mid] = spec
 
         for section, (kind, text_field) in SECTIONS.items():
             entries = data.get(section, {})
@@ -251,7 +259,7 @@ def load_kb(kb_dir: Path | str = DEFAULT_KB_DIR) -> KnowledgeBase:
                 source=str(spec.get("source", "")), note=str(spec.get("note", "")),
             ))
 
-    return KnowledgeBase(symbols, rules, problems)
+    return KnowledgeBase(symbols, rules, problems, models)
 
 
 # ---------------------------------------------------------------------------
@@ -372,6 +380,22 @@ def validate(kb: KnowledgeBase) -> Report:
             missing += [f"action.{lang}" for lang in LANGUAGES if not sym.action.get(lang)]
         if missing:
             report.warnings.append(f"{sym.file}: {sym.kind} '{sid}' is missing {', '.join(missing)}")
+
+    # Bike models: a vehicle fact each, a known type and fuel, a source, and specs in both languages
+    for mid, m in kb.models.items():
+        where = f"model '{mid}'"
+        if mid not in symbols or symbols[mid].subsystem != "vehicle":
+            report.errors.append(f"{where} needs a vehicle fact (a symptom in a 'vehicle' file) with the same id")
+        if not isinstance(m, dict):
+            report.errors.append(f"{where} must be an object")
+            continue
+        if m.get("kind") not in ("scooter", "manual") or m.get("fuel") not in ("fi", "carb"):
+            report.errors.append(f"{where}: kind must be scooter/manual and fuel fi/carb")
+        if not str(m.get("source", "")).strip():
+            report.errors.append(f"{where} has no source")
+        for key, spec in (m.get("specs") or {}).items():
+            if not all(isinstance(spec, dict) and spec.get(k) for k in ("vi", "en", "page")):
+                report.errors.append(f"{where}: spec '{key}' needs vi, en and page")
 
     # Rules without a source (needed for citations in the report); one line per file
     no_source: Dict[str, List[str]] = {}
