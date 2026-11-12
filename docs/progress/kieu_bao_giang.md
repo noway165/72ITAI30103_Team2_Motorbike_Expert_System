@@ -46,6 +46,39 @@ Cập nhật lần cuối: 12/11/2026 (nhánh `feature/motologic`). Theo lịch 
 | B. 4 ảnh MotoLogic: `docs/report/figures/fig_motologic_1_setup.png` … `_4_result.png` | Xong |
 | C. Slide và lời thoại phần Forward + Wang theo số mới, kèm kịch bản demo SE01 và BT03 (`docs/slides/`) | Xong |
 
+## Phân công tối 12/11 (PhanCong_Nhom2_12-11_v3.pdf), nhánh `feature/giang-report-fixes`
+
+| Việc | Trạng thái |
+|---|---|
+| G1. Đọc lại phần Lâm sửa trong `src/gui_diagnosis.py` (thẻ chọn bộ phận, khung chat), chạy cả 3 cách bằng `python tools/shots.py` | Xong: cả 3 cách chạy được, kết quả và Wang đúng; lỗi gửi Lâm ở dưới |
+| G2. Stepper hiện ✓ hai lần (`gui_widgets.py`); bước 1 phải cuộn mới thấy cách thứ 3 và nút Bắt đầu | Xong: bỏ ✓ thừa ở chữ; bước 1 thành một thẻ rộng, 3 cách nằm ngang, tiêu đề gọn như bước 2–3. Ảnh 1600×950 (vi, en, sáng, tối) thấy đủ 3 cách và nút Bắt đầu; test qua |
+| G3. Thử chat với phanh, lốp, giảm xóc: 5 cuộc, mỗi cuộc có câu hỏi thêm | Xong: bảng dưới |
+| G4. Ch3: `methodology_giang.md` còn khoảng 180 từ, 1 hình; viết Chapter conclusion chung cho Ch3 | Xong |
+| G5. Chụp lại 4 ảnh `fig_motologic_*.png`; đổi chú thích "CF gauge" thành "confidence gauge" | Xong |
+| G6. Ch5: `discussion.md` còn ≤300 từ; thêm câu so sánh chưa ngang bằng (số K3 của Khoa) và giới hạn của chat ở 5.3 | Xong |
+
+### G1. Lỗi gửi Lâm
+
+1. Chat: phần trăm của lỗi dẫn đầu trong câu hỏi lệch 1% so với khung bên phải (21% và 22%).
+2. Khi chat dài và cuộn xuống, khung bên phải trông trống vì nội dung nằm ở trên cùng.
+3. (G3) Câu "bóp phanh thấy mềm" không được nhận ra; danh sách cụm từ chỉ có "tay phanh mềm". "steering feels heavy" cũng không nhận ra, chỉ có "steering is heavy".
+4. (G3) Câu hỏi đầu tiên thường thuộc bộ phận khác (truyền động, đề) dù câu kể đã nói rõ là phanh hoặc lốp.
+5. (G3) Cuộc 4: lỗi đã được luật TS07 chứng minh (CF 0,85) nhưng vẫn hỏi thêm 14 câu không liên quan (xích, nước làm mát, ...) tới giới hạn 15 câu.
+
+### G3. Thử chat (Kể bằng lời) với phanh, lốp, giảm xóc
+
+Chạy bằng `chat.start` / `chat.respond` (giống khung chat). Người trả lời theo kịch bản BT: "có" nếu triệu chứng có trong kịch bản, "không" với mọi câu khác. Mỗi cuộc có một câu hỏi thêm ngay sau câu hỏi đầu tiên.
+
+| # | Gõ gì (câu kể; câu hỏi thêm) | Bot hiểu đúng không | Trả lời có hợp lý không | Lỗi cuối cùng |
+|---|---|---|---|---|
+| 1 | "phanh trước kêu ken két, má phanh nhìn mỏng lắm rồi"; "tại sao hỏi vậy?" | Đúng: đọc ra phanh kêu ken két và má phanh mỏng | Có: "tại sao" liệt kê luật TR01 của câu đang hỏi. Câu hỏi đầu (tăng ga máy rú) lạc sang truyền động | Má phanh mòn, 98%, BR02 → BR01, Wang ✓, 3 câu trả lời (BT01 đúng) |
+| 2 | "bóp phanh thấy mềm, phải bóp sâu mới ăn"; "còn khả năng nào?" | Sai: không nhận ra triệu chứng nào (chỉ có cụm "tay phanh mềm") | Một phần: "còn khả năng nào" trả lời đúng nhưng chưa có gì để xếp hạng; phải trả lời 11 câu mới tới tay phanh mềm và dầu phanh cũ | Dầu phanh cũ, 70%, BR07, Wang ✓ (BT04 đúng) |
+| 3 | "lốp sau cứ vài hôm lại xẹp"; "tại sao hỏi vậy?" | Một phần: đọc ra lốp non hơi, chưa đọc ra xì hơi nhanh | Có cho "tại sao"; nhưng hỏi 10 câu ở bộ phận khác trước khi hỏi "lốp xì hơi nhanh" và "thấy đinh" | Lốp bị thủng, 96%, TS05 → TS04, Wang ✓, 13 câu (BT08 đúng) |
+| 4 | "phuộc trước chảy dầu, phanh gấp thì đầu xe chúi xuống"; "phải làm gì?" | Đúng: dầu rỉ trên ống phuộc và phuộc mềm, chúi khi phanh | Có: "phải làm gì" trả cách xử lý và luật TS07. Nhưng sau đó vẫn hỏi 14 câu không liên quan | Phuộc trước rò dầu, 85%, TS07 (BT09 đúng) |
+| 5 | "the front tyre looks flat and the steering feels heavy"; "why?" (tiếng Anh) | Một phần: đọc ra lốp non hơi, không đọc ra tay lái nặng ("feels heavy") | Có: "why" liệt kê luật TR01; tự hỏi lại tay lái nặng ở câu thứ 6 | Lốp thiếu hơi, 85%, TS01, Wang ✓, 6 câu (BT07 đúng) |
+
+Tóm tắt: 5/5 ra đúng lỗi; câu hỏi thêm (tại sao / còn gì / phải làm gì) đều được hiểu. Câu kể chỉ được hiểu khi cách nói có trong danh sách cụm từ (cuộc 2, 3, 5). Cuộc 2, 3, 4 phải trả lời nhiều câu không liên quan.
+
 ## Kết quả hiện tại
 
 - Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **79 luật**. `python src/kb.py`: 0 lỗi.
