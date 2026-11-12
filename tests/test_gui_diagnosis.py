@@ -104,6 +104,11 @@ class LogicTest(unittest.TestCase):
         self.assertEqual(rec.result.diagnoses[0].fault, "worn_centrifugal_clutch")
         self.assertIn("MD02", summarize(KB, rec, "vi").chain)
 
+    def test_bike_model_wording_in_both_languages(self):
+        for lang in ("vi", "en"):
+            self.assertIn("{name}", TEXT[lang]["for_model"])
+            self.assertTrue(TEXT[lang]["other_bike"])
+
     def test_vehicle_answers(self):
         self.assertEqual(vehicle_answers("scooter", "fi"), {"is_scooter": True, "is_manual": False,
                                                             "is_fuel_injected": True, "is_carburetor": False})
@@ -265,6 +270,45 @@ class WindowTest(unittest.TestCase):
         self.assertFalse(needs_part(page.dx))
         self.root.update()
         self.assertEqual(self.errors, [])
+
+    def test_bike_model_picker_and_result_specs(self):
+        import gui
+        app = gui.App(self.root)
+        page = app.page
+        page.set(step=1)
+        self.root.update()
+        shown = [w.cget("text") for w in _all(page) if isinstance(w, tk_label())]
+        for m in app.kb.models.values():  # every listed model can be picked in step 1
+            self.assertIn(m["name"], shown)
+        self.assertIn(TEXT["vi"]["other_bike"], shown)
+        page.choose_model("model_honda_vision")
+        page.set(method="symptoms")
+        page.start()
+        for sid in ("starter_clicks_or_silent", "horn_weak", "battery_older_than_2_years"):
+            page.toggle_symptom(sid)
+        page.finish()
+        self.root.update()
+        shown = " ".join(w.cget("text") for w in _all(page) if isinstance(w, tk_label()))
+        self.assertIn("GTZ6V", shown)  # the Vision battery from its owner's manual
+        page.new_diagnosis()
+        page.set(method="talk")
+        page.start()
+        page.text.insert("1.0", "Vision đề chỉ nghe tạch tạch, còi cũng yếu, ắc quy dùng hơn 2 năm")
+        page.analyze()
+        page.send("xem kết quả")  # the model is read from the text: the result must still draw
+        self.root.update()
+        self.assertEqual(self.errors, [])
+
+
+def tk_label():
+    import tkinter as tk
+    return tk.Label
+
+
+def _all(widget):
+    for child in widget.winfo_children():
+        yield child
+        yield from _all(child)
 
 
 if __name__ == "__main__":
