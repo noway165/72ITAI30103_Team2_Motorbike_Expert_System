@@ -381,7 +381,7 @@ class Stepper(tk.Frame):
             c.create_text(d / 2, d / 2, text="✓" if done else f"{i:02d}", font=F["small_bold"],
                           fill=C["accent"] if done else C["on_lime"] if now else C["muted"])
             c.pack(side="left")
-            label(row, text + (" ✓" if done else ""), "heading" if now else "body",
+            label(row, text, "heading" if now else "body",  # the circle already shows ✓ for a done step
                   "text" if now else "muted", bg=bg).pack(side="left", padx=(px(10), 0))
             tk.Frame(col, bg=C["accent"] if i <= current else C["border"], height=px(2)).pack(fill="x")
 
