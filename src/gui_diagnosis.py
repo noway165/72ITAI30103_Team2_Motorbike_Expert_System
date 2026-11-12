@@ -22,6 +22,7 @@ from typing import Dict, List, Optional, Tuple
 
 import tkinter as tk
 
+import chat
 from backward_chaining import UNKNOWN, BackwardSession
 from forward_chaining import forward_chain
 from gui_backward import ALL, goals_for, question_view
@@ -99,8 +100,12 @@ TEXT = {
                        "Bộ phận: ắc quy, phanh, lốp, phuộc…"],
         "analyze": "Phân tích", "to_guided": "Chuyển sang hỏi đáp từng câu", "understood": "Đã hiểu từ câu bạn kể", "understood_none":
             "Chưa nhận ra triệu chứng nào. Thử kể rõ hơn, ví dụ “còi yếu”, “đề không nổ”.",
-        "talk_why": "Câu này giúp phân biệt", "talk_why_sub": "Trợ lý chọn câu hỏi cho nhiều thông tin nhất "
-                                                             "(information gain) giữa các lỗi đang nghi ngờ.",
+        "chat_title": "Trò chuyện với MotoLogic", "chat_sub": "Mọi câu trả lời đều lấy từ luật trong cơ sở tri thức.",
+        "chat_hint": "Trả lời, kể thêm triệu chứng hoặc hỏi lại…", "send": "Gửi",
+        "quick_q": ["Có", "Không", "Không rõ", "Tại sao hỏi vậy?"],
+        "quick": ["Làm sao biết?", "Sửa thế nào?", "Còn khả năng nào?"],
+        "beliefs": "Khả năng lúc này", "by_rules": "luật đã chứng minh",
+        "see_result": "Xem kết quả đầy đủ", "restart_chat": "Kể lại từ đầu",
         "e3": "Kết quả chẩn đoán", "t3": "Đây là điều triệu chứng của bạn gợi ý.",
         "likely": "Lỗi có khả năng cao", "chain": "Theo chuỗi luật {chain}",
         "obs": "Quan sát", "rules_used": "Luật đã dùng",
@@ -178,8 +183,12 @@ TEXT = {
                        "Parts: battery, brakes, tyres, forks…"],
         "analyze": "Analyse", "to_guided": "Switch to guided questions", "understood": "Understood from your text", "understood_none":
             "No symptom recognised yet. Try to be more specific, e.g. “weak horn”, “won't start”.",
-        "talk_why": "This question separates", "talk_why_sub": "The assistant asks the question with the "
-                                                                "highest information gain among the suspected faults.",
+        "chat_title": "Chat with MotoLogic", "chat_sub": "Every reply comes from the rules in the knowledge base.",
+        "chat_hint": "Answer, add symptoms or ask…", "send": "Send",
+        "quick_q": ["Yes", "No", "Not sure", "Why this question?"],
+        "quick": ["How do you know?", "How to fix?", "What else?"],
+        "beliefs": "Most likely now", "by_rules": "proved by the rules",
+        "see_result": "See the full result", "restart_chat": "Start over",
         "e3": "Diagnosis result", "t3": "Here's what your symptoms suggest.",
         "likely": "Likely fault", "chain": "Supported by the {chain} rule chain",
         "obs": "Observations", "rules_used": "Rules used",
@@ -215,7 +224,8 @@ def new_dx() -> Dict[str, object]:
     """A fresh diagnosis (what app.state["dx"] holds)."""
     return {"step": 1, "kind": "scooter", "fuel": "", "method": "guided", "part": ALL, "part_asked": False,
             "answers": [],
-            "selected": [], "filter": "", "query": "", "text": "", "replies": [], "record": None, "wang": None}
+            "selected": [], "filter": "", "query": "", "text": "", "replies": [], "chat": [], "record": None,
+            "wang": None}
 
 
 def vehicle_answers(kind: str, fuel: str) -> Dict[str, bool]:
@@ -496,7 +506,7 @@ class DiagnosisPage(Page):
         PillButton(f, t["start"], self.start).pack(side="right")
 
     def start(self) -> None:
-        self.dx.update(step=2, answers=[], selected=[], replies=[], record=None, wang=None, part_asked=False)
+        self.dx.update(step=2, answers=[], selected=[], replies=[], chat=[], record=None, wang=None, part_asked=False)
         if self.dx["method"] != "talk":
             self.dx["text"] = ""
         self.render()
@@ -719,18 +729,16 @@ class DiagnosisPage(Page):
         if hasattr(self, "find") and not first:
             self.find.set_enabled(bool(dx["selected"]))
 
-    # --- step 2c ---
+    # --- step 2c: a conversation; every reply is built from the rules (chat.py) ---
     def render_talk(self, page) -> None:
         t, kb, dx, lang = self.t, self.app.kb, self.dx, self.app.lang
         self.header(page, t["e2c"], t["t2c"], t["s2c"], 2, compact=True)
+        talking = bool(dx.get("chat"))
         iv, found = talk_interview(kb, dx) if dx["text"].strip() else (None, [])
-        q = iv.next_question() if iv else None
-        if iv is not None and q is None and dx["text"].strip() and (dx["replies"] or iv.result().diagnoses):
-            return self.after_idle(self.finish)
-        if not found:  # nothing recognised: questions from scratch would not use the text; offer a way out instead
-            q = None
         left, right = self.columns(page)
-        if q is None:  # nothing analysed yet, or no symptom recognised
+        if talking:
+            self.chat_card(left, iv)
+        else:  # the first description, or nothing recognised in it
             card = RoundCard(left)
             card.pack(fill="x")
             label(card.body, t["talk_box"], "h2").pack(anchor="w")
@@ -753,25 +761,10 @@ class DiagnosisPage(Page):
             if dx["text"].strip() and not found:
                 PillButton(row, t["to_guided"], self.switch_to_guided, style="outline", bg="surface").pack(
                     side="left", padx=(px(12), 0))
-        else:
-            self.question_card(left, len(dx["replies"]) + 1, kb.question(q.symptom, lang),
-                               kb.symbols[q.symptom].hint.get(lang, ""),
-                               lambda v: self.answer_talk(q.symptom, v))
         panel = RoundCard(right, fill="panel", border=None, grow=True)
         panel.pack(fill="both", expand=True)
         p = panel.body
-        if q is not None:
-            eyebrow(p, t["why"], bg="panel", fg="lime").pack(anchor="w")
-            label(p, t["talk_why"], "h2", "on_panel", bg="panel").pack(anchor="w", pady=(px(8), px(6)))
-            autowrap(label(p, t["talk_why_sub"], "body", "panel_muted", bg="panel")).pack(fill="x")
-            for fault, prob in q.splits:
-                row = tk.Frame(p, bg=C["panel"])
-                row.pack(fill="x", pady=(px(8), 0))
-                autowrap(label(row, kb.text(fault, lang), "body", "on_panel", bg="panel")).pack(
-                    side="left", fill="x", expand=True)
-                label(row, f"{prob:.0%}", "heading", "lime", bg="panel").pack(side="right")
-        eyebrow(p, t["understood"] if found else t["how_read"], bg="panel", fg="lime").pack(
-            anchor="w", pady=(px(18) if q is not None else 0, px(6)))
+        eyebrow(p, t["understood"] if found else t["how_read"], bg="panel", fg="lime").pack(anchor="w", pady=(0, px(6)))
         if not found:  # empty state: say what the program can read from the text
             autowrap(label(p, t["talk_reads"], "body", "panel_muted", bg="panel")).pack(fill="x")
             for line in t["talk_kinds"]:
@@ -779,14 +772,66 @@ class DiagnosisPage(Page):
         for m in found:
             autowrap(label(p, ("✓ " if m.value else "✕ ") + short(kb, m.symptom, lang), "body",
                            "on_panel" if m.value else "panel_muted", bg="panel")).pack(fill="x", pady=px(2))
-        if q is not None:
-            self.answers_strip(left, [(short(kb, s, lang), answer_label(v, lang)) for s, v in dx["replies"]],
-                               self.undo_talk)
+        if talking and found:
+            proved = {d.fault for d in iv.result().diagnoses}
+            eyebrow(p, t["beliefs"], bg="panel", fg="lime").pack(anchor="w", pady=(px(18), px(6)))
+            for fault, prob in iv.beliefs(3):
+                row = tk.Frame(p, bg=C["panel"])
+                row.pack(fill="x", pady=(px(6), 0))
+                label(row, f"{prob:.0%}", "heading", "lime", bg="panel", width=5).pack(side="left", anchor="n")
+                autowrap(label(row, kb.text(fault, lang) + (f"  ·  {t['by_rules']}" if fault in proved else ""),
+                               "body", "on_panel", bg="panel")).pack(side="left", fill="x", expand=True)
         f = self.footer(page)
-        if q is not None:
-            link(f, "← " + t["previous"], self.undo_talk, bg="bg", font="body").pack(side="left")
-        link(f, ("" if q is not None else "← ") + t["change"], lambda: self.go(1), bg="bg", font="body").pack(
-            side="left", padx=(px(24) if q is not None else 0, 0))
+        link(f, "← " + t["change"], lambda: self.go(1), bg="bg", font="body").pack(side="left")
+        if talking:
+            link(f, t["restart_chat"], lambda: self.send(t["restart_chat"], restart=True), bg="bg", font="body").pack(
+                side="left", padx=(px(24), 0))
+            PillButton(f, t["see_result"], self.finish).pack(side="right")
+            # newest message in view, after RoundCard has refitted its height (60 ms)
+            self.after(150, lambda: self.scroll.winfo_exists() and self.scroll.canvas.yview_moveto(1.0))
+
+    def chat_card(self, parent, iv) -> None:
+        t = self.t
+        card = RoundCard(parent)
+        card.pack(fill="x")
+        b = card.body
+        label(b, t["chat_title"], "h2").pack(anchor="w")
+        autowrap(label(b, t["chat_sub"], "small", "muted")).pack(fill="x", pady=(px(2), px(10)))
+        for who, text in self.dx["chat"]:
+            mine = who == "you"
+            fill = "lime_soft" if mine else "chrome"
+            bubble = tk.Frame(b, bg=C[fill], padx=px(12), pady=px(8))
+            bubble.pack(fill="x", pady=(px(6), 0), padx=(px(56), 0) if mine else (0, px(56)))
+            autowrap(label(bubble, text, "body", bg=fill)).pack(fill="x")
+        quick = (t["quick_q"] if iv is not None and iv.next_question() is not None else []) + t["quick"]
+        row = tk.Frame(b, bg=C["surface"])
+        row.pack(fill="x", pady=(px(14), 0))
+        for i, text in enumerate(quick):
+            c = chip(row, text, C["accent"], C["chrome"])
+            c.configure(cursor="hand2", font=F["body"], pady=px(4))
+            c.grid(row=i // 4, column=i % 4, sticky="w", padx=(0, px(8)), pady=(0, px(6)))
+            c.bind("<Button-1>", lambda e, text=text: self.send(text))
+        box = tk.Frame(b, bg=C["surface"])
+        box.pack(fill="x", pady=(px(8), 0))
+        self.entry = HintEntry(box, t["chat_hint"])
+        self.entry.pack(side="left", fill="x", expand=True, ipady=px(6), padx=(0, px(10)))
+        self.entry.bind("<Return>", lambda e: self.send())
+        PillButton(box, t["send"], self.send, bg="surface").pack(side="right")
+        entry = self.entry  # the screen may be rebuilt before idle time
+        self.after_idle(lambda: entry.winfo_exists() and entry.focus_set())
+
+    def send(self, text: Optional[str] = None, restart: bool = False) -> None:
+        """One message from the rider: answers, more symptoms or a question; the reply comes from chat.py."""
+        text = (self.entry.value() if text is None else text).strip()
+        if restart:
+            self.dx.update(text="", replies=[], chat=[])
+        elif not text:
+            return
+        elif chat.intent(text) == "result":
+            return self.finish()
+        else:
+            chat.respond(self.app.kb, self.dx, text, self.app.lang)
+        self.render()
 
     def switch_to_guided(self) -> None:
         to_guided(self.dx)
@@ -798,17 +843,12 @@ class DiagnosisPage(Page):
         self.text.focus_set()
 
     def analyze(self) -> None:
-        self.dx.update(text=self.text.get("1.0", "end").strip(), replies=[])
+        text = self.text.get("1.0", "end").strip()
+        if extract(text, self.app.kb.symptoms):
+            chat.start(self.app.kb, self.dx, text, self.app.lang)
+        else:  # nothing recognised: keep the text box, with a way out to the guided questions
+            self.dx.update(text=text, replies=[], chat=[])
         self.render()
-
-    def answer_talk(self, symptom: str, value) -> None:
-        self.dx["replies"].append((symptom, value))
-        self.render()
-
-    def undo_talk(self) -> None:
-        if self.dx["replies"]:
-            self.dx["replies"].pop()
-            self.render()
 
     # --- step 3 ---
     def finish(self) -> None:

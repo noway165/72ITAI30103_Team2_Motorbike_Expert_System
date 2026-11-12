@@ -220,10 +220,18 @@ class WindowTest(unittest.TestCase):
         page.start()
         page.use_example(TEXT["vi"]["examples"][0])
         self.assertEqual(page.text.get("1.0", "end").strip(), TEXT["vi"]["examples"][0])
-        page.analyze()
-        self.assertTrue(page.dx["text"])
+        page.text.delete("1.0", "end")
+        page.text.insert("1.0", "đề chỉ nghe tạch tạch")  # not enough yet: a question is waiting
+        page.analyze()  # the conversation starts: what was read, then a question
+        self.assertTrue(page.dx["chat"])
+        page.send("tại sao hỏi vậy?")
+        page.entry._hide()  # what focusing the box does
+        page.entry.insert(0, "có")
+        page.send()
+        self.assertEqual(len(page.dx["replies"]), 1)
         self.root.update()
-        self.assertEqual(page.dx["step"], 3)  # the example alone was enough for a result
+        page.send("xem kết quả")
+        self.assertEqual(page.dx["step"], 3)
         page.set(step=1, text="")
         page.start()
         page.text.insert("1.0", "xyz abc")

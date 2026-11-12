@@ -26,6 +26,8 @@ import theme  # noqa: E402
 from gui_diagnosis import new_dx  # noqa: E402
 
 PICK = ("starter_clicks_or_silent", "horn_weak", "battery_older_than_2_years")
+CHAT = {"vi": ["đề chỉ nghe tạch tạch", "tại sao hỏi vậy?", "có", "còn khả năng nào?"],
+        "en": ["the starter only clicks", "why?", "yes", "what else?"]}
 TALK = {"vi": "Sáng nay đề chỉ nghe tạch tạch, còi cũng yếu, ắc quy dùng hơn 2 năm rồi",
         "en": "The starter only clicks, the horn is weak and the battery is over 2 years old"}
 
@@ -40,7 +42,7 @@ def arg(name: str, default: str) -> str:
 def grab(root: tk.Tk, path: Path) -> None:
     for _ in range(3):  # autowrap labels re-layout after the first <Configure>
         root.update()
-    root.after(150)
+    root.after(250)
     root.update()
     x, y = root.winfo_rootx(), root.winfo_rooty()
     ImageGrab.grab((x, y, x + root.winfo_width(), y + root.winfo_height()), all_screens=True).save(path)
@@ -85,9 +87,12 @@ def screens(root: tk.Tk, app, out: Path, tag: str) -> None:
     p = reset(app, method="talk")
     p.start()
     shot("2c_talk_empty")
-    p.dx.update(text=TALK[app.lang], replies=[])
-    p.render()
-    shot("2c_talk_analysed")
+    p.text.insert("1.0", CHAT[app.lang][0])
+    p.analyze()
+    shot("2c_chat_start")
+    for msg in CHAT[app.lang][1:]:
+        p.send(msg)
+    shot("2c_chat_why_answer")
     p = reset(app, method="talk")
     p.start()
     p.dx.update(text="xyz abc", replies=[])
