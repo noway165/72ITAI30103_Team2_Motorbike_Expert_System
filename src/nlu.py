@@ -101,7 +101,7 @@ PHRASES: Dict[str, List[str]] = {
                                  "blue smoke", "white smoke", "grey smoke", "burning oil"],
     "fuel_consumption_increased": ["hao xăng", "tốn xăng", "ăn xăng", "tốn hơn", "fuel use", "uses more fuel", "fuel consumption",
                                    "burns more fuel", "drinking fuel", "poor mileage"],
-    "engine_lacks_power": ["máy yếu", "yếu máy", "đuối", "lên dốc yếu", "không bốc", "thiếu lực", "ì máy",
+    "engine_lacks_power": ["máy yếu", "yếu máy", "máy đuối", "xe đuối", "chạy đuối", "đuối sức", "lên dốc yếu", "không bốc", "thiếu lực", "ì máy",
                            "lacks power", "no power uphill", "weak engine", "sluggish"],
     "air_filter_overdue": ["lâu chưa thay lọc gió", "lọc gió bẩn", "chưa thay lọc gió", "lọc gió cũ", "lọc gió chưa thay",
                            "dirty air filter", "air filter is old", "air filter has not been changed", "never changed the air filter"],
@@ -145,53 +145,63 @@ PHRASES: Dict[str, List[str]] = {
                                      "clutch lever is loose"],
     # --- brakes -------------------------------------------------------------
     "brake_squeal": ["phanh kêu rít", "thắng kêu rít", "phanh kêu két", "thắng kêu", "phanh kêu",
-                     "brakes squeal", "brake squeal", "squeaky brakes", "brakes squeak"],
-    "brake_grinding": ["phanh kêu ken két", "kêu sắt cọ sắt", "phanh kêu rè rè sắt", "brakes grind",
+                     "brakes squeal", "brake squeal", "brake squeals", "squeaky brakes", "brakes squeak"],
+    "brake_grinding": ["phanh kêu ken két", "kêu sắt cọ sắt", "sắt cọ sắt", "ken két", "phanh kêu rè rè sắt", "brakes grind",
                        "grinding brakes", "metal on metal"],
     "brake_pad_thin_visible": ["má phanh mỏng", "bố thắng mỏng", "mòn bố", "hết bố", "má phanh mòn",
-                               "worn brake pads", "brake pads are thin", "thin pads"],
+                               "má phanh hết", "bố thắng hết", "worn brake pads", "brake pads are thin", "thin pads",
+                               "pads worn", "pads look worn"],
     "brake_stopping_distance_longer": ["phanh không ăn", "thắng không ăn", "phanh ăn kém", "thắng yếu",
                                        "phanh yếu", "brakes are weak", "takes longer to stop",
                                        "brakes don t bite"],
     "brake_lever_spongy": ["tay phanh mềm", "tay thắng mềm", "bóp phanh sâu", "phanh bị lún",
-                           "spongy brake", "soft brake lever", "spongy lever", "lever feels spongy", "lever feels soft"],
+                           "spongy brake", "soft brake lever", "spongy lever", "lever feels spongy", "lever feels soft",
+                           "spongy"],
     "brake_fluid_low": ["dầu phanh cạn", "dầu thắng cạn", "thiếu dầu phanh", "dầu phanh dưới vạch",
-                        "low brake fluid", "brake fluid is low"],
+                        "bình dầu dưới vạch", "low brake fluid", "brake fluid is low", "reservoir below min"],
     "brake_fluid_leak_visible": ["rỉ dầu phanh", "chảy dầu phanh", "rỉ dầu thắng", "dầu phanh rỉ",
-                                 "brake fluid leak", "leaking brake fluid"],
-    "brake_fluid_old": ["lâu chưa thay dầu phanh", "dầu phanh cũ", "chưa thay dầu thắng", "old brake fluid",
-                        "brake fluid is old"],
+                                 "cùm phanh ướt dầu", "cùm phanh rỉ dầu", "brake fluid leak", "leaking brake fluid",
+                                 "caliper is wet", "caliper wet"],
+    "brake_fluid_old": ["lâu chưa thay dầu phanh", "dầu phanh cũ", "chưa thay dầu thắng", "dầu phanh chưa thay",
+                        "old brake fluid", "brake fluid is old", "fluid has not been changed", "fluid not changed"],
     "brake_pulsation": ["phanh bị rung", "thắng bị rung", "bóp phanh rung", "phanh giật",
-                        "brake pulsation", "brakes pulse", "vibration when braking"],
-    "brake_drags": ["bó phanh", "bó thắng", "phanh bị bó", "bánh nặng", "phanh bị kéo", "brakes drag",
-                    "brake drags", "wheel feels heavy"],
+                        "brake pulsation", "brakes pulse", "vibration when braking", "lever pulses"],
+    "brake_drags": ["bó phanh", "bó thắng", "phanh bị bó", "bánh nặng", "phanh bị kéo", "như bị phanh kéo",
+                    "bánh nóng", "dắt xe nặng", "brakes drag", "brake drags", "wheel feels heavy", "hard to push",
+                    "brake is still on"],
     # --- tyres and suspension ----------------------------------------------
     "tyre_pressure_low": ["lốp non", "vỏ non", "non hơi", "lốp xẹp", "lốp bẹp", "flat tyre", "flat tire",
-                          "low tyre pressure", "low tire pressure", "tyre is soft"],
-    "tyre_loses_air_quickly": ["xì hơi", "hay xì", "bơm hoài", "mau xẹp", "loses air", "tyre keeps going flat", "tire keeps going flat",
+                          "xẹp", "low tyre pressure", "low tire pressure", "tyre is soft", "tyre looks flat",
+                          "tire looks flat", "goes soft"],
+    "tyre_loses_air_quickly": ["xì hơi", "hay xì", "bơm hoài", "mau xẹp", "vài ngày lại xẹp", "every few days", "loses air", "tyre keeps going flat", "tire keeps going flat",
                                "slow puncture"],
-    "tyre_foreign_object": ["dính đinh", "cán đinh", "đinh trong lốp", "đinh trên vỏ", "nail in the tyre",
+    "tyre_foreign_object": ["dính đinh", "cán đinh", "đinh trong lốp", "đinh trên vỏ", "cây đinh", "đinh ghim",
+                            "nail", "nail in the tyre",
                             "nail in the tire", "screw in the tyre"],
     "tyre_wear_uneven": ["lốp mòn lệch", "mòn không đều", "vỏ mòn lệch", "uneven tyre wear",
                          "uneven tire wear", "cupped tyre"],
     "vehicle_pulls_to_one_side": ["xe bị kéo lệch", "xe bị lệch", "tay lái lệch", "pulls to one side",
                                   "pulls to the left", "pulls to the right"],
     "steering_heavy": ["tay lái nặng", "khó bẻ lái", "heavy steering", "steering is heavy"],
-    "fork_oil_on_tube": ["phuộc trước rỉ dầu", "chảy dầu phuộc", "phuộc chảy dầu", "fork leaking oil",
+    "fork_oil_on_tube": ["phuộc trước rỉ dầu", "chảy dầu phuộc", "phuộc chảy dầu", "rỉ ống phuộc",
+                         "dầu trên ống phuộc", "fork leaking oil",
                          "oil on the fork"],
-    "front_suspension_soft": ["phuộc trước mềm", "chúi đầu", "phuộc yếu", "soft front suspension",
+    "front_suspension_soft": ["phuộc trước mềm", "chúi đầu", "chúi sâu", "xe chúi", "phuộc yếu", "soft front suspension",
                               "front dives", "front forks are soft"],
     "rear_shock_bouncy": ["giảm xóc sau nảy", "phuộc sau nảy", "xe bị nhún", "nhún nhiều", "nảy nhiều",
                           "bouncy rear", "rear bounces", "bouncy shock"],
     "rear_shock_oil_leak": ["phuộc sau chảy dầu", "giảm xóc sau rỉ dầu", "rear shock leaking",
                             "oil on the rear shock"],
-    "sits_low_parked": ["xe đứng thấp", "xe bị lún", "đuôi xe thấp", "sits low", "rear sags", "sagging"],
+    "sits_low_parked": ["xe đứng thấp", "xe bị lún", "đuôi xe thấp", "sits low", "sits lower", "rear sags",
+                        "sagging"],
     "suspension_clunk": ["lộc cộc ở phuộc", "phuộc kêu", "giảm xóc kêu", "kêu lộc cộc", "clunk",
                          "clunking", "suspension knocks"],
 }
 
 NEGATORS = {"khong", "chua", "ko", "k", "hong", "kh", "no", "not", "never", "without", "isn", "doesn", "didn",
             "wasn", "don"}
+# Checked between the words of a phrase too; not "no" (= "nổ" without accents) or "k".
+INNER_NEGATORS = NEGATORS - {"no", "k"}
 FILLERS = {"bi", "co", "thay", "nghe", "con", "phai", "he", "the", "is", "have", "has", "any", "see", "hear",
            "smell", "a"}
 
@@ -277,7 +287,8 @@ def extract(text: str, known: Iterable[str] = ()) -> List[Match]:
                     continue
                 prev1 = words[i - 1] if i >= 1 and clauses[i - 1] == clauses[i] else ""
                 prev2 = words[i - 2] if i >= 2 and clauses[i - 2] == clauses[i] else ""
-                negated = prev1 in NEGATORS or (prev2 in NEGATORS and prev1 in FILLERS)
+                negated = prev1 in NEGATORS or (prev2 in NEGATORS and prev1 in FILLERS) \
+                    or any(w in INNER_NEGATORS for w in words[i:j + 1] if w not in phrase)  # "má phanh chưa mòn"
                 m = Match(sid, not negated, text[toks[i][1]:toks[j][2]], toks[i][1], toks[j][2])
                 old = found.get(sid)
                 if old is None or (m.value and not old.value):

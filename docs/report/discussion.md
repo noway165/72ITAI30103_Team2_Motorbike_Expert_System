@@ -19,9 +19,10 @@ them top-1 drops to 28/30. The more specific rules still rank first when the ext
 
 Backward chaining over every fault asks 39.7 questions per scenario and is right 30/30; choosing
 the part first cuts this to 9.0. The assistant reads the rider's own description and then asks only
-the most informative questions: 5.8 questions and 27/30 with a Vietnamese description, 6.4 and
-28/30 in English. It trades about three misses for seven times fewer questions, because a symptom
-the rider never mentions may never be asked. The interface therefore keeps step-by-step questions
+the most informative questions: 5.3 questions and 30/30 on the scenario descriptions, which were all
+used while writing its phrase list. On ten held-out descriptions it is right 8/10 (Vietnamese) and
+7/10 (English) with about 11 questions, because a symptom said in words the list lacks is never
+read and may never be asked. The interface therefore keeps step-by-step questions
 as the recommended method and the assistant as the fastest one.
 
 ## 5.3 Limitations
