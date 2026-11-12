@@ -381,7 +381,7 @@ class App:
         side.pack(side="left", fill="y")
         side.pack_propagate(False)
         tk.Frame(self.root, bg=C["border"], width=1).pack(side="left", fill="y")
-        brand = tk.Frame(side, bg=C["sidebar"], padx=px(20), pady=px(14))
+        brand = tk.Frame(side, bg=C["sidebar"], padx=px(20), pady=px(12))
         brand.pack(fill="x")
         label(brand, "MotoLogic", "big", "sidebar_text", bg="sidebar").pack(anchor="w")
         label(brand, "MOTORBIKE EXPERT SYSTEM", "eyebrow", "sidebar_muted", bg="sidebar").pack(anchor="w")
@@ -391,13 +391,13 @@ class App:
         self.navbox = tk.Frame(side, bg=C["sidebar"])
         self.navbox.pack(fill="x")
 
-        card = RoundCard(side, fill="panel", border=None, radius=16, bg="sidebar", pad=14)
+        card = RoundCard(side, fill="panel", border=None, radius=16, bg="sidebar", pad=12)
         card.pack(fill="x", padx=px(12), pady=(px(10), 0))
         b = card.body
         autowrap(label(b, self.s("transparent"), "title", "on_panel", bg="panel")).pack(fill="x")
         autowrap(label(b, self.s("transparent_sub"), "small", "panel_muted", bg="panel")).pack(
             fill="x", pady=(px(4), 0))
-        tk.Frame(b, bg=C["panel_soft"], height=1).pack(fill="x", pady=px(10))
+        tk.Frame(b, bg=C["panel_soft"], height=1).pack(fill="x", pady=px(8))
         nums = tk.Frame(b, bg=C["panel"])
         nums.pack(fill="x")
         for n, cap in ((len(self.kb.rules), self.s("rules")), (len(self.kb.faults), self.s("faults"))):
@@ -439,7 +439,7 @@ class App:
                 on = key == self.state["page"]
                 fill = "sidebar_active" if on else "sidebar"
                 item = RoundCard(self.navbox, fill=fill, border=None, radius=12, bg="sidebar",
-                                 pad=9 if icon_name else 4)
+                                 pad=8 if icon_name else 2)
                 item.pack(fill="x", padx=px(12), pady=px(1))
                 fg = "on_lime" if on else "sidebar_text" if icon_name else "sidebar_muted"
                 if icon_name:
