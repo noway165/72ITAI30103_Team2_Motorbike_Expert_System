@@ -51,6 +51,14 @@ class LogicTest(unittest.TestCase):
     def test_both_languages_have_the_same_wording_keys(self):
         self.assertEqual(set(TEXT["vi"]), set(TEXT["en"]))
 
+    def test_every_talk_example_is_understood(self):
+        for lang in ("vi", "en"):
+            for sentence in TEXT[lang]["examples"]:
+                with self.subTest(lang=lang, sentence=sentence):
+                    dx = new_dx()
+                    dx.update(method="talk", text=sentence)
+                    self.assertTrue(talk_interview(KB, dx)[1])
+
     def test_vehicle_answers(self):
         self.assertEqual(vehicle_answers("scooter", "fi"), {"is_scooter": True, "is_manual": False,
                                                             "is_fuel_injected": True, "is_carburetor": False})
@@ -184,8 +192,10 @@ class WindowTest(unittest.TestCase):
         page.set(step=1)
         page.set(method="talk")
         page.start()
-        page.dx["text"] = "còi yếu, đề chỉ nghe tạch tạch"
-        page.render()
+        page.use_example(TEXT["vi"]["examples"][0])
+        self.assertEqual(page.text.get("1.0", "end").strip(), TEXT["vi"]["examples"][0])
+        page.analyze()
+        self.assertTrue(page.dx["text"])
         self.root.update()
         self.assertEqual(self.errors, [])
 

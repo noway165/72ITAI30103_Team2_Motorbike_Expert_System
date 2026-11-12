@@ -84,8 +84,14 @@ TEXT = {
         "find": "Tìm lỗi phù hợp",
         "e2c": "Kể bằng lời", "t2c": "Kể cho chương trình nghe.",
         "s2c": "Gõ tự nhiên như khi kể với thợ, tiếng Việt có hoặc không dấu, hoặc tiếng Anh.",
-        "talk_box": "Tình trạng xe", "talk_hint": "Ví dụ: Sáng nay đề chỉ nghe tạch tạch, còi cũng yếu, "
-                                                  "ắc quy dùng hơn 2 năm rồi.",
+        "talk_box": "Tình trạng xe", "try": "Hoặc bấm một câu ví dụ:",
+        "examples": ["Sáng nay đề chỉ nghe tạch tạch, còi cũng yếu, ắc quy dùng hơn 2 năm rồi",
+                     "Bóp phanh trước nghe kêu rít",
+                     "Đi đường gồ ghề thấy xe nhún nhiều, lốp mòn không đều"],
+        "how_read": "Chương trình đọc gì?",
+        "talk_reads": "Kể càng cụ thể, chương trình hiểu càng đúng. Nó tìm trong câu của bạn:",
+        "talk_kinds": ["Triệu chứng: không nổ, chết máy, còi yếu…", "Âm thanh: tạch tạch, kêu rít, ken két…",
+                       "Bộ phận: ắc quy, phanh, lốp, phuộc…"],
         "analyze": "Phân tích", "understood": "Đã hiểu từ câu bạn kể", "understood_none":
             "Chưa nhận ra triệu chứng nào. Thử kể rõ hơn, ví dụ “còi yếu”, “đề không nổ”.",
         "talk_why": "Câu này giúp phân biệt", "talk_why_sub": "Trợ lý chọn câu hỏi cho nhiều thông tin nhất "
@@ -152,8 +158,14 @@ TEXT = {
         "find": "Find matching faults",
         "e2c": "Describe it", "t2c": "Tell the program what happens.",
         "s2c": "Write as you would tell a mechanic, in Vietnamese (with or without accents) or English.",
-        "talk_box": "What is wrong with the bike", "talk_hint": "For example: the starter only clicks, the horn "
-                                                                 "is weak and the battery is over 2 years old.",
+        "talk_box": "What is wrong with the bike", "try": "Or click an example:",
+        "examples": ["The starter only clicks and the horn is weak",
+                     "The brakes squeal loudly when I stop",
+                     "The rear shock bounces a lot on bumpy roads"],
+        "how_read": "What does it read?",
+        "talk_reads": "The more specific you are, the better it understands. It looks for:",
+        "talk_kinds": ["Symptoms: won't start, stalls, weak horn…", "Sounds: clicking, squealing, grinding…",
+                       "Parts: battery, brakes, tyres, forks…"],
         "analyze": "Analyse", "understood": "Understood from your text", "understood_none":
             "No symptom recognised yet. Try to be more specific, e.g. “weak horn”, “won't start”.",
         "talk_why": "This question separates", "talk_why_sub": "The assistant asks the question with the "
@@ -676,7 +688,12 @@ class DiagnosisPage(Page):
                                 highlightthickness=1, highlightbackground=C["border"], highlightcolor=C["accent"])
             self.text.insert("1.0", dx["text"])
             self.text.pack(fill="x", pady=(px(10), px(6)))
-            autowrap(label(card.body, t["talk_hint"], "small", "muted")).pack(fill="x")
+            label(card.body, t["try"], "small_bold", "muted").pack(anchor="w", pady=(px(4), 0))
+            for ex in t["examples"]:
+                c = autowrap(chip(card.body, f"“{ex}”", C["accent"], C["chrome"]), pad=px(20))
+                c.configure(cursor="hand2", anchor="w", justify="left", font=F["body"], pady=px(4))
+                c.pack(fill="x", pady=(px(6), 0))
+                c.bind("<Button-1>", lambda e, ex=ex: self.use_example(ex))
             if dx["text"].strip() and not found:
                 autowrap(label(card.body, t["understood_none"], "body", "warn")).pack(fill="x", pady=(px(8), 0))
             row = tk.Frame(card.body, bg=C["surface"])
@@ -699,9 +716,12 @@ class DiagnosisPage(Page):
                 autowrap(label(row, kb.text(fault, lang), "body", "on_panel", bg="panel")).pack(
                     side="left", fill="x", expand=True)
                 label(row, f"{prob:.0%}", "heading", "lime", bg="panel").pack(side="right")
-        eyebrow(p, t["understood"], bg="panel", fg="lime").pack(anchor="w", pady=(px(18), px(6)))
-        if not found:
-            label(p, "—", "body", "panel_muted", bg="panel").pack(anchor="w")
+        eyebrow(p, t["understood"] if found else t["how_read"], bg="panel", fg="lime").pack(
+            anchor="w", pady=(px(18) if q is not None else 0, px(6)))
+        if not found:  # empty state: say what the program can read from the text
+            autowrap(label(p, t["talk_reads"], "body", "panel_muted", bg="panel")).pack(fill="x")
+            for line in t["talk_kinds"]:
+                autowrap(label(p, "•  " + line, "body", "on_panel", bg="panel")).pack(fill="x", pady=(px(8), 0))
         for m in found:
             autowrap(label(p, ("✓ " if m.value else "✕ ") + short(kb, m.symptom, lang), "body",
                            "on_panel" if m.value else "panel_muted", bg="panel")).pack(fill="x", pady=px(2))
@@ -713,6 +733,11 @@ class DiagnosisPage(Page):
             link(f, "← " + t["previous"], self.undo_talk, bg="bg", font="body").pack(side="left")
         link(f, ("" if q is not None else "← ") + t["change"], lambda: self.go(1), bg="bg", font="body").pack(
             side="left", padx=(px(24) if q is not None else 0, 0))
+
+    def use_example(self, sentence: str) -> None:
+        self.text.delete("1.0", "end")
+        self.text.insert("1.0", sentence)
+        self.text.focus_set()
 
     def analyze(self) -> None:
         self.dx.update(text=self.text.get("1.0", "end").strip(), replies=[])
