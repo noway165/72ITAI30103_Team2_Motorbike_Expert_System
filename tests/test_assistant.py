@@ -49,6 +49,37 @@ class NluTest(unittest.TestCase):
         m = extract(text, self.kb.symptoms)[0]
         self.assertEqual(text[m.start:m.end], "Còi cũng yếu")
 
+    def test_bt_descriptions_found_in_error_analysis(self):
+        cases = {  # (text, symptoms that must be read as True); BT descriptions, used for error analysis
+            "Vision bóp phanh trước kêu rít; nhìn qua khe cùm phanh thấy má phanh gần hết.":
+                {"brake_squeal", "brake_pad_thin_visible"},
+            "Exciter đạp phanh sau nghe tiếng sắt cọ sắt ken két.": {"brake_grinding"},
+            "Wave chạy xong thấy bánh trước nóng, dắt xe thấy nặng như bị phanh kéo.": {"brake_drags"},
+            "Exciter thấy dầu rỉ ướt trên ống phuộc trước, bóp phanh trước xe chúi sâu.":
+                {"fork_oil_on_tube", "front_suspension_soft"},
+            "Air Blade: the brake lever has slowly become spongy; the fluid has not been changed for 3 years.":
+                {"brake_lever_spongy", "brake_fluid_old"},
+        }
+        for text, want in cases.items():
+            with self.subTest(text=text):
+                a = answers(text, self.kb.symptoms)
+                self.assertTrue(want <= {s for s, v in a.items() if v}, a)
+        # "Wave" is sold with a carburettor and with fuel injection: the rider chooses it in step 1
+        self.assertNotIn("is_carburetor", answers("Wave chạy xong thấy bánh trước nóng", self.kb.symptoms))
+
+    def test_negation_inside_a_phrase(self):
+        self.assertFalse(answers("má phanh chưa mòn", self.kb.symptoms).get("brake_pad_thin_visible", False))
+        self.assertFalse(answers("lốp không bị xẹp", self.kb.symptoms).get("tyre_pressure_low", False))
+        self.assertFalse(answers("the pads are not worn", self.kb.symptoms).get("brake_pad_thin_visible", False))
+        # "nổ" folds to "no": it must not negate "đạp [nổ] máy quay"
+        self.assertTrue(answers("đạp nổ máy vẫn quay nhưng không nổ", self.kb.symptoms)["engine_cranks"])
+
+    def test_folded_accents_do_not_collide(self):
+        # "dưới" (below) and "đuôi" (tail) fold to "duoi", like "đuối" (weak engine)
+        for text in ("bình dầu dưới vạch MIN", "đuôi xe nhún nhiều"):
+            with self.subTest(text=text):
+                self.assertNotIn("engine_lacks_power", answers(text, self.kb.symptoms))
+
     def test_fold_keeps_length(self):
         s = "Đề không nổ, còi yếu"
         self.assertEqual(len(fold(s)), len(s))

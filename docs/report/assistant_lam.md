@@ -16,7 +16,9 @@ Riders describe a fault in their own words, not as a list of symptom codes. The 
 | Method | Average questions | Top-1 correct |
 |---|---|---|
 | Backward chaining, every fault | 39.7 | 30/30 |
-| Assistant, Vietnamese description | 5.8 | 27/30 |
-| Assistant, English description | 6.4 | 28/30 |
+| Assistant, Vietnamese description | 5.3 | 30/30 |
+| Assistant, English description | 5.3 | 30/30 |
+| Assistant, 10 held-out descriptions, Vietnamese | 10.5 | 8/10 |
+| Assistant, 10 held-out descriptions, English | 11.4 | 7/10 |
 
-Reading the descriptions reached F1 0.96 on the SE and ET scenarios, which were used while writing the phrases, and 0.79 (Vietnamese) and 0.76 (English) on the BT scenarios, which were not. The assistant asks about seven times fewer questions than backward chaining but misses two or three scenarios, mostly brake and tyre faults with a single symptom that the description did not mention. Backward chaining asks about every fault and therefore never misses one that the rules can prove.
+All 30 scenario descriptions were used while writing the phrases: SE and ET from the start, BT for an error analysis on 12/11 that lifted their recall from 0.69 to 0.93 (Vietnamese) and from 0.62 to 0.95 (English). The 30/30 above is therefore optimistic. Ten new brake, tyre and suspension descriptions, written in everyday and Southern wording before reading the phrase list and never used to change it, give the fair estimate: precision 0.88 and 0.86 but recall only 0.39 and 0.33, and the right fault in 8 and 7 cases out of 10 with about 11 questions. The assistant still asks far fewer questions than backward chaining over every fault (39.7), but it can only use the words it knows; a symptom said in other words is not read and may never be asked. Backward chaining asks about every fault and therefore never misses one that the rules can prove.

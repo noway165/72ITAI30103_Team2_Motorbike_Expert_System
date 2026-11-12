@@ -9,8 +9,10 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import theme  # noqa: E402
 from backward_chaining import UNKNOWN  # noqa: E402
-from gui_diagnosis import (TEXT, VEHICLE, checklist, guided_session, make_record, new_dx, session_number,  # noqa: E402
-                           subsystem_counts, summarize, talk_interview, vehicle_answers, wang_check)
+from gui_backward import ALL  # noqa: E402
+from gui_diagnosis import (TEXT, VEHICLE, checklist, guided_session, make_record, needs_part, new_dx,  # noqa: E402
+                           session_number, subsystem_counts, summarize, talk_interview, to_guided, vehicle_answers,
+                           wang_check)
 from gui_history import reopen, rows  # noqa: E402
 from kb import load_kb  # noqa: E402
 from scenarios import load_scenarios  # noqa: E402
@@ -50,6 +52,35 @@ def answer_talk(dx, truth):
 class LogicTest(unittest.TestCase):
     def test_both_languages_have_the_same_wording_keys(self):
         self.assertEqual(set(TEXT["vi"]), set(TEXT["en"]))
+
+    def test_every_talk_example_is_understood(self):
+        for lang in ("vi", "en"):
+            for sentence in TEXT[lang]["examples"]:
+                with self.subTest(lang=lang, sentence=sentence):
+                    dx = new_dx()
+                    dx.update(method="talk", text=sentence)
+                    self.assertTrue(talk_interview(KB, dx)[1])
+
+    def test_guided_asks_for_the_part_first(self):
+        dx = dx_for(SCENARIOS["BT03"], "guided")
+        self.assertIn("part_asked", new_dx())
+        self.assertTrue(needs_part(dx))
+        dx["part"] = "brakes"
+        self.assertFalse(needs_part(dx))
+        self.assertEqual({KB.symbols[g].subsystem for g in guided_session(KB, dx).goals}, {"brakes"})
+        dx.update(part=ALL, part_asked=True)  # "not sure, ask about everything"
+        self.assertFalse(needs_part(dx))
+        self.assertEqual(set(guided_session(KB, dx).goals), set(KB.faults))
+        self.assertFalse(needs_part(dict(dx, part_asked=False, answers=[("horn_weak", True)])))
+        self.assertFalse(needs_part(dict(dx, part_asked=False, method="talk")))
+
+    def test_nothing_understood_switches_to_guided_and_keeps_the_text(self):
+        dx = dx_for(SCENARIOS["SE01"], "talk", text="xyz abc", replies=[("horn_weak", True)])
+        self.assertFalse(talk_interview(KB, dx)[1])
+        to_guided(dx)
+        self.assertEqual((dx["method"], dx["step"], dx["part"], dx["answers"]), ("guided", 2, ALL, []))
+        self.assertEqual(dx["text"], "xyz abc")
+        self.assertTrue(needs_part(dx))
 
     def test_vehicle_answers(self):
         self.assertEqual(vehicle_answers("scooter", "fi"), {"is_scooter": True, "is_manual": False,
@@ -156,6 +187,9 @@ class WindowTest(unittest.TestCase):
         page = app.page
         page.set(method="guided")
         page.start()
+        self.assertTrue(needs_part(page.dx))  # the part card is shown first
+        page.on_key(type("E", (), {"keysym": "y"})())  # keys do not answer the hidden first question
+        self.assertEqual(page.dx["answers"], [])
         page.change_part("starting_fuel")
         truth = set(SCENARIOS["SE01"].symptoms)
         first = guided_session(app.kb, page.dx).question.symptom
@@ -184,8 +218,21 @@ class WindowTest(unittest.TestCase):
         page.set(step=1)
         page.set(method="talk")
         page.start()
-        page.dx["text"] = "còi yếu, đề chỉ nghe tạch tạch"
-        page.render()
+        page.use_example(TEXT["vi"]["examples"][0])
+        self.assertEqual(page.text.get("1.0", "end").strip(), TEXT["vi"]["examples"][0])
+        page.analyze()
+        self.assertTrue(page.dx["text"])
+        self.root.update()
+        self.assertEqual(page.dx["step"], 3)  # the example alone was enough for a result
+        page.set(step=1, text="")
+        page.start()
+        page.text.insert("1.0", "xyz abc")
+        page.analyze()  # nothing recognised: the text box stays, with a way out
+        self.assertTrue(page.text.winfo_exists())
+        page.switch_to_guided()
+        self.assertEqual((page.dx["method"], page.dx["text"]), ("guided", "xyz abc"))
+        page.change_part(ALL)  # "All" in the part bar counts as an answer to the part card
+        self.assertFalse(needs_part(page.dx))
         self.root.update()
         self.assertEqual(self.errors, [])
 

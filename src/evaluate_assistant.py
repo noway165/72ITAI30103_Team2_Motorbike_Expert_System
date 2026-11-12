@@ -5,8 +5,12 @@ Vietnamese and English by a team member, the symptoms that are true, and the
 expected fault, so it can test the whole pipeline:
 
 1. Understanding: symptoms read from the description vs the scenario's symptoms.
-   SE and ET descriptions were used while writing nlu.py (development set);
-   BT descriptions were not looked at (test set). Both are reported.
+   SE and ET descriptions were used while writing nlu.py (development set).
+   BT descriptions were held out for the first version, then used for error
+   analysis (12/11), so they are no longer a test set.
+   HO descriptions (tests/data/heldout_descriptions.json, 10 brake / tyre /
+   suspension cases) were written before reading nlu.py and never used to
+   change it: they are the test set now.
 2. Adaptive interview: every question is answered from the scenario's symptoms.
    Compared with the team's backward chaining, asking about every fault and
    asking only the faults of the right subsystem.
@@ -29,7 +33,8 @@ from kb import ROOT, load_kb
 from nlu import answers, extract
 from scenarios import load_scenarios
 
-DEV, TEST = ("SE", "ET"), ("BT",)
+DEV, ANALYSED, HELD_OUT = ("SE", "ET"), ("BT",), ("HO",)
+HELD_OUT_DIR = Path(ROOT) / "tests" / "data"
 
 
 def understanding(kb, scenarios, prefixes, lang: str) -> Dict[str, float]:
@@ -65,15 +70,29 @@ def interviews(kb, scenarios) -> List[dict]:
     return rows
 
 
-def report(kb, scenarios) -> str:
+def held_out(kb, scenarios) -> List[dict]:
+    """The assistant on the held-out descriptions: questions and top-1 per language."""
+    rows = []
+    for sc in scenarios:
+        row = {"id": sc.id}
+        for lang in ("vi", "en"):
+            iv, q = simulate(kb, sc.symptoms, answers(sc.description[lang], kb.symptoms))
+            row[lang + "_q"], row[lang + "_ok"] = q, [d.fault for d in iv.result().diagnoses][:1] == [sc.expected]
+        rows.append(row)
+    return rows
+
+
+def report(kb, scenarios, heldout=()) -> str:
     out = ["# Diagnosis assistant: results", "",
-           f"Knowledge base: {kb.summary()}. {len(scenarios)} scenarios. "
+           f"Knowledge base: {kb.summary()}. {len(scenarios)} scenarios, {len(heldout)} held-out descriptions. "
            "Produced by `python src/evaluate_assistant.py --write`.", "",
            "## 1. Understanding the rider's description", "",
            "| Descriptions | Language | Precision | Recall | F1 |", "|---|---|---|---|---|"]
-    for name, pre in (("SE + ET (development)", DEV), ("BT (test, not seen while writing nlu.py)", TEST)):
+    for name, pool, pre in (("SE + ET (development)", scenarios, DEV),
+                            ("BT (used for error analysis on 12/11)", scenarios, ANALYSED),
+                            ("HO (held-out: never used to change nlu.py)", heldout, HELD_OUT)):
         for lang in ("vi", "en"):
-            u = understanding(kb, scenarios, pre, lang)
+            u = understanding(kb, pool, pre, lang)
             out.append(f"| {name} | {lang} | {u['precision']:.2f} | {u['recall']:.2f} | {u['f1']:.2f} |")
     rows = interviews(kb, scenarios)
     n = len(rows)
@@ -86,13 +105,23 @@ def report(kb, scenarios) -> str:
             f"| Assistant, no description (information gain only) | {avg('cold_q'):.1f} | {ok('cold_ok')}/{n} |",
             f"| Assistant, Vietnamese description + information gain | {avg('vi_q'):.1f} | {ok('vi_ok')}/{n} |",
             f"| Assistant, English description + information gain | {avg('en_q'):.1f} | {ok('en_ok')}/{n} |",
-            "", "Questions asked by the assistant do not count what was read from the description.",
+            "", "Questions asked by the assistant do not count what was read from the description. "
+            "All 30 scenario descriptions have now been used while writing nlu.py, so the held-out set below "
+            "is the fair estimate.",
             "", "## 3. Per scenario", "",
             "| Id | Expected fault | Backward (all / right part) | No text | VI text | EN text |", "|---|---|---|---|---|---|"]
     for r in rows:
         mark = lambda b: "✓" if b else "✕"  # noqa: E731
         out.append(f"| {r['id']} | {r['expected']} | {r['bw_all']} / {r['bw_sub']} | {r['cold_q']} {mark(r['cold_ok'])} "
                    f"| {r['vi_q']} {mark(r['vi_ok'])} | {r['en_q']} {mark(r['en_ok'])} |")
+    if heldout:
+        ho = held_out(kb, heldout)
+        m = len(ho)
+        out += ["", "## 4. Held-out descriptions (HO)", "",
+                "| Language | Average questions | Top-1 correct |", "|---|---|---|"]
+        for lang, name in (("vi", "Vietnamese"), ("en", "English")):
+            out.append(f"| {name} | {sum(r[lang + '_q'] for r in ho) / m:.1f} | "
+                       f"{sum(r[lang + '_ok'] for r in ho)}/{m} |")
     return "\n".join(out) + "\n"
 
 
@@ -105,7 +134,7 @@ def main(argv=None) -> int:
     except (AttributeError, ValueError):
         pass
     kb = load_kb()
-    text = report(kb, load_scenarios())
+    text = report(kb, load_scenarios(), load_scenarios(HELD_OUT_DIR))
     print(text)
     if args.write:
         path = Path(ROOT) / "docs" / "report" / "assistant_results.md"

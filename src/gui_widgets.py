@@ -298,6 +298,13 @@ class RoundCard(tk.Canvas):
         self._win = self.create_window(self.pad, self.pad, window=self.body, anchor="nw")
         self.bind("<Configure>", self._draw)
         self.body.bind("<Configure>", self._fit)
+        self._job = None
+        if grow:  # the body height is fixed, so labels that wrap later never fire body <Configure>
+            self.bind("<Destroy>", lambda e: e.widget is self and self._job and self.after_cancel(self._job))
+
+    def _refit(self) -> None:
+        self._job = None
+        self._fit()
 
     def _fit(self, _=None) -> None:
         # request the height of the content; a grow card may still be stretched taller by its parent
@@ -314,6 +321,9 @@ class RoundCard(tk.Canvas):
         self.itemconfigure(self._win, width=max(1, w - 2 * self.pad))
         if self.grow:
             self.itemconfigure(self._win, height=max(1, h - 2 * self.pad))
+            if self._job:
+                self.after_cancel(self._job)
+            self._job = self.after(60, self._refit)
 
 
 class PillButton(tk.Canvas):
@@ -390,19 +400,20 @@ class ChoiceCard(RoundCard):
     """Card with a radio mark: vehicle type, diagnosis method. Selected = lime_soft with accent border."""
 
     def __init__(self, parent, title: str, subtitle: str, selected: bool, command: Callable[[], None],
-                 note: str = "", badge: str = "", icon_name: str = "", bg: str = "surface"):
+                 note: str = "", badge: str = "", icon_name: str = "", bg: str = "surface", radio: bool = True):
         fill = "lime_soft" if selected else "surface"
         super().__init__(parent, fill=fill, border="accent" if selected else "border", radius=14, bg=bg, pad=16)
         b = self.body
         b.columnconfigure(2, weight=1)
-        radio_mark(b, selected, fill).grid(row=0, column=0, rowspan=3, sticky="n", padx=(0, px(12)), pady=px(4))
+        if radio:  # off for one-click choices (nothing stays selected)
+            radio_mark(b, selected, fill).grid(row=0, column=0, rowspan=3, sticky="n", padx=(0, px(12)), pady=px(4))
         if icon_name:
             icon(b, icon_name, 34, "accent", fill).grid(row=0, column=1, rowspan=3, sticky="n", padx=(0, px(12)))
         head = tk.Frame(b, bg=C[fill])
         head.grid(row=0, column=2, sticky="we")
-        label(head, title, "title", bg=fill).pack(side="left")
         if badge:
-            chip(head, badge, C["on_lime"], C["lime"]).pack(side="right")
+            chip(head, badge, C["on_lime"], C["lime"]).pack(side="right", anchor="n")
+        autowrap(label(head, title, "title", bg=fill)).pack(side="left", fill="x", expand=True)
         if subtitle:
             autowrap(label(b, subtitle, "body", "muted", bg=fill)).grid(row=1, column=2, sticky="we", pady=(px(2), 0))
         if note:
@@ -433,13 +444,14 @@ class CheckRow(RoundCard):
 class Gauge(tk.Canvas):
     """CF as a speedometer: half circle from 0 to 1.0 with a needle."""
 
-    def __init__(self, parent, cf: float, size: int = 150, bg: str = "panel"):
+    def __init__(self, parent, cf: float, size: int = 150, bg: str = "panel", caption: str = "", note: str = ""):
         import math
         on_panel = bg == "panel"
         fg, soft = ("on_panel", "panel_muted") if on_panel else ("text", "muted")
         w = px(size)
         r = w / 2 - px(10)
-        super().__init__(parent, width=w, height=int(r + px(46)), bg=C[bg], highlightthickness=0, bd=0)
+        super().__init__(parent, width=w, height=int(r + px(62 if note else 46)), bg=C[bg], highlightthickness=0,
+                         bd=0)
         cx, cy, thick = w / 2, r + px(10), px(10)
         box = (cx - r, cy - r, cx + r, cy + r)
         self.create_arc(*box, start=0, extent=180, style="arc", width=thick,
@@ -458,7 +470,9 @@ class Gauge(tk.Canvas):
         self.create_oval(cx - px(6), cy - px(6), cx + px(6), cy + px(6), fill=C["lime"], outline="")
         self.create_text(cx - r, cy + px(14), text="0", font=F["small"], fill=C[soft])
         self.create_text(cx + r, cy + px(14), text="1.0", font=F["small"], fill=C[soft])
-        self.create_text(cx, cy + px(28), text=f"CF {cf:.2f}", font=(theme.UI_FONT, 13, "bold"), fill=C[fg])
+        self.create_text(cx, cy + px(28), text=caption or f"CF {cf:.2f}", font=(theme.UI_FONT, 13, "bold"), fill=C[fg])
+        if note:  # e.g. the raw CF under a plain-language caption
+            self.create_text(cx, cy + px(48), text=note, font=F["mono"], fill=C[soft])
 
 
 # Icons drawn with lines in a 0..1 box, so they scale and follow the light / dark colours (no images).

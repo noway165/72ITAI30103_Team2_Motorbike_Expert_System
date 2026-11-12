@@ -1,0 +1,96 @@
+{
+  "written_by": "Lâm",
+  "note": "Held-out test set for nlu.extract: written before reading nlu.py PHRASES and never used to tune them. 'symptoms' lists only what the text itself says. Kept outside scenarios/ so the 30 fixed scenarios do not change.",
+  "scenarios": [
+    {
+      "id": "HO01",
+      "expected": "worn_brake_pads",
+      "symptoms": ["brake_squeal", "brake_pad_thin_visible"],
+      "description": {
+        "vi": "Mấy hôm nay mỗi lần thắng xe là nghe ré lên chói tai, nhìn vào thì bố thắng sắp hết.",
+        "en": "Every time I brake there is a high-pitched screech, and the pads look almost worn down to the metal."
+      }
+    },
+    {
+      "id": "HO02",
+      "expected": "brake_air_in_lines",
+      "symptoms": ["brake_lever_spongy", "brake_stopping_distance_longer"],
+      "description": {
+        "vi": "Tay thắng bóp vào cứ lún lún, phải bóp gần sát tay lái mới ăn, xe cũng dừng xa hơn hồi trước.",
+        "en": "The brake lever goes nearly all the way to the grip before anything happens, and it takes longer to stop than it used to."
+      }
+    },
+    {
+      "id": "HO03",
+      "expected": "warped_brake_disc",
+      "symptoms": ["brake_pulsation"],
+      "description": {
+        "vi": "Lúc phanh gấp thấy tay lái rung bần bật, tay phanh cứ giật giật.",
+        "en": "When I brake hard the handlebar shakes and the lever pulses in my hand."
+      }
+    },
+    {
+      "id": "HO04",
+      "expected": "brake_fluid_leak",
+      "symptoms": ["brake_fluid_leak_visible", "brake_fluid_low"],
+      "description": {
+        "vi": "Dưới cùm thắng trước có vệt dầu ướt, mở bình dầu thắng ra thì dầu xuống dưới vạch MIN.",
+        "en": "There is a wet oily streak under the front caliper and the brake fluid in the reservoir is under MIN."
+      }
+    },
+    {
+      "id": "HO05",
+      "expected": "sticking_brake_caliper",
+      "symptoms": ["brake_drags"],
+      "description": {
+        "vi": "Đi một đoạn sờ vào đĩa thắng sau thấy nóng ran, dắt bộ thì bánh sau cứ như bị bó lại.",
+        "en": "After a short ride the rear disc is very hot, and when I push the bike the rear wheel feels like it is being held back."
+      }
+    },
+    {
+      "id": "HO06",
+      "expected": "underinflated_tyre",
+      "symptoms": ["is_scooter", "tyre_pressure_low", "steering_heavy"],
+      "description": {
+        "vi": "Con xe ga của mình bánh trước nhìn hơi xẹp, vào cua thì tay lái nặng trịch.",
+        "en": "My scooter's front tyre looks a bit flat and the bars feel really heavy when I turn."
+      }
+    },
+    {
+      "id": "HO07",
+      "expected": "tyre_puncture",
+      "symptoms": ["tyre_loses_air_quickly", "tyre_foreign_object"],
+      "description": {
+        "vi": "Bánh sau cứ hai ba ngày là xẹp, kiểm tra thì thấy cây đinh cắm trên lốp.",
+        "en": "The back tyre goes flat every couple of days, and there is a screw stuck in the tread."
+      }
+    },
+    {
+      "id": "HO08",
+      "expected": "fork_seal_leak",
+      "symptoms": ["fork_oil_on_tube"],
+      "description": {
+        "vi": "Ống nhún trước bị chảy nhớt, lau sạch rồi chạy vài hôm lại ướt.",
+        "en": "Oil keeps seeping onto the front fork legs; I wipe them and a few days later they are wet again."
+      }
+    },
+    {
+      "id": "HO09",
+      "expected": "worn_rear_shock",
+      "symptoms": ["rear_shock_oil_leak", "rear_shock_bouncy"],
+      "description": {
+        "vi": "Phuộc sau bị xì nhớt, chạy qua gờ giảm tốc xe dập dềnh mãi mới thôi.",
+        "en": "The rear shock is leaking oil and the bike keeps bouncing up and down after every speed bump."
+      }
+    },
+    {
+      "id": "HO10",
+      "expected": "worn_steering_head_bearings",
+      "symptoms": ["suspension_clunk", "steering_heavy"],
+      "description": {
+        "vi": "Qua ổ gà nghe cục cục ở đầu xe, tay lái thì nặng, khó đánh lái.",
+        "en": "Over potholes there is a knocking from the front end, and the steering feels stiff."
+      }
+    }
+  ]
+}
