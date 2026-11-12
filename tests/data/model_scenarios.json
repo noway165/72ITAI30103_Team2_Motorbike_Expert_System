@@ -1,0 +1,79 @@
+{
+  "written_by": "Lâm",
+  "rules_by": "Lâm",
+  "note": "One scenario per model rule MD01-MD09 (knowledge_base/models.json). Written by the author of those rules, so they check that the rules do what they say, not how good the rules are; independent scenarios by Giang or Khoa would be stronger. Kept outside scenarios/ so the 30 fixed scenarios do not change.",
+  "scenarios": [
+    {
+      "id": "MS01", "expected": "clogged_air_filter",
+      "symptoms": ["is_scooter", "is_fuel_injected", "model_honda_lead", "black_exhaust_smoke", "fuel_consumption_increased"],
+      "description": {
+        "vi": "Lead dạo này tốn xăng hẳn, ống xả ra khói đen.",
+        "en": "My Lead burns more fuel lately and there is black smoke from the exhaust."
+      }
+    },
+    {
+      "id": "MS02", "expected": "worn_centrifugal_clutch",
+      "symptoms": ["is_scooter", "is_fuel_injected", "model_honda_lead", "judder_when_pulling_away"],
+      "description": {
+        "vi": "Lead mỗi lần đèn xanh ra ga là rung giật khi mới chạy.",
+        "en": "My Lead judders when pulling away from the lights."
+      }
+    },
+    {
+      "id": "MS03", "expected": "low_coolant",
+      "symptoms": ["is_scooter", "is_fuel_injected", "model_honda_lead", "temp_warning_light_on"],
+      "description": {
+        "vi": "Lead chạy trưa nắng thì đèn báo nhiệt độ sáng.",
+        "en": "On my Lead the temperature light comes on at midday."
+      }
+    },
+    {
+      "id": "MS04", "expected": "low_engine_oil",
+      "symptoms": ["is_scooter", "is_fuel_injected", "model_honda_vision", "engine_ticking_noise"],
+      "description": {
+        "vi": "Vision máy kêu lạch cạch to hơn bình thường.",
+        "en": "My Vision engine is ticking louder than usual."
+      }
+    },
+    {
+      "id": "MS05", "expected": "worn_centrifugal_clutch",
+      "symptoms": ["is_scooter", "is_fuel_injected", "model_honda_air_blade", "judder_when_pulling_away"],
+      "description": {
+        "vi": "Air Blade bị rung đầu, giật khi mới chạy.",
+        "en": "My Air Blade shudders when pulling away."
+      }
+    },
+    {
+      "id": "MS06", "expected": "loose_or_worn_chain",
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "model_yamaha_exciter", "clicking_noise_from_rear"],
+      "description": {
+        "vi": "Exciter chạy nghe sên kêu lách cách ở bánh sau.",
+        "en": "My Exciter has chain noise from the rear."
+      }
+    },
+    {
+      "id": "MS07", "expected": "worn_steering_head_bearings",
+      "symptoms": ["is_manual", "is_fuel_injected", "has_clutch_lever", "model_yamaha_exciter", "steering_heavy"],
+      "description": {
+        "vi": "Exciter tay lái nặng, khó bẻ lái.",
+        "en": "My Exciter has heavy steering."
+      }
+    },
+    {
+      "id": "MS08", "expected": "low_engine_oil",
+      "symptoms": ["is_manual", "is_fuel_injected", "model_honda_future", "hard_to_shift_gears"],
+      "description": {
+        "vi": "Future dạo này khó vào số.",
+        "en": "My Future is hard to shift lately."
+      }
+    },
+    {
+      "id": "MS09", "expected": "loose_or_worn_chain",
+      "symptoms": ["is_manual", "is_carburetor", "model_honda_wave_alpha", "clicking_noise_from_rear"],
+      "description": {
+        "vi": "Wave Alpha nghe tiếng ở nhông sên dĩa kêu lách cách.",
+        "en": "My Wave Alpha has a clicking noise from the chain."
+      }
+    }
+  ]
+}

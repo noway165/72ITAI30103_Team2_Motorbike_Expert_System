@@ -49,5 +49,18 @@ class ModelRulesTest(unittest.TestCase):
         self.assertEqual(bw.questions_asked, without.questions_asked)
 
 
+class ModelScenariosTest(unittest.TestCase):
+    def test_model_scenarios_rank_the_expected_fault_first(self):
+        sys.path.insert(0, str(ROOT / "src"))
+        from evaluate_assistant import HELD_OUT_DIR, model_rows
+        from scenarios import load_scenarios
+        ms = [s for s in load_scenarios(HELD_OUT_DIR) if s.id.startswith("MS")]
+        self.assertEqual(len(ms), 9)
+        rows = model_rows(KB, ms)
+        for key in ("fw", "bw", "wang", "vi_ok", "en_ok"):
+            self.assertEqual(sum(r[key] for r in rows), 9, key)
+        self.assertLess(sum(r["fw_plain"] for r in rows), 9, "without the model some faults are not found")
+
+
 if __name__ == "__main__":
     unittest.main()

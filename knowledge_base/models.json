@@ -93,9 +93,9 @@
       "specs": {
         "battery": {"vi": "Ắc quy GTZ5S, 12 V-3,5 Ah", "en": "Battery GTZ5S, 12 V-3.5 Ah", "page": "116"},
         "spark_plug": {"vi": "Bugi NGK CPR8EA9, khe hở 0,8-0,9 mm", "en": "Spark plug NGK CPR8EA9, gap 0.8-0.9 mm", "page": "77"},
-        "oil": {"vi": "Nhớt SAE 10W-40, JASO MA; 0,85 L khi thay", "en": "Oil SAE 10W-40, JASO MA; 0.85 L at an oil change", "page": "115"},
+        "oil": {"vi": "Nhớt SAE 10W-40, JASO MA; 0,85 L khi thay; thay mỗi 3.000 km", "en": "Oil SAE 10W-40, JASO MA; 0.85 L at an oil change; change every 3,000 km", "page": "74, 115"},
         "tyre_pressure": {"vi": "Áp suất lốp: trước 225 kPa (33 psi), sau 225 kPa (33 psi)", "en": "Tyre pressure: front 225 kPa (33 psi), rear 225 kPa (33 psi)", "page": "85"},
-        "chain": {"vi": "Độ chùng xích tải 35-45 mm", "en": "Drive chain slack 35-45 mm", "page": "92"},
+        "chain": {"vi": "Độ chùng xích tải 35-45 mm; kiểm tra, chỉnh và bôi trơn mỗi 1.000 km", "en": "Drive chain slack 35-45 mm; check, adjust and lubricate every 1,000 km", "page": "73, 92"},
         "fuse": {"vi": "Cầu chì chính 15 A (bản STD) hoặc 20 A (bản DX, T155-A)", "en": "Main fuse 15 A (STD) or 20 A (DX, T155-A)", "page": "100"}
       }
     }

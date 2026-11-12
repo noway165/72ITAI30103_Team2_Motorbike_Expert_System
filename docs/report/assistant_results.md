@@ -1,6 +1,6 @@
 # Diagnosis assistant: results
 
-Knowledge base: 79 symptoms, 9 intermediates, 40 faults, 88 rules. 30 scenarios, 10 held-out descriptions. Produced by `python src/evaluate_assistant.py --write`.
+Knowledge base: 79 symptoms, 9 intermediates, 40 faults, 88 rules. 30 scenarios, 10 held-out descriptions, 9 bike-model scenarios. Produced by `python src/evaluate_assistant.py --write`.
 
 ## 1. Understanding the rider's description
 
@@ -66,3 +66,16 @@ Questions asked by the assistant do not count what was read from the description
 |---|---|---|
 | Vietnamese | 10.8 | 8/10 |
 | English | 11.5 | 7/10 |
+
+## 5. Bike-model scenarios (MS, tests/data/model_scenarios.json)
+
+One scenario per model rule MD01-MD09, written by the author of the rules.
+
+| Method | Top-1 correct | Average questions |
+|---|---|---|
+| Forward chaining, bike model given | 9/9 | – |
+| Forward chaining, bike model left out | 4/9 | – |
+| Backward chaining | 9/9 | – |
+| Wang's algorithm proves the expected fault | 9/9 | – |
+| Assistant, Vietnamese description | 9/9 | 13.3 |
+| Assistant, English description | 9/9 | 13.3 |

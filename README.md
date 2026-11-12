@@ -62,6 +62,7 @@ Cơ sở tri thức: 79 triệu chứng (gồm 10 dữ kiện về xe: 4 câu lo
 | Backward chaining khi chọn đúng bộ phận trước | trung bình 9,0 câu |
 | Trợ lý, mô tả của 30 kịch bản (tiếng Việt / tiếng Anh) | 5,5 câu, 30/30 / 5,5 câu, 30/30 |
 | Trợ lý, 10 mô tả giữ riêng để kiểm tra (tiếng Việt / tiếng Anh) | 10,8 câu, 8/10 / 11,5 câu, 7/10 |
+| 9 kịch bản cho luật dòng xe (MS01–MS09): forward, backward, Wang, trợ lý | 9/9 cả bốn; bỏ dòng xe thì forward chỉ tìm ra 4/9 |
 
 Các mô tả của 30 kịch bản đều đã được dùng khi viết bộ đọc câu (`src/nlu.py`), nên con số 30/30 của trợ lý là lạc quan. Tập 10 mô tả giữ riêng (`tests/data/heldout_descriptions.json`) được viết trước khi đọc `nlu.py` và không bao giờ dùng để sửa nó. Đây mới là ước lượng công bằng. Số liệu đầy đủ: [docs/report/evaluation_results.md](docs/report/evaluation_results.md) và [docs/report/assistant_results.md](docs/report/assistant_results.md).
 
@@ -285,7 +286,8 @@ Viết luật và các câu trả lời "có" thành sequent, rồi chứng minh
 Dữ liệu kiểm thử:
 
 - `scenarios/*.json`: 30 kịch bản. Mỗi kịch bản có triệu chứng đúng, lỗi mong đợi và một câu mô tả bằng tiếng Việt và tiếng Anh. Có 3 nhóm: SE (khởi động, nhiên liệu, điện), ET (động cơ, truyền động), BT (phanh, lốp, giảm xóc).
-- `tests/data/heldout_descriptions.json`: 10 mô tả (HO01–HO10) chỉ dùng để kiểm tra bộ đọc câu. Đặt ngoài `scenarios/` để số kịch bản cố định không đổi.
+- `tests/data/heldout_descriptions.json`: 10 mô tả (HO01–HO10) chỉ dùng để kiểm tra bộ đọc câu.
+- `tests/data/model_scenarios.json`: 9 kịch bản (MS01–MS09), mỗi kịch bản cho một luật dòng xe. Do người viết luật viết, nên chỉ kiểm tra luật chạy đúng như đã viết. Đặt ngoài `scenarios/` để số kịch bản cố định không đổi.
 
 Cách đọc số đo của bộ đọc câu:
 
