@@ -1,7 +1,6 @@
 # Front matter
 
 Author: Tang Thoai Lam. Cover, Acknowledgments and Commitment, read by `tools/build_report.py`.
-Fill in the student IDs (MSSV) before 15/11.
 
 ## Cover
 
@@ -11,9 +10,9 @@ Fill in the student IDs (MSSV) before 15/11.
 - Lecturer: Dr. Nguyen Thanh Huy
 - Course code: 261_72ITSE30303_01
 - Group: Group 2
-- Member: Tăng Thoại Lâm | MSSV: [MSSV Lâm]
-- Member: Kiều Bảo Giang | MSSV: [MSSV Giang]
-- Member: Nguyễn Nam Khoa | MSSV: [MSSV Khoa]
+- Member: Tăng Thoại Lâm | MSSV: 2474802010210
+- Member: Kiều Bảo Giang | MSSV: 2474802010095
+- Member: Nguyễn Nam Khoa | MSSV: 2474802010194
 - Place and date: Ho Chi Minh City, 11/2026
 
 ## Acknowledgments
