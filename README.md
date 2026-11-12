@@ -73,7 +73,7 @@ Cách viết luật: xem [docs/kb_format.md](docs/kb_format.md); forward chainin
 
 ### Chạy chương trình
 
-Giao diện cửa sổ (Tkinter, có sẵn trong Python), có chế độ sáng và tối. Màn mở đầu là **Trợ lý chẩn đoán** (Lâm): kể tình trạng xe bằng tiếng Việt hoặc tiếng Anh, trợ lý tách triệu chứng (`src/nlu.py`), chỉ hỏi những câu có information gain cao nhất (`src/interview.py`), rồi kết luận bằng luật và kiểm chứng bằng Wang. Đánh giá: `python src/evaluate_assistant.py`. Khung và màn Cơ sở tri thức: Lâm; màn Theo triệu chứng: Giang (`src/gui_forward.py`); màn Hỏi đáp từng câu: Khoa (`src/gui_backward.py`). Cách cắm màn hình: [docs/ui_guide.md](docs/ui_guide.md) mục 9. Thêm `--lang=en` để chạy tiếng Anh.
+Giao diện cửa sổ (Tkinter, có sẵn trong Python), có chế độ sáng và tối. Màn mở đầu là **MotoLogic – Chẩn đoán** (Giang, `src/gui_diagnosis.py`), 3 bước: khai báo xe; hỏi đáp từng câu (hỏi bộ phận trước, rồi backward chaining), chọn triệu chứng (forward chaining) hoặc kể bằng lời (có câu ví dụ bấm để điền; trợ lý của Lâm tách triệu chứng bằng `src/nlu.py` và hỏi câu có information gain cao nhất bằng `src/interview.py`, không nhận ra gì thì có nút chuyển sang hỏi đáp); cuối cùng là kết quả với độ tin cậy, chuỗi luật và nút kiểm tra chéo bằng Wang. Đánh giá trợ lý: `python src/evaluate_assistant.py` (có tập kiểm tra riêng `tests/data/heldout_descriptions.json`). Chụp mọi màn để soát giao diện: `python tools/shots.py`. Khung và màn Cơ sở tri thức: Lâm; màn Theo triệu chứng: Giang (`src/gui_forward.py`); màn Hỏi đáp từng câu: Khoa (`src/gui_backward.py`). Cách cắm màn hình: [docs/ui_guide.md](docs/ui_guide.md) mục 9. Thêm `--lang=en` để chạy tiếng Anh.
 
 ```bash
 python src/gui.py
