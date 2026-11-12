@@ -8,6 +8,8 @@ For every scenario in scenarios/ (30 riders' situations with the fault a mechani
         * how many questions when only the part of the expected fault is checked?
     - the same top-1 without the fallback rules (single-premise rules from an intermediate
       to a fault), to measure what those rules add.
+    - for the questions chart: the diagnosis assistant (interview.py) started from the
+      Vietnamese description, the same numbers as `python src/evaluate_assistant.py`.
 
 Run from the repository root:
     python src/evaluate.py                 # table of every scenario and the summary
@@ -38,6 +40,37 @@ GROUPS = {
     "BT": "Brakes, tyres,\nsuspension",
 }
 ALL = "All"
+
+
+@dataclass
+class AssistantRun:
+    """The assistant on one scenario: questions after reading the description, right fault first?"""
+
+    id: str
+    group: str
+    questions: int
+    top1: bool
+
+
+def evaluate_assistant(kb: KnowledgeBase, scenarios: List[Scenario], lang: str = "vi") -> List[AssistantRun]:
+    """Same simulation as evaluate_assistant.interviews(): answers come from the scenario's symptoms."""
+    from interview import simulate
+    from nlu import answers
+
+    runs = []
+    for s in scenarios:
+        iv, asked = simulate(kb, s.symptoms, answers(s.description.get(lang, ""), kb.symptoms))
+        runs.append(AssistantRun(s.id, s.id[:2], asked, [d.fault for d in iv.result().diagnoses][:1] == [s.expected]))
+    return runs
+
+
+def assistant_means(runs: List[AssistantRun], summaries: List["Summary"]) -> List[float]:
+    """Mean questions of the assistant, one value per Summary (same groups, same order)."""
+    out = []
+    for s in summaries:
+        chosen = [r for r in runs if s.group == ALL or r.group == s.group]
+        out.append(sum(r.questions for r in chosen) / len(chosen) if chosen else 0.0)
+    return out
 
 
 @dataclass
@@ -261,16 +294,24 @@ def chart_accuracy(summaries: List[Summary], path: Path) -> Path:
     return path
 
 
-def chart_questions(summaries: List[Summary], n_symptoms: int, path: Path) -> Path:
-    """Mean number of questions of backward chaining: every part against the correct part only."""
+def chart_questions(summaries: List[Summary], n_symptoms: int, path: Path,
+                    assistant: Optional[List[AssistantRun]] = None) -> Path:
+    """Mean number of questions: backward chaining on every part and on the correct part only,
+    and (when `assistant` is given) the diagnosis assistant started from the rider's description."""
     plt, theme = _pyplot()
-    fig, ax = plt.subplots(figsize=(7.2, 3.6))
+    fig, ax = plt.subplots(figsize=(7.2, 3.8))
     x = range(len(summaries))
-    width = 0.36
-    series = [([s.questions_all for s in summaries], theme.COLORS["muted"], "All parts (40 hypotheses)"),
-              ([s.questions_part for s in summaries], theme.ENGINE_COLORS["backward"], "Correct part only")]
+    total = summaries[-1]
+    series = [([s.questions_all for s in summaries], theme.COLORS["muted"],
+               f"Backward, all parts (top-1 {total.top1}/{total.n})"),
+              ([s.questions_part for s in summaries], theme.ENGINE_COLORS["backward"],
+               f"Backward, correct part (top-1 {total.top1_part}/{total.n})")]
+    if assistant:
+        series.append((assistant_means(assistant, summaries), theme.COLORS["accent"],
+                       f"Assistant, Vietnamese description (top-1 {sum(r.top1 for r in assistant)}/{len(assistant)})"))
+    width = 0.8 / len(series)
     for k, (values, color, name) in enumerate(series):
-        bars = ax.bar([i + (k - 0.5) * width for i in x], values, width, color=color, label=name)
+        bars = ax.bar([i + (k - (len(series) - 1) / 2) * width for i in x], values, width, color=color, label=name)
         for bar, v in zip(bars, values):
             ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1, f"{v:.1f}", ha="center",
                     va="bottom", fontsize=9, color=theme.COLORS["text"])
@@ -279,11 +320,12 @@ def chart_questions(summaries: List[Summary], n_symptoms: int, path: Path) -> Pa
             va="bottom", fontsize=9, color=theme.COLORS["danger"])
     ax.set_xticks(list(x))
     ax.set_xticklabels(_group_labels(summaries))
-    ax.set_ylim(0, n_symptoms + 24)
+    ax.set_ylim(0, n_symptoms + 34)
     ax.set_yticks(range(0, n_symptoms + 1, 20))
     ax.set_ylabel("Questions asked (mean)")
-    ax.set_title("Questions asked by backward chaining")
-    ax.legend(loc="upper left", ncols=2)
+    ax.set_title("Questions asked: backward chaining and the assistant" if assistant
+                 else "Questions asked by backward chaining")
+    ax.legend(loc="upper left", ncols=2, fontsize=8.5)
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path)
     plt.close(fig)
@@ -352,10 +394,11 @@ def figure_backward_flow(path: Path) -> Path:
     return path
 
 
-def save_charts(kb: KnowledgeBase, rows: List[Row], folder: Path = FIGURE_DIR) -> List[Path]:
+def save_charts(kb: KnowledgeBase, rows: List[Row], folder: Path = FIGURE_DIR,
+                assistant: Optional[List[AssistantRun]] = None) -> List[Path]:
     summaries = summarise(rows)
     return [chart_accuracy(summaries, folder / "fig_accuracy_by_group.png"),
-            chart_questions(summaries, len(kb.symptoms), folder / "fig_backward_questions.png"),
+            chart_questions(summaries, len(kb.symptoms), folder / "fig_backward_questions.png", assistant),
             figure_backward_flow(folder / "fig_backward_flow.png")]
 
 
@@ -392,7 +435,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         RESULTS_FILE.write_text(format_markdown(kb, rows, summaries), encoding="utf-8")
         print(f"Wrote {RESULTS_FILE.relative_to(ROOT)}")
     if args.charts:
-        for path in save_charts(kb, rows):
+        assistant = evaluate_assistant(kb, scenarios)
+        print(f"Assistant (Vietnamese description): "
+              f"{sum(r.questions for r in assistant) / len(assistant):.1f} questions, "
+              f"top-1 {sum(r.top1 for r in assistant)}/{len(assistant)}")
+        for path in save_charts(kb, rows, assistant=assistant):
             print(f"Saved {path.relative_to(ROOT)}")
     return 0
 

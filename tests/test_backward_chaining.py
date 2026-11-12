@@ -295,6 +295,44 @@ class RealKnowledgeBaseTests(unittest.TestCase):
                 self.assertEqual(session.result.questions_asked, reference.questions_asked)
                 self.assertIn(s.expected, session.remaining())
 
+    def test_fixed_vehicle_type_is_not_a_question(self):
+        """Step 1 of the Diagnosis screen passes the vehicle type as `fixed`: the first question is
+        still number 1, undo cannot remove it, and the result is the same as answering it."""
+        brakes = sorted(f for f, s in self.kb.faults.items() if s.subsystem == "brakes")
+        bt03 = next(s for s in load_scenarios() if s.id == "BT03")
+        session = BackwardSession(self.kb, brakes, fixed={"is_manual": True})
+        self.assertEqual(session.question.number, 1)
+        self.assertEqual(session.known()["is_manual"], True)
+        self.assertNotIn("is_manual", session.answers)
+        self.assertFalse(session.undo())                 # nothing the rider answered yet
+        self.assertEqual(session.fixed, {"is_manual": True})
+        while not session.finished:
+            session.answer(session.question.symptom in bt03.symptoms)
+        reference = backward_chain(self.kb, bt03.symptoms, goals=brakes)
+        self.assertEqual([(d.fault, d.cf) for d in session.result.diagnoses],
+                         [(d.fault, d.cf) for d in reference.diagnoses])
+        self.assertEqual(session.result.diagnoses[0].fault, "brake_fluid_leak")
+        self.assertEqual(session.result.questions_asked, len(session.answers))
+        with self.assertRaises(ValueError):
+            BackwardSession(self.kb, brakes, fixed={"is_manual": UNKNOWN})
+
+    def test_bt03_demo_path(self):
+        """The oral-exam demo: Phanh, scenario BT03, "Tại sao" at questions 2 and 3."""
+        brakes = sorted(f for f, s in self.kb.faults.items() if s.subsystem == "brakes")
+        bt03 = next(s for s in load_scenarios() if s.id == "BT03")
+        session = BackwardSession(self.kb, brakes)
+        chains = []
+        while not session.finished:
+            q = session.question
+            chains.append((q.symptom, [step.rule.id for step in q.chain]))
+            session.answer(q.symptom in bt03.symptoms)
+        self.assertEqual(chains[:3], [("brake_lever_spongy", ["BR08"]),
+                                      ("brake_fluid_low", ["BR08", "BR04"]),
+                                      ("brake_fluid_leak_visible", ["BR08", "BR05"])])
+        self.assertEqual(len(chains), 9)
+        top = session.result.diagnoses[0]
+        self.assertEqual((top.fault, top.severity), ("brake_fluid_leak", "mechanic"))
+
     def test_same_diagnosis_as_forward_chaining(self):
         symptoms = sorted(self.kb.symptoms)
         rng = random.Random(0)

@@ -27,11 +27,13 @@ COLORS = {  # MotoLogic palette (docs/design/motologic_spec.md); keys kept for o
     "chrome": "#E7EAE0",        # chips, CF bar trough, disabled button
     "border": "#DCE1D6",        # 1 px border of cards and entries
     "text": "#14352C",
-    "muted": "#5F6F67",         # hints, counts, status bar text
+    "muted": "#56655E",         # hints, counts, status bar text (>= 4.5:1 on chrome and accent_soft)
     "on_accent": "#FFFFFF",     # text on accent / ok / danger
-    "ok": "#2E7D4F",            # severity "self", Yes button, Wang agrees
+    "ok": "#2A7347",            # severity "self", Yes button, Wang agrees
+    "ok_hover": "#215C39",      # Yes button when hovered / pressed
     "ok_soft": "#E3F1E8",
     "danger": "#B3261E",        # severity "mechanic", No button, errors
+    "danger_hover": "#931F18",  # No button when hovered / pressed
     "danger_soft": "#F8E1DF",
     "warn": "#8A5A00",          # not enough evidence for any fault
     "warn_soft": "#FBEFD6",
@@ -140,7 +142,8 @@ DARK = {
     "accent": "#4FB394", "accent_hover": "#6CC7AA", "accent_soft": "#1E3A30",
     "bg": "#0F1B17", "surface": "#17261F", "chrome": "#22342C", "border": "#2C4038",
     "text": "#E3EEEA", "muted": "#93A9A0", "on_accent": "#0B1612",
-    "ok": "#4CB57F", "ok_soft": "#173A28", "danger": "#E5675E", "danger_soft": "#3E1F1D",
+    "ok": "#4CB57F", "ok_hover": "#66C795", "ok_soft": "#173A28",
+    "danger": "#E5675E", "danger_hover": "#EC837B", "danger_soft": "#3E1F1D",
     "warn": "#E2A84B", "warn_soft": "#3A2E17",
     "sidebar": "#0B1612", "sidebar_hover": "#17261F", "sidebar_active": "#C9E86A",
     "sidebar_text": "#E3EEEA", "sidebar_muted": "#93A9A0",
@@ -196,8 +199,8 @@ def apply(root) -> None:
 
     button("Primary.TButton", c["accent"], c["on_accent"], c["accent_hover"])
     button("Secondary.TButton", c["surface"], c["text"], c["chrome"], border=c["border"])
-    button("Yes.TButton", c["ok"], c["on_accent"], "#256A42")
-    button("No.TButton", c["danger"], c["on_accent"], "#931F18")
+    button("Yes.TButton", c["ok"], c["on_accent"], c["ok_hover"])
+    button("No.TButton", c["danger"], c["on_accent"], c["danger_hover"])
     button("Link.TButton", c["surface"], c["accent"], c["accent_soft"], padding=(8, 6))
 
     for name in ("TCheckbutton", "TRadiobutton"):

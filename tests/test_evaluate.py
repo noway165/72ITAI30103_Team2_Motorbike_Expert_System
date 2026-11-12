@@ -8,8 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from evaluate import (ALL, GROUPS, Row, evaluate, fallback_rules, format_markdown, format_summary,  # noqa: E402
-                      format_table, save_charts, summarise, without_rules)
+from evaluate import (ALL, GROUPS, AssistantRun, Row, assistant_means, evaluate,  # noqa: E402
+                      evaluate_assistant, fallback_rules, format_markdown, format_summary, format_table,
+                      save_charts, summarise, without_rules)
 from forward_chaining import forward_chain  # noqa: E402
 from kb import load_kb  # noqa: E402
 from scenarios import load_scenarios  # noqa: E402
@@ -39,6 +40,13 @@ class SummaryTest(unittest.TestCase):
         self.assertAlmostEqual(total.top1_pct, 25.0)
         self.assertAlmostEqual(total.top3_pct, 50.0)
         self.assertEqual((total.top1_part, total.top1_no_fallback, total.engines_agree), (3, 3, 3))
+
+    def test_assistant_means_follow_the_groups(self):
+        rows = [row("BT01", 1), row("BT02", 1), row("SE01", 1)]
+        runs = [AssistantRun("BT01", "BT", 4, True), AssistantRun("BT02", "BT", 10, False),
+                AssistantRun("SE01", "SE", 1, True)]
+        summaries = summarise(rows)                       # SE, BT, All
+        self.assertEqual(assistant_means(runs, summaries), [1.0, 7.0, 5.0])
 
     def test_top1_and_top3_of_a_row(self):
         self.assertEqual((row("BT01", 1).top1, row("BT01", 1).top3), (True, True))
@@ -111,6 +119,20 @@ class RealScenariosTest(unittest.TestCase):
                                                        "fig_backward_flow.png"])
             for p in paths:
                 self.assertGreater(p.stat().st_size, 5000)
+
+    def test_assistant_matches_evaluate_assistant_and_is_charted(self):
+        """The assistant column uses the same numbers as src/evaluate_assistant.py (5.8 questions, 27/30)."""
+        runs = evaluate_assistant(self.kb, self.scenarios)
+        self.assertEqual(len(runs), len(self.scenarios))
+        self.assertAlmostEqual(sum(r.questions for r in runs) / len(runs), 5.8, places=1)
+        self.assertEqual(sum(r.top1 for r in runs), 27)
+        try:
+            import matplotlib  # noqa: F401
+        except ImportError:
+            self.skipTest("matplotlib is not installed")
+        with tempfile.TemporaryDirectory() as folder:
+            path = save_charts(self.kb, self.rows, Path(folder), assistant=runs)[1]
+            self.assertGreater(path.stat().st_size, 5000)
 
 
 if __name__ == "__main__":
