@@ -75,8 +75,8 @@ Lưu ảnh vào `figures/`, tên `fig_<nội_dung>.png`. Biểu đồ và sơ đ
 | 3 | Cấu trúc luật và các lớp triệu chứng → trung gian → lỗi | Lâm | Chưa |
 | 3 | Màn Trợ lý chẩn đoán đang hỏi, có thanh khả năng | Lâm | Chưa |
 | 3 | Ví dụ forward chaining tính CF | Giang | Có: `fig_cf_example.png` (`python src/report_figures.py`) |
-| 3 | Màn hình MotoLogic: kết quả SE01 có đồng hồ CF và Wang | Giang | Có: `fig_motologic_4_result.png` (thêm `fig_motologic_1_setup`, `_2_guided`, `_3_symptoms`) |
-| 3 | Ví dụ cây chứng minh Wang | Giang | Có: `fig_wang_proof.png` (`python src/report_figures.py`) |
+| 3 | Màn hình MotoLogic: kết quả SE01 có đồng hồ độ tin cậy (confidence gauge) và Wang | Giang | Có, chụp lại 12/11: `fig_motologic_4_result.png` (thêm `fig_motologic_1_setup`, `_2_guided`, `_3_symptoms`); không tính vào 1 hình của phần Giang |
+| 3 | Ví dụ cây chứng minh Wang | Giang | Có nhưng bỏ khỏi Ch3 (phần Giang còn 1 hình); dùng cho slide: `fig_wang_proof.png` |
 | 3 | Luồng backward chaining hỏi từng câu | Khoa | Có: `fig_backward_flow.png` (`python src/evaluate.py --charts`) |
 | 3 | Màn hình Hỏi đáp, đang mở Why | Khoa | Có: `fig_backward_screen_why.png` (BT10, câu 8) |
 | 4 | Biểu đồ độ chính xác theo nhóm kịch bản | Khoa | Có: `fig_accuracy_by_group.png` |

@@ -1,42 +1,41 @@
 # Chapter 5: Discussion (draft)
 
 Author: Kieu Bao Giang. Draft for the final report, 12/11/2026, for Lâm to merge.
-Limit: about 300 words and 1 figure. Numbers: [evaluation_results.md](evaluation_results.md) (Khoa) and
-[assistant_results.md](assistant_results.md) (Lâm), knowledge base of 88 rules.
+Limit: at most 300 words and 1 figure. Numbers: [evaluation_results.md](evaluation_results.md) (Khoa),
+[assistant_results.md](assistant_results.md) (Lâm) and Khoa's re-run in [nguyen_nam_khoa.md](../progress/nguyen_nam_khoa.md)
+section 3 (K3), knowledge base of 79 rules.
 
 ## 5.1 Where the system went wrong
 
-All 30 scenarios now give the expected fault first, with both forward and backward chaining, and
-Wang's prover agreed with forward chaining on every scenario and on 500 random sets of answers.
-The errors therefore came from the knowledge base, not from the engines. The first run missed two
-cases with the same shape: a rule derived an intermediate fact, but every rule going on needed one
-more symptom that the rider did not have, so the program stopped with no fault although the cause
-was almost known (Figure 5.1.1). A fallback rule with a lower CF from each such fact to its most
-common fault (SF14, TS15, BR13 and three engine and transmission rules) fixed both cases; without
-them top-1 drops to 28/30. The more specific rules still rank first when the extra symptom is given.
+All 30 scenarios give the expected fault first with both engines, and Wang's prover agreed with
+forward chaining on every scenario and on 500 random answer sets, so the errors came from the
+knowledge base. Two cases failed the same way: an intermediate fact was derived, but every rule
+going on needed a symptom the rider did not have, so no fault was reported (Figure 5.1.1). A
+lower-CF fallback rule from each such fact to its most common fault (for example TS15) fixed both;
+without these rules top-1 drops to 28/30.
 
 ## 5.2 Fewer questions or more accuracy
 
-Backward chaining over every fault asks 39.7 questions per scenario and is right 30/30; choosing
-the part first cuts this to 9.0. The assistant reads the rider's own description and then asks only
-the most informative questions: 5.5 questions and 30/30 on the scenario descriptions, which were all
-used while writing its phrase list. On ten held-out descriptions it is right 8/10 (Vietnamese) and
-7/10 (English) with about 11 questions, because a symptom said in words the list lacks is never
-read and may never be asked. The interface therefore keeps step-by-step questions
-as the recommended method and the assistant as the fastest one.
+Backward chaining over every fault asks 39.7 questions and is right 30/30; choosing the part first
+cuts this to 9.0. The assistant asks 5.3 questions and is right 30/30 on descriptions used to write
+its phrase list, but 8/10 (Vietnamese) and 7/10 (English) with about 11 questions on ten held-out
+ones. The comparison is not equal: the assistant does not count what it reads, stops once the
+leading fault is proved and is capped at 15 questions; backward chaining that reads the same
+description still asks 36.6, but stopping at the first proved fault gives 22.2 (28/30).
+Step-by-step questions therefore stay the recommended method.
 
 ## 5.3 Limitations
 
 The rules are definite clauses, so a "no" answer cannot lower a fault's CF: in ET05 "low coolant"
-stays second (CF 0.45) although the rider says the coolant level is fine. The CFs are the authors'
-estimates, not measured on repair data, and the scenarios were written by the team rather than
-collected from workshops.
+stays second (CF 0.45) although the coolant level is fine. The chat understands only phrasings in
+its phrase list: "tay phanh mềm" (soft brake lever) is read, "bóp phanh thấy mềm" is not. The CFs
+are the authors' estimates and the scenarios were written by the team.
 
 ## 5.4 Chapter conclusion
 
 The engines are correct with respect to the rules; the remaining errors and trade-offs come from
-what the rules and the questions can express. Negative evidence and real repair cases are the next
-steps.
+what the rules and the phrase list can express. Negative evidence, a larger phrase list and real
+repair cases are the next steps.
 
 ## Figure
 

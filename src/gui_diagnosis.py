@@ -46,8 +46,7 @@ TEXT = {
         "steps_done": ["Đã khai báo xe", "Đã xem triệu chứng", "Hiểu kết quả"],
         "e1": "Cùng tìm nguyên nhân", "t1": "Trả lời rõ hơn. Bước tiếp theo đúng hơn.",
         "s1": "Cho biết bạn thấy gì. Chương trình nối các triệu chứng lại và giải thích vì sao.",
-        "bike": "Xe của bạn", "bike_sub": "Chọn dòng xe để kết quả có thông số đúng xe; xe khác thì chọn loại xe và nhiên liệu.",
-        "other_bike": "Xe khác", "for_model": "Riêng cho {name}",
+        "bike": "Xe của bạn",
         "scooter": "Xe tay ga", "scooter_sub": "Tự động / dây curoa CVT",
         "manual": "Xe số", "manual_sub": "Có số / truyền động xích",
         "fuel": "Nhiên liệu", "fi": "Phun xăng (FI)", "carb": "Bình xăng con", "unsure": "Không rõ",
@@ -58,7 +57,6 @@ TEXT = {
         "symptoms_note": "Suy diễn tiến (forward chaining)",
         "talk": "Kể bằng lời", "talk_sub": "Gõ một câu mô tả tình trạng xe; trợ lý hiểu và hỏi thêm.",
         "talk_note": "Trợ lý chẩn đoán",
-        "made": "Dành cho triệu chứng hằng ngày", "made_sub": "Sáu bộ phận. Một chỗ để bắt đầu.",
         "n_faults": "{n} lỗi",
         "safety": "An toàn trước tiên",
         "safety_sub": "Dựng xe ở nơi an toàn và tắt máy trước khi kiểm tra.",
@@ -131,8 +129,7 @@ TEXT = {
         "steps_done": ["Bike set up", "Symptoms reviewed", "Understand the result"],
         "e1": "Let's find the cause", "t1": "A clearer answer. A better next step.",
         "s1": "Tell us what you notice. We'll connect the symptoms and explain the reasoning.",
-        "bike": "Your motorbike", "bike_sub": "Pick your model to get its own specs; for another bike choose the type and fuel.",
-        "other_bike": "Another bike", "for_model": "For your {name}",
+        "bike": "Your motorbike",
         "scooter": "Scooter", "scooter_sub": "Automatic / CVT belt",
         "manual": "Manual motorbike", "manual_sub": "Gears / chain drive",
         "fuel": "Fuel system", "fi": "Fuel injection", "carb": "Carburettor", "unsure": "Not sure",
@@ -143,7 +140,6 @@ TEXT = {
         "symptoms_note": "Forward chaining",
         "talk": "Describe it in words", "talk_sub": "Type a sentence about your bike; the assistant asks the rest.",
         "talk_note": "Diagnosis assistant",
-        "made": "Made for everyday symptoms", "made_sub": "Six systems. One place to start.",
         "n_faults": "{n} faults",
         "safety": "Safety comes first", "safety_sub": "Park safely and switch off the engine before checking your bike.",
         "no_sensor": "No sensors, photos or sound recordings needed.",
@@ -478,68 +474,36 @@ class DiagnosisPage(Page):
 
     # --- step 1 ---
     def render_setup(self, page) -> None:
-        t, kb, dx = self.t, self.app.kb, self.dx
-        self.header(page, t["e1"], t["t1"], t["s1"], 1)
-        left, right = self.columns(page)
-        card = RoundCard(left)
+        t, dx = self.t, self.dx
+        self.header(page, t["e1"], t["t1"], t["s1"], 1, compact=True)
+        card = RoundCard(page)  # full width: the 3 methods sit side by side and Start shows without scrolling
         card.pack(fill="x")
         b = card.body
-        label(b, t["bike"], "h2").pack(anchor="w")
-        autowrap(label(b, t["bike_sub"], "lead", "muted")).pack(fill="x", pady=(px(2), px(12)))
-        models = tk.Frame(b, bg=C["surface"])
-        models.pack(fill="x")
-        choices = [(m, kb.models[m]["name"]) for m in sorted(kb.models, key=lambda m: (kb.models[m]["kind"] != "scooter",
-                                                                                      kb.models[m]["name"]))]
-        for i, (m, name) in enumerate(choices + [("", t["other_bike"])]):
-            models.columnconfigure(i % 4, weight=1, uniform="model")
-            on = dx.get("model", "") == m
-            c = tk.Label(models, text=name, font=F["small_bold" if on else "small"], cursor="hand2", anchor="w",
-                         justify="left",
-                         bg=C["panel"] if on else C["surface"], fg=C["on_panel"] if on else C["text"],
-                         padx=px(10), pady=px(7), highlightthickness=1,
-                         highlightbackground=C["panel"] if on else C["border"])
-            autowrap(c, pad=px(24))
-            c.grid(row=i // 4, column=i % 4, sticky="nsew", padx=(0, px(8)), pady=(0, px(8)))
-            c.bind("<Button-1>", lambda e, m=m: self.choose_model(m))
-        if not dx.get("model"):  # another bike: type and fuel by hand
-            kinds = tk.Frame(b, bg=C["surface"])
-            kinds.pack(fill="x", pady=(px(4), 0))
-            for i, k in enumerate(("scooter", "manual")):
-                kinds.columnconfigure(i, weight=1, uniform="kind")
-                ChoiceCard(kinds, t[k], t[k + "_sub"], dx["kind"] == k, lambda k=k: self.set(kind=k),
-                           icon_name=k).grid(row=0, column=i, sticky="we", padx=(0 if i == 0 else px(10), 0))
-            fuel = tk.Frame(b, bg=C["surface"])
-            fuel.pack(fill="x", pady=(px(12), 0))
-            label(fuel, t["fuel"], "small_bold", "muted").pack(side="left", padx=(0, px(10)))
-            Segmented(fuel, [("fi", t["fi"]), ("carb", t["carb"]), ("", t["unsure"])], dx["fuel"],
-                      lambda v: self.dx.update(fuel=v)).pack(side="left")
-        label(b, t["how"], "h2").pack(anchor="w", pady=(px(22), px(10)))
-        for m in METHODS:
-            ChoiceCard(b, t[m], t[m + "_sub"], dx["method"] == m, lambda m=m: self.set(method=m),
-                       note=t[m + "_note"], badge=t["recommended"] if m == "guided" else "").pack(
-                fill="x", pady=(0, px(10)))
-
-        panel = RoundCard(right, fill="panel", border=None, grow=True)
-        panel.pack(fill="both", expand=True)
-        p = panel.body
-        autowrap(label(p, t["made"], "h2", "on_panel", bg="panel")).pack(fill="x")
-        label(p, t["made_sub"], "body", "panel_muted", bg="panel").pack(anchor="w", pady=(px(4), px(14)))
-        for i, (sub, n) in enumerate(subsystem_counts(kb), 1):
-            row = tk.Frame(p, bg=C["panel"])
-            row.pack(fill="x", pady=px(4))
-            label(row, f"{i:02d}", "small_bold", "lime", bg="panel", width=3).pack(side="left")
-            icon(row, SUBSYSTEM_ICONS[sub], 20, "lime", "panel").pack(side="left", padx=(0, px(10)))
-            label(row, SUBSYSTEM_NAMES[self.app.lang][sub], "lead", "on_panel", bg="panel").pack(side="left")
-            label(row, t["n_faults"].format(n=n), "small", "panel_muted", bg="panel").pack(side="right")
-        tk.Frame(p, bg=C["panel_soft"], height=1).pack(fill="x", pady=px(16))
-        safe = RoundCard(p, fill="panel_soft", border=None, radius=14, bg="panel", pad=16)
-        safe.pack(fill="x", side="bottom")
-        head = tk.Frame(safe.body, bg=C["panel_soft"])
-        head.pack(fill="x")
-        icon(head, "shield", 20, "lime", "panel_soft").pack(side="left", padx=(0, px(8)))
-        label(head, t["safety"], "heading", "on_panel", bg="panel_soft").pack(side="left")
-        autowrap(label(safe.body, t["safety_sub"], "body", "panel_muted", bg="panel_soft")).pack(
-            fill="x", pady=(px(6), 0))
+        label(b, t["bike"], "h2").pack(anchor="w", pady=(0, px(12)))
+        kinds = tk.Frame(b, bg=C["surface"])
+        kinds.pack(fill="x")
+        for i, k in enumerate(("scooter", "manual")):
+            kinds.columnconfigure(i, weight=1, uniform="kind")
+            ChoiceCard(kinds, t[k], t[k + "_sub"], dx["kind"] == k, lambda k=k: self.set(kind=k),
+                       icon_name=k).grid(row=0, column=i, sticky="we", padx=(0 if i == 0 else px(10), 0))
+        fuel = tk.Frame(b, bg=C["surface"])
+        fuel.pack(fill="x", pady=(px(12), 0))
+        fuel.columnconfigure(2, weight=1)
+        label(fuel, t["fuel"], "small_bold", "muted").grid(row=0, column=0, padx=(0, px(10)))
+        Segmented(fuel, [("fi", t["fi"]), ("carb", t["carb"]), ("", t["unsure"])], dx["fuel"],
+                  lambda v: self.dx.update(fuel=v)).grid(row=0, column=1)
+        safe = tk.Frame(fuel, bg=C["surface"])
+        safe.grid(row=0, column=2, sticky="e", padx=(px(24), 0))
+        icon(safe, "shield", 20, "accent").pack(side="left", padx=(0, px(8)))
+        label(safe, t["safety"] + ". " + t["safety_sub"], "small", "muted").pack(side="left")
+        label(b, t["how"], "h2").pack(anchor="w", pady=(px(18), px(10)))
+        methods = tk.Frame(b, bg=C["surface"])
+        methods.pack(fill="x")
+        for i, m in enumerate(METHODS):
+            methods.columnconfigure(i, weight=1, uniform="method")
+            ChoiceCard(methods, t[m], t[m + "_sub"], dx["method"] == m, lambda m=m: self.set(method=m),
+                       note=t[m + "_note"], badge=t["recommended"] if m == "guided" else "").grid(
+                row=0, column=i, sticky="nswe", padx=(0 if i == 0 else px(10), 0))
 
         f = self.footer(page)
         label(f, t["no_sensor"], "body", "muted", bg="bg").pack(side="left")
