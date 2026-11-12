@@ -276,6 +276,7 @@ Viết luật và các câu trả lời "có" thành sequent, rồi chứng minh
 | `python src/evaluate.py` | top-1, top-3, số câu hỏi của backward chaining trên 30 kịch bản |
 | `python src/evaluate.py --charts --markdown` | thêm 3 biểu đồ vào `docs/report/figures/` và ghi `docs/report/evaluation_results.md` (cần matplotlib) |
 | `python src/evaluate_assistant.py` | đánh giá trợ lý: độ đọc đúng (precision / recall / F1) và số câu hỏi; thêm `--write` để ghi `docs/report/assistant_results.md` |
+| `python tools/build_report.py` | ghép các phần báo cáo trong `docs/report/` thành `build/report/Final_Report_Group2.docx` theo mẫu của giảng viên (cần `pip install python-docx`) |
 | `python tools/shots.py` | chụp mọi màn chẩn đoán (vi / en × sáng / tối × cửa sổ mặc định / nhỏ nhất) vào một thư mục tạm, để soát giao diện bằng mắt (cần Pillow; cửa sổ phải hiện trên màn hình) |
 
 Dữ liệu kiểm thử:
@@ -317,7 +318,9 @@ Cách đọc số đo của bộ đọc câu:
 │   ├── gui_widgets.py     # widget dùng chung (thẻ bo góc, nút, đồng hồ CF, icon)
 │   └── theme.py           # màu sáng / tối, font
 ├── tests/                 # unit test; tests/data/ chứa tập mô tả giữ riêng
-├── tools/shots.py         # chụp màn hình để soát giao diện
+├── tools/
+│   ├── shots.py           # chụp màn hình để soát giao diện
+│   └── build_report.py    # ghép báo cáo Word từ docs/report/
 ├── docs/
 │   ├── kb_format.md, forward_chaining.md, wang.md, sources.md, scenario_analysis.md, ui_guide.md
 │   ├── design/            # thiết kế MotoLogic (ảnh mẫu + motologic_spec.md)

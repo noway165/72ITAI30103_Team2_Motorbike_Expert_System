@@ -15,6 +15,35 @@ Bìa (Ministry of Education and Training, Van Lang University, tên môn, Final 
 | Chapter 5: Discussion | Giang |
 | Chapter 6: Conclusion | Lâm |
 
+## File của từng phần
+
+| File | Phần | Người viết |
+|---|---|---|
+| `front_matter_lam.md` | Bìa (tên, MSSV), Acknowledgments, Commitment | Lâm |
+| `introduction_background_lam.md` | Chapter 1, Chapter 2, References | Lâm |
+| `methodology_lam.md` | 3.1 Knowledge base and interface | Lâm |
+| `methodology_giang.md` | Forward chaining, CF, Wang; Chapter conclusion của Ch3 | Giang |
+| `methodology_khoa.md` | Backward chaining, why/how | Khoa |
+| `assistant_lam.md` | Trợ lý và chat (mục cuối của Ch3) | Lâm |
+| `experiments_results_khoa.md` | Chapter 4 | Khoa |
+| `discussion.md` | Chapter 5 | Giang |
+| `conclusion_lam.md` | Chapter 6 | Lâm |
+
+## Ghép thành file Word
+
+```
+pip install python-docx
+python tools/build_report.py      # -> build/report/Final_Report_Group2.docx
+```
+
+Script lấy bìa (khung, logo), khổ giấy, lề, style và footer từ file mẫu; tự đánh số mục và hình; tạo mục lục (Word hỏi cập nhật khi mở file, chọn Yes); đặt mỗi hình ngay sau đoạn đầu tiên nhắc tới nó. Quy ước để script đọc đúng:
+
+- Phần trước dòng `## ` đầu tiên là ghi chú cho nhóm, không đưa vào báo cáo.
+- Mục viết `## 3.y Tên mục`. Số tạm (`3.y`) được thay bằng số thật ở mọi chỗ trong chương (`Figure 3.y.1` thành `Figure 3.2.1`). Mục tên "Chapter conclusion" luôn được đưa xuống cuối chương.
+- Hình: dòng `Figure 3.y.1: chú thích` rồi dòng ``File: `figures/ten.png` ``. Trong bài phải có chữ `(Figure 3.y.1)`, nếu không script cảnh báo và đặt hình ở cuối chương.
+- Bảng Markdown, ngay sau là dòng `Table 4.2.1: chú thích`.
+- Viết đoạn văn liền, không gạch đầu dòng (dòng bắt đầu bằng `- ` chỉ dùng trong References và Cover).
+
 ## Định dạng theo mẫu
 
 - Mỗi chương kết thúc bằng mục **Chapter conclusion**.
