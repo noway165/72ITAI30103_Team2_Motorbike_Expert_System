@@ -232,6 +232,12 @@ class BackwardSession:
             session.answer(True)                 # True / False / CF in (0, 1] / UNKNOWN
         session.result                           # BackwardResult, same as BackwardChainer
 
+    `fixed` holds facts known before the questions start, for example the vehicle type chosen
+    in step 1 of the Diagnosis screen ({"is_scooter": True}). They are used by the proof like
+    answers, but they are not questions: they are not numbered, not counted in
+    result.questions_asked, not listed in `answers`, and undo() never removes them.
+    (`answers`, by contrast, restores a dialogue in progress, so its questions keep their numbers.)
+
     After every answer the proof is run again from the start with the answers so far and
     stops at the first symptom that has no answer. The engine is deterministic, so the
     questions come in the same order as with BackwardChainer, and `undo()` is simply
@@ -240,7 +246,8 @@ class BackwardSession:
 
     def __init__(self, kb: KnowledgeBase, goals: Optional[Iterable[str]] = None,
                  threshold: float = DEFAULT_THRESHOLD,
-                 answers: Optional[Dict[str, Optional[Answer]]] = None) -> None:
+                 answers: Optional[Dict[str, Optional[Answer]]] = None,
+                 fixed: Optional[Dict[str, Answer]] = None) -> None:
         self.kb = kb
         self.goals = sorted(kb.faults) if goals is None else list(goals)
         for g in self.goals:
@@ -248,6 +255,12 @@ class BackwardSession:
                 raise ValueError(f"unknown fault {g!r}")
         self.threshold = threshold
         self.answers: Dict[str, Optional[Answer]] = {}  # in the order the questions were asked
+        self.fixed: Dict[str, Answer] = {}
+        for symptom, value in (fixed or {}).items():
+            if value is UNKNOWN:
+                raise ValueError(f"fixed fact {symptom!r} must be True, False or a CF")
+            self._check(symptom, value)
+            self.fixed[symptom] = value
         self.question: Optional[Question] = None
         self.result: Optional[BackwardResult] = None
         for symptom, value in (answers or {}).items():
@@ -280,15 +293,20 @@ class BackwardSession:
         self._advance()
         return True
 
+    def known(self) -> Dict[str, Optional[Answer]]:
+        """Fixed facts and answers together: everything the proof can use."""
+        return {**self.fixed, **self.answers}
+
     def remaining(self) -> List[str]:
         """Goal faults that the answers so far have not ruled out (hypotheses still open)."""
         memo: Dict[str, bool] = {}
+        known = self.known()
 
         def possible(symbol: str, path: tuple) -> bool:
             if self.kb.is_askable(symbol):
-                if symbol not in self.answers:
+                if symbol not in known:
                     return True
-                value = self.answers[symbol]
+                value = known[symbol]
                 return value is not UNKNOWN and _normalise(value)[0]
             if symbol in memo:
                 return memo[symbol]
@@ -314,8 +332,12 @@ class BackwardSession:
             value = self.answers[symptom]
             return False if value is UNKNOWN else value
 
+        wm = WorkingMemory()
+        for symptom, value in self.fixed.items():   # known before the dialogue: not counted as questions
+            v, cf = _normalise(value)
+            wm.tell(symptom, v, cf=cf)
         try:
-            self.result = BackwardChainer(self.kb, ask).diagnose(goals=self.goals, threshold=self.threshold)
+            self.result = BackwardChainer(self.kb, ask, wm).diagnose(goals=self.goals, threshold=self.threshold)
             self.question = None
         except _NeedAnswer as need:
             self.result = None

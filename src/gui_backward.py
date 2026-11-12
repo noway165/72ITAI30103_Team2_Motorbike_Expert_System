@@ -112,9 +112,10 @@ def goals_for(kb: KnowledgeBase, subsystem: str) -> List[str]:
 
 
 def start_session(kb: KnowledgeBase, subsystem: str = ALL, answers: Optional[Dict[str, object]] = None,
-                  threshold: float = DEFAULT_THRESHOLD) -> BackwardSession:
-    """A new diagnosis; `answers` restores one that was in progress (after a language change)."""
-    return BackwardSession(kb, goals_for(kb, subsystem), threshold=threshold, answers=answers)
+                  threshold: float = DEFAULT_THRESHOLD, fixed: Optional[Dict[str, object]] = None) -> BackwardSession:
+    """A new diagnosis; `answers` restores one that was in progress (after a language change),
+    `fixed` holds facts chosen before the questions (vehicle type), which are not numbered."""
+    return BackwardSession(kb, goals_for(kb, subsystem), threshold=threshold, answers=answers, fixed=fixed)
 
 
 @dataclass
@@ -171,7 +172,7 @@ def question_view(kb: KnowledgeBase, session: BackwardSession, lang: str = "vi")
     goal = kb.text(q.chain[0].goal, lang) if q.chain else ""
     return QuestionView(q.number, q.symptom, kb.question(q.symptom, lang),
                         kb.symbols[q.symptom].hint.get(lang, ""), goal,
-                        why_rows(kb, q.chain, q.symptom, session.answers, lang),
+                        why_rows(kb, q.chain, q.symptom, session.known(), lang),
                         open_hypotheses(kb, session, lang), len(session.goals))
 
 
