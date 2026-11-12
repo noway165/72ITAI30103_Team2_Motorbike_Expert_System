@@ -95,10 +95,13 @@ TEXT = {
         "obs": "Quan sát", "rules_used": "Luật đã dùng",
         "reach": "Chương trình suy ra thế nào?", "reach_sub": "Quan sát của bạn → kết luận trung gian → lỗi",
         "you": "Bạn trả lời", "next_step": "Bước tiếp theo", "alt": "Cũng có thể là",
-        "wang": "Kiểm chứng bằng Wang", "wang_not_run": "Chưa chạy", "verify": "Kiểm chứng kết luận",
-        "wang_yes": "✓ Wang chứng minh được: luật + câu trả lời ⇒ lỗi này",
-        "wang_no": "✕ Wang không chứng minh được lỗi này",
-        "no_fault": "Chưa đủ dữ kiện", "no_fault_sub": "Không lỗi nào đạt độ tin cậy 0.20.",
+        "wang": "Kiểm tra chéo kết luận", "wang_sub": "Chứng minh lại bằng logic (thuật toán Wang), "
+                                                     "không dựa vào điểm tin cậy.",
+        "wang_not_run": "Chưa kiểm tra", "verify": "Kiểm tra chéo",
+        "wang_yes": "✓ Đã chứng minh: luật + câu trả lời của bạn ⇒ lỗi này",
+        "wang_no": "✕ Không chứng minh được lỗi này từ câu trả lời",
+        "confidence": "Độ tin cậy {p:.0%}",
+        "no_fault": "Chưa đủ dữ kiện", "no_fault_sub": "Không lỗi nào đạt độ tin cậy 20%.",
         "derived": "Chương trình đã suy ra được", "check_more": "Kiểm tra thêm các điểm sau rồi chẩn đoán lại:",
         "nothing_derived": "Các câu trả lời chưa khớp luật nào. Thử cách chẩn đoán khác hoặc bộ phận khác.",
         "disclaimer": "Luật minh hoạ; kết quả không thay cho việc kiểm tra của thợ.",
@@ -160,10 +163,13 @@ TEXT = {
         "obs": "Observations", "rules_used": "Rules used",
         "reach": "How did we reach this?", "reach_sub": "Your observations → intermediate fact → likely fault",
         "you": "You said", "next_step": "Recommended next step", "alt": "It could also be",
-        "wang": "Wang's entailment check", "wang_not_run": "Not run yet", "verify": "Verify conclusion",
-        "wang_yes": "✓ Proved by Wang: rules + answers ⇒ this fault",
-        "wang_no": "✕ Wang could not prove this fault",
-        "no_fault": "Not enough evidence", "no_fault_sub": "No fault reached a confidence of 0.20.",
+        "wang": "Cross-check the conclusion", "wang_sub": "Proves it again with logic (Wang's algorithm), "
+                                                          "without the confidence scores.",
+        "wang_not_run": "Not checked yet", "verify": "Cross-check",
+        "wang_yes": "✓ Proved: the rules + your answers ⇒ this fault",
+        "wang_no": "✕ Your answers do not prove this fault",
+        "confidence": "Confidence {p:.0%}",
+        "no_fault": "Not enough evidence", "no_fault_sub": "No fault reached a confidence of 20%.",
         "derived": "What the program could work out", "check_more": "Check these points, then diagnose again:",
         "nothing_derived": "Your answers match no rule. Try another method or another system.",
         "disclaimer": "Illustrative rules; a likely fault is not a confirmed inspection.",
@@ -364,12 +370,14 @@ class DiagnosisPage(Page):
         self.dx.update(kw)
         self.render()
 
-    def header(self, parent, e: str, title: str, sub: str, step: int) -> None:
+    def header(self, parent, e: str, title: str, sub: str, step: int, compact: bool = False) -> None:
+        """Title, subtitle and the 3 steps; compact (steps 2 and 3) keeps the question in view."""
         eyebrow(parent, e).pack(anchor="w")
-        label(parent, title, "hero", bg="bg").pack(anchor="w", pady=(px(6), 0))
-        autowrap(label(parent, sub, "lead", "muted", bg="bg")).pack(fill="x", pady=(px(4), px(18)))
+        label(parent, title, "big" if compact else "hero", bg="bg").pack(anchor="w", pady=(px(2 if compact else 6), 0))
+        autowrap(label(parent, sub, "body" if compact else "lead", "muted", bg="bg")).pack(
+            fill="x", pady=(px(2), px(10 if compact else 18)))
         names = [self.t["steps_done"][i] if i < step - 1 else self.t["steps"][i] for i in range(3)]
-        Stepper(parent, names, step).pack(fill="x", pady=(0, px(20)))
+        Stepper(parent, names, step).pack(fill="x", pady=(0, px(12 if compact else 20)))
 
     def columns(self, parent) -> Tuple[tk.Frame, tk.Frame]:
         row = tk.Frame(parent, bg=C["bg"])
@@ -468,9 +476,9 @@ class DiagnosisPage(Page):
         session = guided_session(kb, dx)
         part = t["all"] if dx["part"] == ALL else SUBSYSTEM_NAMES[lang][dx["part"]]
         self.header(page, t["e2a"], t["t2a"], " · ".join((bike_text(dx["kind"], dx["fuel"], lang),
-                                                           t["guided_note"], part)), 2)
+                                                           t["guided_note"], part)), 2, compact=True)
         parts = tk.Frame(page, bg=C["bg"])
-        parts.pack(fill="x", pady=(0, px(14)))
+        parts.pack(fill="x", pady=(0, px(10)))
         label(parts, t["part"], "small_bold", "muted", bg="bg").pack(side="left", padx=(0, px(10)))
         Segmented(parts, [(ALL, t["all"])] + [(s, SUBSYSTEM_NAMES[lang][s]) for s in SUBSYSTEM_ORDER],
                   dx["part"], self.change_part, bg="bg").pack(side="left")
@@ -500,7 +508,7 @@ class DiagnosisPage(Page):
         label(p, t["open"].format(n=len(q.open), total=q.total), "small", "panel_muted", bg="panel").pack(
             anchor="w", pady=(px(14), 0))
         label(p, t["illustrative"], "small", "panel_muted", bg="panel").pack(anchor="w", side="bottom")
-        self.answers_strip(page, [(short(kb, s, lang), answer_label(v, lang)) for s, v in dx["answers"]],
+        self.answers_strip(left, [(short(kb, s, lang), answer_label(v, lang)) for s, v in dx["answers"]],
                            self.undo_guided)
         f = self.footer(page)
         link(f, "← " + t["previous"], self.undo_guided, bg="bg", font="body").pack(side="left")
@@ -523,9 +531,10 @@ class DiagnosisPage(Page):
                    width=170).pack(side="left", padx=(px(12), 0))
         link(b, t["skip"], lambda: on_answer(UNKNOWN), font="body", fg="muted").pack(anchor="w", pady=(px(6), 0))
 
-    def answers_strip(self, page, items: List[Tuple[str, str]], on_edit) -> None:
+    def answers_strip(self, parent, items: List[Tuple[str, str]], on_edit) -> None:
+        """Latest answers, under the question card so they stay in view."""
         t = self.t
-        card = RoundCard(page, radius=14, pad=16)
+        card = RoundCard(parent, radius=14, pad=16)
         card.pack(fill="x", pady=(px(16), 0))
         head = tk.Frame(card.body, bg=C["surface"])
         head.pack(fill="x")
@@ -536,9 +545,10 @@ class DiagnosisPage(Page):
         chips.pack(fill="x", pady=(px(8), 0))
         if not items:
             label(chips, t["none_yet"], "body", "muted").pack(anchor="w")
-        for i, (text, answer) in enumerate(items[-6:]):  # the latest answers fit on one or two lines
-            chip(chips, f"{text}: {answer}", C["text"], C["chrome"]).grid(
-                row=i // 2, column=i % 2, sticky="w", padx=(0, px(8)), pady=px(2))
+        for text, answer in items[-4:]:  # the latest answers, one per line, wrapped (never clipped)
+            chip(chips, f"{text}: {answer}", C["text"], C["chrome"]).pack(anchor="w", pady=px(2))
+        chips.bind("<Configure>", lambda e: [c.configure(wraplength=max(40, e.width - px(20)), justify="left")
+                                             for c in chips.winfo_children() if isinstance(c, tk.Label)])
 
     def change_part(self, part: str) -> None:
         self.dx.update(part=part, answers=[])
@@ -565,7 +575,7 @@ class DiagnosisPage(Page):
     # --- step 2b ---
     def render_checklist(self, page) -> None:
         t, dx, lang = self.t, self.dx, self.app.lang
-        self.header(page, t["e2b"], t["t2b"], t["s2b"], 2)
+        self.header(page, t["e2b"], t["t2b"], t["s2b"], 2, compact=True)
         left, right = self.columns(page)
         card = RoundCard(left)
         card.pack(fill="x")
@@ -584,6 +594,7 @@ class DiagnosisPage(Page):
                          bg=C["panel"] if on else C["surface"], fg=C["on_panel"] if on else C["text"], anchor="w",
                          padx=px(10), pady=px(7), cursor="hand2", highlightthickness=1,
                          highlightbackground=C["panel"] if on else C["border"])
+            autowrap(f, pad=px(24))
             f.grid(row=i // 3, column=i % 3, sticky="we", padx=(0, px(8)), pady=(0, px(8)))
             f.bind("<Button-1>", lambda e, s=sub: self.set_filter(s))
         self.list = tk.Frame(b, bg=C["surface"])
@@ -626,8 +637,8 @@ class DiagnosisPage(Page):
         panel.pack(fill="x")
         p = panel.body
         autowrap(label(p, t["observations"], "h2", "on_panel", bg="panel")).pack(fill="x")
-        label(p, f"{bike_text(dx['kind'], dx['fuel'], lang)} · {t['symptoms_note']}", "body", "panel_muted",
-              bg="panel").pack(anchor="w", pady=(px(4), px(12)))
+        autowrap(label(p, f"{bike_text(dx['kind'], dx['fuel'], lang)} · {t['symptoms_note']}", "body", "panel_muted",
+                       bg="panel")).pack(fill="x", pady=(px(4), px(12)))
         chip(p, t["n_selected"].format(n=len(dx["selected"])), C["on_lime"], C["lime"]).pack(anchor="w")
         if not dx["selected"]:
             label(p, t["nothing_selected"], "body", "panel_muted", bg="panel").pack(anchor="w", pady=(px(10), 0))
@@ -650,7 +661,7 @@ class DiagnosisPage(Page):
     # --- step 2c ---
     def render_talk(self, page) -> None:
         t, kb, dx, lang = self.t, self.app.kb, self.dx, self.app.lang
-        self.header(page, t["e2c"], t["t2c"], t["s2c"], 2)
+        self.header(page, t["e2c"], t["t2c"], t["s2c"], 2, compact=True)
         iv, found = talk_interview(kb, dx) if dx["text"].strip() else (None, [])
         q = iv.next_question() if iv else None
         if iv is not None and q is None and dx["text"].strip() and (dx["replies"] or iv.result().diagnoses):
@@ -695,7 +706,7 @@ class DiagnosisPage(Page):
             autowrap(label(p, ("✓ " if m.value else "✕ ") + short(kb, m.symptom, lang), "body",
                            "on_panel" if m.value else "panel_muted", bg="panel")).pack(fill="x", pady=px(2))
         if q is not None:
-            self.answers_strip(page, [(short(kb, s, lang), answer_label(v, lang)) for s, v in dx["replies"]],
+            self.answers_strip(left, [(short(kb, s, lang), answer_label(v, lang)) for s, v in dx["replies"]],
                                self.undo_talk)
         f = self.footer(page)
         if q is not None:
@@ -736,7 +747,7 @@ class DiagnosisPage(Page):
         rec: Record = self.app.state["history"][self.dx["record"]]
         s = summarize(kb, rec, lang)
         self.header(page, t["e3"], t["t3"], " · ".join((bike_text(rec.kind, rec.fuel, lang),
-                                                         t["method_" + rec.method])), 3)
+                                                         t["method_" + rec.method])), 3, compact=True)
         banner = RoundCard(page, fill="panel", border=None, pad=22)
         banner.pack(fill="x")
         b = banner.body
@@ -753,10 +764,9 @@ class DiagnosisPage(Page):
         autowrap(label(b, s.name if s.fault else t["no_fault_sub"], "big", "on_panel", bg="panel")).grid(
             row=1, column=1, sticky="we")
         if s.fault:
-            label(b, t["chain"].format(chain=" → ".join(st.rules for st in s.steps)), "body", "panel_muted",
-                  bg="panel").grid(
-                row=2, column=1, sticky="w")
-            Gauge(b, s.cf, size=150).grid(row=0, column=2, rowspan=3, padx=px(12))
+            autowrap(label(b, t["chain"].format(chain=" → ".join(st.rules for st in s.steps)), "body",
+                           "panel_muted", bg="panel")).grid(row=2, column=1, sticky="we")
+            Gauge(b, s.cf, size=150, caption=t["confidence"].format(p=s.cf), note=f"CF {s.cf:.2f}").grid(row=0, column=2, rowspan=3, padx=px(12))
         for col, (num, cap) in enumerate(((s.observations, t["obs"]), (len(s.chain), t["rules_used"])), 3):
             stat = tk.Frame(b, bg=C["panel"], padx=px(18))
             stat.grid(row=0, column=col, rowspan=3)
@@ -804,6 +814,7 @@ class DiagnosisPage(Page):
             wc.pack(fill="x", pady=(px(14), 0))
             w = wc.body
             label(w, t["wang"], "h2").pack(anchor="w")
+            autowrap(label(w, t["wang_sub"], "body", "muted")).pack(fill="x", pady=(px(2), 0))
             state = self.dx.get("wang")
             if state is None:
                 chip(w, t["wang_not_run"], C["warn"], C["warn_soft"]).pack(anchor="w", pady=(px(8), px(10)))
@@ -820,7 +831,8 @@ class DiagnosisPage(Page):
                     row = tk.Frame(ac.body, bg=C["surface"])
                     row.pack(fill="x", pady=px(3))
                     autowrap(label(row, name, "body")).pack(side="left", fill="x", expand=True)
-                    label(row, f"CF {cf:.2f}", "mono_bold", "muted").pack(side="right")
+                    label(row, f"CF {cf:.2f}", "mono", "muted").pack(side="right", padx=(px(6), 0))
+                    label(row, f"{cf:.0%}", "heading", "accent").pack(side="right")
         f = self.footer(page)
         icon(f, "shield", 18, "muted", "bg").pack(side="left")
         label(f, t["disclaimer"], "body", "muted", bg="bg").pack(side="left", padx=(px(8), 0))

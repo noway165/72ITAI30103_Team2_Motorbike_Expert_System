@@ -298,6 +298,13 @@ class RoundCard(tk.Canvas):
         self._win = self.create_window(self.pad, self.pad, window=self.body, anchor="nw")
         self.bind("<Configure>", self._draw)
         self.body.bind("<Configure>", self._fit)
+        self._job = None
+        if grow:  # the body height is fixed, so labels that wrap later never fire body <Configure>
+            self.bind("<Destroy>", lambda e: e.widget is self and self._job and self.after_cancel(self._job))
+
+    def _refit(self) -> None:
+        self._job = None
+        self._fit()
 
     def _fit(self, _=None) -> None:
         # request the height of the content; a grow card may still be stretched taller by its parent
@@ -314,6 +321,9 @@ class RoundCard(tk.Canvas):
         self.itemconfigure(self._win, width=max(1, w - 2 * self.pad))
         if self.grow:
             self.itemconfigure(self._win, height=max(1, h - 2 * self.pad))
+            if self._job:
+                self.after_cancel(self._job)
+            self._job = self.after(60, self._refit)
 
 
 class PillButton(tk.Canvas):
@@ -433,13 +443,14 @@ class CheckRow(RoundCard):
 class Gauge(tk.Canvas):
     """CF as a speedometer: half circle from 0 to 1.0 with a needle."""
 
-    def __init__(self, parent, cf: float, size: int = 150, bg: str = "panel"):
+    def __init__(self, parent, cf: float, size: int = 150, bg: str = "panel", caption: str = "", note: str = ""):
         import math
         on_panel = bg == "panel"
         fg, soft = ("on_panel", "panel_muted") if on_panel else ("text", "muted")
         w = px(size)
         r = w / 2 - px(10)
-        super().__init__(parent, width=w, height=int(r + px(46)), bg=C[bg], highlightthickness=0, bd=0)
+        super().__init__(parent, width=w, height=int(r + px(62 if note else 46)), bg=C[bg], highlightthickness=0,
+                         bd=0)
         cx, cy, thick = w / 2, r + px(10), px(10)
         box = (cx - r, cy - r, cx + r, cy + r)
         self.create_arc(*box, start=0, extent=180, style="arc", width=thick,
@@ -458,7 +469,9 @@ class Gauge(tk.Canvas):
         self.create_oval(cx - px(6), cy - px(6), cx + px(6), cy + px(6), fill=C["lime"], outline="")
         self.create_text(cx - r, cy + px(14), text="0", font=F["small"], fill=C[soft])
         self.create_text(cx + r, cy + px(14), text="1.0", font=F["small"], fill=C[soft])
-        self.create_text(cx, cy + px(28), text=f"CF {cf:.2f}", font=(theme.UI_FONT, 13, "bold"), fill=C[fg])
+        self.create_text(cx, cy + px(28), text=caption or f"CF {cf:.2f}", font=(theme.UI_FONT, 13, "bold"), fill=C[fg])
+        if note:  # e.g. the raw CF under a plain-language caption
+            self.create_text(cx, cy + px(48), text=note, font=F["mono"], fill=C[soft])
 
 
 # Icons drawn with lines in a 0..1 box, so they scale and follow the light / dark colours (no images).
