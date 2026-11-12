@@ -22,11 +22,11 @@ COLORS = {
     "accent": "#0E5E6F",        # title bar, primary button, CF bar, result #1
     "accent_hover": "#0A4A58",  # primary button when hovered / pressed
     "accent_soft": "#DCECEF",   # "why" box, selected item
-    "bg": "#EEF2F3",            # window background
+    "bg": "#E9EEF0",            # window background
     "surface": "#FFFFFF",       # panels, result cards, entries
-    "chrome": "#DDE4E6",        # status bar, CF bar trough, disabled button
-    "border": "#CBD5D8",        # 1 px border of panels, cards, entries
-    "text": "#17252A",
+    "chrome": "#DAE3E6",        # status bar, CF bar trough, disabled button
+    "border": "#C8D3D7",        # 1 px border of panels, cards, entries
+    "text": "#132228",
     "muted": "#5B6B70",         # hints, counts, status bar text
     "on_accent": "#FFFFFF",     # text on accent / ok / danger
     "ok": "#2E7D4F",            # severity "self", Yes button, Wang agrees
@@ -35,11 +35,14 @@ COLORS = {
     "danger_soft": "#F8E1DF",
     "warn": "#8A5A00",          # not enough evidence for any fault
     "warn_soft": "#FBEFD6",
-    "sidebar": "#0B3D49",       # left navigation
-    "sidebar_hover": "#114B59",
-    "sidebar_active": "#16606F",
+    "sidebar": "#082E37",       # left navigation
+    "sidebar_hover": "#0E3E49",
+    "sidebar_active": "#11505D",
     "sidebar_text": "#D5E6EA",
     "sidebar_muted": "#8FB1B9",
+    "highlight": "#E9A23B",     # selected nav item, title underline, home screen accents
+    "highlight_soft": "#FCEFD9",
+    "hero": "#0A4652",          # dark end of the home screen banner
 }
 
 # One colour per subsystem: group dots in the GUI and charts by subsystem.
@@ -87,7 +90,7 @@ UI_FONT = "Segoe UI"   # installed on every Windows machine
 MONO_FONT = "Consolas"
 
 FONTS = {
-    "display": (UI_FONT, 20, "bold"),   # page titles, big numbers on tiles
+    "display": (UI_FONT, 22, "bold"),   # page titles, big numbers on tiles
     "title": (UI_FONT, 12, "bold"),     # program name, card titles
     "question": (UI_FONT, 13, "bold"),  # question in step-by-step mode
     "heading": (UI_FONT, 10, "bold"),   # panel titles, fault names, buttons
@@ -120,6 +123,27 @@ def severity_colors(severity: str | None):
     return COLORS["ok"], COLORS["ok_soft"]
 
 
+LIGHT = dict(COLORS)
+DARK = {
+    "accent": "#2E9AAD", "accent_hover": "#45B2C5", "accent_soft": "#163A42",
+    "bg": "#0F191C", "surface": "#172428", "chrome": "#22343A", "border": "#2E464D",
+    "text": "#E3EEF0", "muted": "#93A9AF", "on_accent": "#FFFFFF",
+    "ok": "#4CB57F", "ok_soft": "#173A28", "danger": "#E5675E", "danger_soft": "#3E1F1D",
+    "warn": "#E2A84B", "warn_soft": "#3A2E17",
+    "sidebar": "#081317", "sidebar_hover": "#10242A", "sidebar_active": "#163A43",
+    "sidebar_text": "#D5E6EA", "sidebar_muted": "#7E9AA1",
+    "highlight": "#E9A23B", "highlight_soft": "#3A2E17", "hero": "#0B2F37",
+}
+MODE = "light"
+
+
+def set_mode(mode: str) -> None:
+    """Switch COLORS to the light or dark palette in place; rebuild the widgets afterwards."""
+    global MODE
+    MODE = "dark" if mode == "dark" else "light"
+    COLORS.update(DARK if MODE == "dark" else LIGHT)
+
+
 def apply(root) -> None:
     """Set the window background and the ttk styles used by the GUI.
 
@@ -132,6 +156,9 @@ def apply(root) -> None:
     c = COLORS
     root.configure(bg=c["bg"])
     root.option_add("*Font", FONTS["body"])
+    for key, value in (("background", c["surface"]), ("foreground", c["text"]),
+                       ("selectBackground", c["accent"]), ("selectForeground", c["on_accent"])):
+        root.option_add(f"*TCombobox*Listbox.{key}", value)  # the drop-down list of comboboxes
     style = ttk.Style(root)
     style.theme_use("clam")  # the only built-in theme that accepts all colours
 

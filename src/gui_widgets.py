@@ -240,6 +240,7 @@ class HintEntry(ttk.Entry):
 def page_header(parent, title: str, subtitle: str) -> tk.Frame:
     f = tk.Frame(parent, bg=C["bg"])
     label(f, title, "display", bg="bg").pack(anchor="w")
+    tk.Frame(f, bg=C["highlight"], width=px(44), height=px(4)).pack(anchor="w", pady=(2, 4))
     autowrap(label(f, subtitle, "body", "muted", bg="bg")).pack(fill="x", pady=(2, 0))
     return f
 

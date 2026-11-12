@@ -156,10 +156,11 @@ class GuiShellTest(unittest.TestCase):
         fake.ForwardPage = ForwardPage
         sys.modules["gui_forward"] = fake
         app = gui.App(self.root)
+        app.show("forward")
         app.show("kb")
         app.show("forward")
         self.assertIsInstance(app.page, ForwardPage)
-        self.assertEqual(app.page.shown, 2)  # built once, shown at start and again now
+        self.assertEqual(app.page.shown, 2)  # built once, shown twice
 
     def test_fold_ignores_vietnamese_accents(self):
         from gui_widgets import fold

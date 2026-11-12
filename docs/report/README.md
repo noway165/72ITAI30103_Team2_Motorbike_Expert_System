@@ -44,6 +44,7 @@ Lưu ảnh vào `figures/`, tên `fig_<nội_dung>.png`. Biểu đồ và sơ đ
 | 1 | Figure 1.1.1: tổng quan hệ thống | Lâm | Có: `fig_system_overview.png` |
 | 2 | Figure 2.2.1: forward và backward trên luật SF01, SF02 | Lâm | Có: `fig_forward_backward.png` |
 | 3 | Cấu trúc luật và các lớp triệu chứng → trung gian → lỗi | Lâm | Chưa |
+| 3 | Màn Trợ lý chẩn đoán đang hỏi, có thanh khả năng | Lâm | Chưa |
 | 3 | Ví dụ forward chaining tính CF | Giang | Chưa |
 | 3 | Màn hình Theo triệu chứng | Giang | Có: `fig_forward_screen_se01.png` |
 | 3 | Ví dụ cây chứng minh Wang | Giang | Chưa |
