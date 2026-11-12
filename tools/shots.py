@@ -25,6 +25,7 @@ import gui_widgets as w  # noqa: E402
 import theme  # noqa: E402
 from gui_diagnosis import new_dx  # noqa: E402
 
+MODEL = "model_honda_vision"
 PICK = ("starter_clicks_or_silent", "horn_weak", "battery_older_than_2_years")
 CHAT = {"vi": ["đề chỉ nghe tạch tạch", "tại sao hỏi vậy?", "có", "còn khả năng nào?"],
         "en": ["the starter only clicks", "why?", "yes", "what else?"]}
@@ -69,6 +70,8 @@ def screens(root: tk.Tk, app, out: Path, tag: str) -> None:
 
     reset(app)
     shot("1_setup")
+    reset(app).choose_model(MODEL)
+    shot("1_setup_model")
     p = reset(app, method="guided")
     p.start()
     shot("2a_part_card")
@@ -99,6 +102,7 @@ def screens(root: tk.Tk, app, out: Path, tag: str) -> None:
     p.render()
     shot("2c_talk_not_understood")
     p = reset(app, method="symptoms")
+    p.choose_model(MODEL)  # the result shows the model's own specs
     p.start()
     for sid in PICK:
         p.toggle_symptom(sid)
