@@ -72,7 +72,7 @@ Yêu cầu:
 
 - Python 3.10 trở lên (đã thử với 3.12). Tkinter có sẵn trong bản Python cài từ python.org.
 - Không cần thư viện ngoài để chạy chương trình và test.
-- Chỉ khi vẽ biểu đồ cho báo cáo mới cần `matplotlib`. `tools/shots.py` cần `Pillow`.
+- Chỉ khi vẽ biểu đồ cho báo cáo mới cần `matplotlib`. `tools/shots.py` cần `Pillow`. `tools/build_report.py` cần `python-docx`.
 
 ```bash
 git clone https://github.com/noway165/72ITAI30103_Team2_Motorbike_Expert_System.git
@@ -83,7 +83,7 @@ python -m unittest discover tests
 Thư viện tuỳ chọn:
 
 ```bash
-pip install matplotlib pillow
+pip install matplotlib pillow python-docx
 ```
 
 Mọi lệnh trong README chạy ở thư mục gốc của repo.
@@ -322,7 +322,7 @@ Cách đọc số đo của bộ đọc câu:
 │   ├── gui_assistant.py, gui_forward.py, gui_backward.py   # các màn cũ
 │   ├── gui_widgets.py     # widget dùng chung (thẻ bo góc, nút, đồng hồ CF, icon)
 │   └── theme.py           # màu sáng / tối, font
-├── tests/                 # unit test; tests/data/ chứa tập mô tả giữ riêng
+├── tests/                 # unit test; tests/data/ chứa tập mô tả giữ riêng và kịch bản cho luật dòng xe
 ├── tools/
 │   ├── shots.py           # chụp màn hình để soát giao diện
 │   └── build_report.py    # ghép báo cáo Word từ docs/report/
@@ -390,7 +390,8 @@ Sản phẩm bàn giao:
 - Luật được viết trước, nguồn tìm sau. Các nguồn yếu được ghi trong `docs/sources.md`.
 - Kịch bản do nhóm tự viết, không lấy từ ca sửa xe thật.
 - Bộ đọc câu chỉ hiểu những cách nói có trong danh sách cụm từ. Trên tập giữ riêng, recall chỉ khoảng 0,33–0,39.
-- Một số dòng xe như Wave có cả bản bình xăng con và phun xăng, nên loại nhiên liệu cần chọn ở bước 1, không đoán từ tên xe.
+- Một số dòng xe như Wave có cả bản bình xăng con và phun xăng, nên loại nhiên liệu lấy từ dòng xe chọn ở bước 1 (Wave Alpha là bình xăng con), không đoán từ chữ "Wave" trong câu kể.
+- Luật theo dòng xe (MD01–MD09) dựa trên bài báo và bài của tiệm sửa xe, không phải tài liệu của hãng. Chỉ có 6 dòng xe; mốc km thay nhớt và dây curoa của các dòng Honda chưa có vì sách ghi bằng biểu tượng hình.
 - Kết quả chỉ mang tính minh hoạ, không thay cho việc kiểm tra của thợ.
 
 ## 13. Tài liệu liên quan
