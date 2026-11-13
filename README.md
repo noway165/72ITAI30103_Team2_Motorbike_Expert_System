@@ -188,7 +188,8 @@ Thanh bên trái:
    - **hỏi lại**:
      - "tại sao hỏi vậy?": các luật dùng câu đó, mỗi điều kiện đánh dấu ✓ đã có, ✗ không, ? đang hỏi, · chưa biết;
      - "làm sao biết?": chuỗi luật tới lỗi dẫn đầu;
-     - "sửa thế nào?": cách xử lý và luật đã chứng minh;
+     - "sửa thế nào?", "phải làm sao giờ?", "có nguy hiểm không?": cách xử lý, mức độ và luật đã chứng minh;
+     - "có cách nào tốt hơn không?": mỗi lỗi chỉ có một cách xử lý, nên trợ lý nói rõ điều đó và liệt kê các khả năng khác;
      - "còn khả năng nào?": 3 lỗi có khả năng nhất, và lỗi nào đã được luật chứng minh;
      - "đứt cầu chì tổng là gì?": lỗi đó, các luật kết luận ra nó và các luật dùng nó;
    - **lệnh**: "xem kết quả" sang bước 3; "làm lại" bắt đầu lại.
