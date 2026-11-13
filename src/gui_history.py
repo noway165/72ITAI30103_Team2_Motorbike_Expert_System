@@ -22,11 +22,11 @@ TEXT = {
     "vi": {"eyebrow": "Lịch sử phiên", "title": "Các lần chẩn đoán",
            "sub": "Mỗi kết quả trong lần chạy chương trình này. Bấm một dòng để mở lại kết quả.",
            "session": "Phiên {n:03d}", "none": "Chưa có kết quả nào. Tìm lỗi phù hợp ở màn Chẩn đoán.",
-           "no_fault": "Chưa đủ dữ kiện", "go": "Bắt đầu chẩn đoán", "count": "{n} phiên"},
+           "no_fault": "Chưa đủ dữ kiện", "go": "Bắt đầu chẩn đoán", "count": "{n} phiên", "count_one": "1 phiên"},
     "en": {"eyebrow": "Session history", "title": "Your diagnoses",
            "sub": "Every result of this run of the program. Click a row to open the result again.",
            "session": "Session {n:03d}", "none": "No result yet. Find a fault on the Diagnosis screen.",
-           "no_fault": "Not enough evidence", "go": "Start diagnosis", "count": "{n} sessions"},
+           "no_fault": "Not enough evidence", "go": "Start diagnosis", "count": "{n} sessions", "count_one": "1 session"},
 }
 
 
@@ -78,7 +78,7 @@ class HistoryPage(Page):
         head = tk.Frame(page, bg=C["bg"])
         head.pack(fill="x", pady=(px(6), 0))
         label(head, t["title"], "hero", bg="bg").pack(side="left")
-        label(head, t["count"].format(n=len(history)), "lead", "muted", bg="bg").pack(side="right", anchor="s")
+        label(head, t["count_one"] if len(history) == 1 else t["count"].format(n=len(history)), "lead", "muted", bg="bg").pack(side="right", anchor="s")
         autowrap(label(page, t["sub"], "lead", "muted", bg="bg")).pack(fill="x", pady=(px(4), px(20)))
         if not history:
             card = RoundCard(page)

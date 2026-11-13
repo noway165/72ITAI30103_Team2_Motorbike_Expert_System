@@ -198,6 +198,56 @@ def figure_dead_end(kb: KnowledgeBase, path: Path) -> Path:
     return _save(fig, plt, path)
 
 
+def figure_overview(kb: KnowledgeBase, path: Path) -> Path:
+    """Figure 1.1.1 (Lâm): the parts of the system; the knowledge-base counts come from the rules."""
+    plt, theme = _pyplot()
+    c, eng = theme.COLORS, theme.ENGINE_COLORS
+    soft = {"forward": "#DDEBEF", "backward": "#FAEED3", "wang": "#E7E9F6"}
+    fig, ax = _canvas(plt, 7.2, 2.6, 100, 36)
+
+    def block(x, y, w, h, title, sub, fill, edge, ink=None, sub_ink=None):
+        _box(ax, c, x, y, w, h, "", fill=fill, edge=edge)
+        ax.text(x + w / 2, y + h * .66, title, ha="center", va="center", fontsize=9, fontweight="bold",
+                color=ink or c["text"])
+        ax.text(x + w / 2, y + h * .32, sub, ha="center", va="center", fontsize=7.2, color=sub_ink or c["muted"])
+
+    def head(x1, y1, x2, y2, color):
+        ax.annotate("", xy=(x2, y2), xytext=(x1, y1), arrowprops=dict(
+            arrowstyle="-|>", color=color, linewidth=1.1, shrinkA=0, shrinkB=0, mutation_scale=9))
+
+    def link(xs, ys, color, both=True):  # an elbow line; the arrow head at the end (and the start when both)
+        ax.plot(xs, ys, color=color, linewidth=1.1)
+        head(xs[-2], ys[-2], xs[-1], ys[-1], color)
+        if both:
+            head(xs[1], ys[1], xs[0], ys[0], color)
+
+    g = c["muted"]
+    block(0.5, 13, 12, 10, "Rider", "symptoms in,\ndiagnosis out", c["surface"], c["border"])
+    block(16, 13, 17, 10, "User interface", "GUI, CLI and\nrule-based chat", c["chrome"], c["border"])
+    block(39, 25, 24, 10, "Forward chaining", "data-driven, ranks\nfaults by CF", soft["forward"], eng["forward"])
+    block(39, 15, 24, 6, "Working memory", "facts of the current case", c["chrome"], c["border"])
+    block(39, 1, 24, 10, "Backward chaining", "goal-driven, asks questions,\nexplains why / how",
+          soft["backward"], eng["backward"])
+    block(73, 25, 26.5, 10, "Wang's algorithm", "proves which faults the\nrules and answers entail", soft["wang"],
+          eng["wang"])
+    block(73, 1, 26.5, 10, "Knowledge base",
+          f"{len(kb.symptoms)} symptoms, {len(kb.intermediates)} intermediates,\n{len(kb.faults)} faults, "
+          f"{len(kb.rules)} rules, {len(kb.models)} bike models",
+          c["panel"], c["panel"], ink=c["on_panel"], sub_ink=c["panel_muted"])
+    link([12.5, 16], [18, 18], g)
+    link([33, 36, 36, 39], [19.5, 19.5, 30, 30], g)
+    link([33, 36, 36, 39], [16.5, 16.5, 6, 6], g)
+    link([51, 51], [25, 21], g)
+    link([51, 51], [15, 11], g)
+    link([63, 73], [31.5, 31.5], eng["wang"])
+    ax.text(68, 32.6, "compared", ha="center", fontsize=7, color=eng["wang"])
+    link([73, 63], [6, 6], g, both=False)
+    link([80, 80, 68, 68, 63], [11, 18, 18, 27.5, 27.5], g, both=False)
+    ax.text(70, 19, "rules", ha="left", fontsize=7, color=eng["forward"])
+    link([92, 92], [11, 25], g, both=False)
+    return _save(fig, plt, path)
+
+
 def _save(fig, plt, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path)
@@ -207,7 +257,8 @@ def _save(fig, plt, path: Path) -> Path:
 
 def main() -> int:
     kb = load_kb()
-    for p in (figure_cf_example(kb, FIGURE_DIR / "fig_cf_example.png"),
+    for p in (figure_overview(kb, FIGURE_DIR / "fig_system_overview.png"),
+              figure_cf_example(kb, FIGURE_DIR / "fig_cf_example.png"),
               figure_wang_proof(kb, FIGURE_DIR / "fig_wang_proof.png"),
               figure_dead_end(kb, FIGURE_DIR / "fig_dead_end.png")):
         print(p.relative_to(ROOT))

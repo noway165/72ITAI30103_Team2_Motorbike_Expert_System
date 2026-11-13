@@ -292,6 +292,7 @@ def table(doc, rows: list, caption: str) -> None:
             t.cell(r, c).width = Inches(6.0 * longest[c] / sum(longest))  # wide columns for long text
             p = t.cell(r, c).paragraphs[0]
             p.paragraph_format.line_spacing = 1.0
+            p.paragraph_format.keep_with_next = True  # the table and its caption stay on one page
             inline(p, text, 12, bold=r == 0)
     if caption:
         para(doc, caption, 12, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0, after=6)
@@ -299,7 +300,8 @@ def table(doc, rows: list, caption: str) -> None:
 
 def figure(doc, path: str, fid: str, caption: str) -> None:
     p = para(doc, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0)
-    p.add_run().add_picture(str(REPORT / path), width=Inches(5.0))
+    p.add_run().add_picture(str(REPORT / path), width=Inches(4.6))
+    p.paragraph_format.keep_with_next = True  # never a caption alone at the top of a page
     para(doc, f"Figure {fid}: {caption}", 12, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0, after=6)
 
 

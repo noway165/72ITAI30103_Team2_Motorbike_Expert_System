@@ -115,8 +115,9 @@ ABOUT = {
     "vi": [
         ("Đề tài", "Hệ chuyên gia chẩn đoán các lỗi thường gặp của xe máy. Cơ sở tri thức gồm các luật NẾU … THÌ … "
                    "có hệ số chắc chắn (CF); chương trình suy diễn tiến, suy diễn lùi, giải thích “tại sao” và "
-                   "“vì sao”, và kiểm chứng kết luận bằng thuật toán Wang."),
-        ("Thành viên", "Tăng Thoại Lâm (nhóm trưởng): cơ sở tri thức, CLI, khung giao diện, file .exe\n"
+                   "“vì sao”, và kiểm chứng kết luận bằng thuật toán Wang. Trợ lý chat đọc lời kể tiếng Việt "
+                   "hoặc tiếng Anh, mọi câu trả lời đều lấy từ luật; sáu dòng xe phổ biến có luật và thông số riêng."),
+        ("Thành viên", "Tăng Thoại Lâm (nhóm trưởng): cơ sở tri thức, dòng xe, trợ lý chat, CLI, khung giao diện, file .exe\n"
                        "Kiều Bảo Giang: suy diễn tiến, CF, thuật toán Wang, màn hình Theo triệu chứng\n"
                        "Nguyễn Nam Khoa: suy diễn lùi, giải thích why / how, màn hình Hỏi đáp, đánh giá"),
         ("Lưu ý", "Kết quả chỉ mang tính tham khảo; lỗi “Cần mang ra thợ” nên được kiểm tra tại tiệm."),
@@ -125,8 +126,10 @@ ABOUT = {
     "en": [
         ("Project", "An expert system that diagnoses common motorbike faults. The knowledge base holds IF … THEN … "
                     "rules with certainty factors (CF); the program runs forward and backward chaining, explains "
-                    "why and how, and checks its conclusions with Wang's algorithm."),
-        ("Team", "Tăng Thoại Lâm (leader): knowledge base, CLI, GUI shell, .exe\n"
+                    "why and how, and checks its conclusions with Wang's algorithm. A chat assistant reads Vietnamese "
+                    "or English descriptions and answers from the rules; six popular bike models have their own rules "
+                    "and specs."),
+        ("Team", "Tăng Thoại Lâm (leader): knowledge base, bike models, chat assistant, CLI, GUI shell, .exe\n"
                  "Kiều Bảo Giang: forward chaining, CF, Wang's algorithm, By symptoms screen\n"
                  "Nguyễn Nam Khoa: backward chaining, why / how, Step-by-step screen, evaluation"),
         ("Note", "Results are advice only; faults marked “Take it to a mechanic” should be checked at a workshop."),
