@@ -282,6 +282,7 @@ Viết luật và các câu trả lời "có" thành sequent, rồi chứng minh
 | `python src/evaluate.py --charts --markdown` | thêm 3 biểu đồ vào `docs/report/figures/` và ghi `docs/report/evaluation_results.md` (cần matplotlib) |
 | `python src/evaluate_assistant.py` | đánh giá trợ lý: độ đọc đúng (precision / recall / F1) và số câu hỏi; thêm `--write` để ghi `docs/report/assistant_results.md` |
 | `python tools/build_report.py` | ghép các phần báo cáo trong `docs/report/` thành `build/report/Final_Report_Group2.docx` theo mẫu của giảng viên (cần `pip install python-docx`) |
+| `python tools/build_slides.py` | ghép slide của Lâm, Giang, Khoa thành `docs/slides/nhom2_thuyet_trinh.pptx` và sửa số liệu cũ (cần `pip install python-pptx` và PowerPoint trên Windows); thứ tự và lời thoại ở `docs/slides/lam_script.md` |
 | `python tools/shots.py` | chụp mọi màn chẩn đoán (vi / en × sáng / tối × cửa sổ mặc định / nhỏ nhất) vào một thư mục tạm, để soát giao diện bằng mắt (cần Pillow; cửa sổ phải hiện trên màn hình) |
 
 Dữ liệu kiểm thử:
@@ -326,7 +327,8 @@ Cách đọc số đo của bộ đọc câu:
 ├── tests/                 # unit test; tests/data/ chứa tập mô tả giữ riêng và kịch bản cho luật dòng xe
 ├── tools/
 │   ├── shots.py           # chụp màn hình để soát giao diện
-│   └── build_report.py    # ghép báo cáo Word từ docs/report/
+│   ├── build_report.py    # ghép báo cáo Word từ docs/report/
+│   └── build_slides.py    # ghép slide thuyết trình của cả nhóm (cần PowerPoint)
 ├── docs/
 │   ├── kb_format.md, forward_chaining.md, wang.md, sources.md, scenario_analysis.md, ui_guide.md
 │   ├── design/            # thiết kế MotoLogic (ảnh mẫu + motologic_spec.md)
