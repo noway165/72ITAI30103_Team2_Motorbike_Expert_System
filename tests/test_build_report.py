@@ -30,7 +30,7 @@ class BuildReportTest(unittest.TestCase):
         self.assertIn("References", heads)
         self.assertIn("Wang, H. (1960)", text)
         self.assertIn("Motorbike Fault Diagnosis Expert System", text)  # cover title
-        self.assertGreaterEqual(len(doc.inline_shapes), 8)
+        self.assertGreaterEqual(len(doc.inline_shapes), 5)  # v4 cuts Ch3 to 3 figures (K1, G1)
 
 
 if __name__ == "__main__":
