@@ -73,35 +73,43 @@ def figure_cf_example(kb: KnowledgeBase, path: Path) -> Path:
     mid = result.wm.get("low_electrical_power")
     top = next(d for d in result.diagnoses if d.fault == "weak_battery")
     fig, ax = _canvas(plt, 7.2, 3.6, 100, 50)
-    ys = [40, 30, 20, 10]
-    for y, s in zip(ys, SE01):
-        _box(ax, c, 0.5, y, 21, 7, f"{SHORT[s]}\nCF 1.00")
-    _box(ax, c, 33, 32, 22, 9, f"{SHORT['low_electrical_power']}\nCF {mid.cf:.2f}", fill=theme.LIGHT["accent_soft"],
+    line = dict(color=fw, linewidth=1)
+    centre = {s: 43.5 - 10 * i for i, s in enumerate(SE01)}  # symptom rows, top to bottom
+    for s, y in centre.items():
+        _box(ax, c, 0.5, y - 3.5, 21, 7, f"{SHORT[s]}\nCF 1.00")
+    _box(ax, c, 30, 33.5, 22, 9, f"{SHORT['low_electrical_power']}\nCF {mid.cf:.2f}", fill=theme.LIGHT["accent_soft"],
          edge=fw, bold=True)
-    _arrow(ax, 21.5, 43.5, 33, 37.5, fw, mid.by, dx=0, dy=2.5)
-    _arrow(ax, 21.5, 33.5, 33, 35.5, fw)
-    contributions = []
-    y = 32
+    _arrow(ax, 21.5, 43.5, 30, 40, fw, mid.by, dx=0, dy=2.6)
+    _arrow(ax, 21.5, 33.5, 30, 36, fw)
+    # each rule sits on the row of its extra symptom (none: on the row of the intermediate fact), so no line crosses
+    contributions, rows = [], []
     for rid in top.rules:
         rule = kb.rule(rid)
         cf_in = min(result.wm.get(p).cf for p in rule.premises)
         contributions.append(rule.cf * cf_in)
-        _arrow(ax, 55, 36.5, 63, y - (len(contributions) - 1) * 10 + 4, fw)
-        _box(ax, c, 63, y - (len(contributions) - 1) * 10, 19, 8,
-             f"{rid}\n{rule.cf:.2f} × {cf_in:.2f} = {rule.cf * cf_in:.3f}", size=7.5)
-    for p in ("battery_older_than_2_years", "bike_unused_over_2_weeks"):
-        users = [i for i, rid in enumerate(top.rules) if p in kb.rule(rid).premises]
-        for i in users:
-            _arrow(ax, 21.5, ys[SE01.index(p)] + 3.5, 63, 32 - i * 10 + 4, c["muted"])
+        extra = [p for p in rule.premises if p in centre]
+        y = centre[extra[0]] + 2 if extra else 38  # box centre
+        rows.append(y)
+        _box(ax, c, 62, y - 4, 19, 8, f"{rid}\n{rule.cf:.2f} × {cf_in:.2f} = {rule.cf * cf_in:.3f}", size=7.5)
+        if extra:  # the symptom goes straight across into the lower half of the box
+            _arrow(ax, 21.5, centre[extra[0]], 62, centre[extra[0]], c["muted"])
+            _arrow(ax, 57, y + 2, 62, y + 2, fw)
+        else:
+            _arrow(ax, 52, 38, 62, 38, fw)
+    ax.plot([52, 57], [38, 38], **line)
+    ax.plot([57, 57], [min(rows) + 2, 38], **line)  # bus from the intermediate fact down to every rule
     combined = contributions[0]
     steps = [f"{combined:.3f}"]
     for cf in contributions[1:]:
         combined = combined + cf * (1 - combined)
         steps.append(f"{combined:.3f}")
-    _box(ax, c, 84, 17, 15.5, 12, f"{SHORT['weak_battery']}\nCF {top.cf:.2f}", fill=fw, edge=fw,
+    mid_y = (min(rows) + max(rows)) / 2
+    _box(ax, c, 84.5, mid_y - 6, 15, 12, f"{SHORT['weak_battery']}\nCF {top.cf:.2f}", fill=fw, edge=fw,
          color=theme.LIGHT["on_accent"], bold=True)
-    for i in range(len(contributions)):
-        _arrow(ax, 82, 32 - i * 10 + 4, 84, 23, fw)
+    for y in rows:
+        ax.plot([81, 82.5], [y, y], **line)
+    ax.plot([82.5, 82.5], [min(rows), max(rows)], **line)  # the rules are combined into one CF
+    _arrow(ax, 82.5, mid_y, 84.5, mid_y, fw)
     ax.text(0.5, 2.5, "CF of a rule = rule CF × min(CF of its premises);  several rules: CF1 + CF2 × (1 − CF1)  →  "
             + " → ".join(steps), fontsize=7.5, color=c["muted"])
     assert abs(combined - top.cf) < 1e-3, (combined, top.cf)

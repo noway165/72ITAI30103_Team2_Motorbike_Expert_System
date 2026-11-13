@@ -1,4 +1,4 @@
-"""tools/build_report.py: the Word report is assembled from docs/report (owner: Lâm). Needs python-docx."""
+﻿"""tools/build_report.py: the Word report is assembled from docs/report (owner: Lâm). Needs python-docx."""
 
 import re
 import sys
@@ -27,10 +27,14 @@ class BuildReportTest(unittest.TestCase):
         self.assertEqual(heads[heads.index("Chapter 4: Experiments and Results") - 1], "3.6 Chapter conclusion")
         self.assertFalse(re.search(r"\b\d\.[a-z]\b", text), "a placeholder such as 3.y was not renumbered")
         self.assertTrue(re.search(r"Figure 3\.\d\.1:", text))
+        # Giang and Khoa both write "3.y": each keeps its own figure and number
+        self.assertIn("Figure 3.2.1: Forward chaining on scenario SE01", text)
+        self.assertIn("Figure 3.4.1: Backward chaining loop", text)
+        self.assertNotIn("(Figure 3.4.1)", text.split("3.3 Verification")[0])
         self.assertIn("References", heads)
         self.assertIn("Wang, H. (1960)", text)
         self.assertIn("Motorbike Fault Diagnosis Expert System", text)  # cover title
-        self.assertGreaterEqual(len(doc.inline_shapes), 5)  # v4 cuts Ch3 to 3 figures (K1, G1)
+        self.assertGreaterEqual(len(doc.inline_shapes), 8)  # 1 + 1 + 3 (Ch3: G1, K1, Lâm) + 2 + 1
 
 
 if __name__ == "__main__":
