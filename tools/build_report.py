@@ -202,6 +202,7 @@ def setup(doc) -> None:
         st.font.color.rgb = RGBColor(0, 0, 0)
         st.element.get_or_add_rPr().get_or_add_rFonts().set(qn("w:eastAsia"), FONT)
         st.paragraph_format.space_before, st.paragraph_format.space_after = Pt(6), Pt(3)
+        st.paragraph_format.keep_with_next = True  # a heading never ends a page
     for name, size, bold in (("toc 1", 13, True), ("toc 2", 12, False)):  # the sample's toc 1 is 22 pt italic
         st = doc.styles[name]
         st.font.name, st.font.size, st.font.bold, st.font.italic = FONT, Pt(size), bold, False
@@ -374,7 +375,10 @@ def build(out: Path = OUT) -> Path:
     field(para(doc, spacing=1.0), r'TOC \o "1-2" \h \z \u')
     refs = parse(lines_of("introduction_background_lam.md"))[2]
     for number, title, parts in CHAPTERS:
-        page_break(doc)
+        if number == 1:  # chapters run on without page breaks: the body must fit about 10 pages
+            page_break(doc)
+        else:
+            doc.paragraphs[-1].paragraph_format.space_after = Pt(12)
         refs += write_chapter(doc, number, title, parts)
     page_break(doc)
     doc.add_paragraph("References", style="Heading 1")
