@@ -300,7 +300,8 @@ def table(doc, rows: list, caption: str) -> None:
 
 def figure(doc, path: str, fid: str, caption: str) -> None:
     p = para(doc, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0)
-    p.add_run().add_picture(str(REPORT / path), width=Inches(4.6))
+    screenshot = Path(path).name.startswith(("fig_app_", "fig_motologic"))  # small UI text: use the full width
+    p.add_run().add_picture(str(REPORT / path), width=Inches(6.0 if screenshot else 5.0))
     p.paragraph_format.keep_with_next = True  # never a caption alone at the top of a page
     para(doc, f"Figure {fid}: {caption}", 12, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0, after=6)
 
@@ -392,6 +393,16 @@ def build(out: Path = OUT) -> Path:
     for ref in dict.fromkeys(refs):
         p = para(doc, ref, 12, spacing=1.0, after=6)
         p.paragraph_format.left_indent, p.paragraph_format.first_line_indent = Inches(0.4), Inches(-0.4)
+    if (REPORT / "appendix_lam.md").exists():  # after the references, outside the 10-page body
+        sections, figures, _ = parse(lines_of("appendix_lam.md"))
+        for s in sections:
+            page_break(doc)
+            doc.add_paragraph(s["title"], style="Heading 1")
+            for block in s["blocks"]:
+                if block[0] == "p":
+                    para(doc, block[1], align=WD_ALIGN_PARAGRAPH.JUSTIFY)
+        for fid, (path, cap) in figures.items():
+            figure(doc, path, fid, cap)
     group_footer(doc)
     doc.save(str(out))
     return out

@@ -50,7 +50,7 @@ Script lấy bìa (khung, logo), khổ giấy, lề, style và footer từ file 
 - Tiêu đề chương dạng `Chapter 1: Introduction`; mục con đánh số `1.1`, `1.2`.
 - Hình có chú thích ngay bên dưới, số theo chương.mục.thứ tự: `Figure 1.1.1: ...`. Trong bài phải nhắc đến từng hình.
 - Times New Roman, chữ thường 13 pt, tiêu đề chương 18 pt đậm, tiêu đề mục 13 pt; khổ Letter, lề 1 inch, có số trang.
-- Giãn dòng **double-spaced**, tổng **10 trang** theo đề bài (file mẫu để 1.3, không theo chỗ này).
+- Giãn dòng **double-spaced**, đề bài ghi 10 trang (không tính bìa); ngày 13/11 nhóm trưởng quyết định để ảnh màn hình đủ to nên thân bài khoảng 13 trang (file mẫu để 1.3, không theo chỗ này).
 
 ## Số trang mỗi phần (double-spaced, khoảng 240 từ một trang, mỗi hình khoảng 1/3 trang)
 
@@ -72,7 +72,7 @@ Lưu ảnh vào `figures/`, tên `fig_<nội_dung>.png`. Biểu đồ và sơ đ
 |---|---|---|---|
 | 1 | Figure 1.1.1: tổng quan hệ thống | Lâm | Có: `fig_system_overview.png` |
 | 2 | Figure 2.2.1: forward và backward trên luật SF01, SF02 | Lâm | Có: `fig_forward_backward.png` |
-| 3 | Ba bước của MotoLogic: chọn xe, hỏi đáp, kết quả (13/11, được vượt 10 trang) | Lâm | Có: `fig_app_setup.png`, `fig_app_guided.png`, `fig_app_result.png` |
+| 3 | Ba bước của MotoLogic: chọn xe, hỏi đáp, kết quả | Lâm | Có: `fig_app_setup.png`, `fig_app_guided.png`, `fig_app_result.png` (rộng hết khổ, 6 inch) |
 | 3 | Màn chat theo luật, đang hỏi "tại sao" | Lâm | Có: `fig_motologic_chat.png` (`python tools/shots.py`) |
 | 3 | Ví dụ forward chaining tính CF | Giang | Có: `fig_cf_example.png` (`python src/report_figures.py`) |
 | 3 | Màn hình MotoLogic: kết quả SE01 có đồng hồ độ tin cậy (confidence gauge) và Wang | Giang | Có, chụp lại 13/11 (có chọn dòng xe): `fig_motologic_4_result.png` (thêm `fig_motologic_1_setup`, `_2_guided`, `_3_symptoms`); không tính vào 1 hình của phần Giang |

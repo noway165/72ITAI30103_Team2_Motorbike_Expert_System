@@ -1,4 +1,4 @@
-﻿"""tools/build_report.py: the Word report is assembled from docs/report (owner: Lâm). Needs python-docx."""
+"""tools/build_report.py: the Word report is assembled from docs/report (owner: Lâm). Needs python-docx."""
 
 import re
 import sys
@@ -34,9 +34,11 @@ class BuildReportTest(unittest.TestCase):
         cells = [p for t in doc.tables[1:] for row in t.rows for c in row.cells for p in c.paragraphs]  # [0]: cover
         self.assertTrue(cells and all(p.paragraph_format.keep_with_next for p in cells), "a table may split")
         self.assertIn("References", heads)
+        self.assertEqual(heads[-1], "References")
+        self.assertIn("Figure 3.1.3: The result for a Honda Vision", text)  # the app screens are in the body
         self.assertIn("Wang, H. (1960)", text)
         self.assertIn("Motorbike Fault Diagnosis Expert System", text)  # cover title
-        self.assertGreaterEqual(len(doc.inline_shapes), 11)  # 1 + 1 + 6 (Ch3: 3 screenshots, G1, K1, chat) + 2 + 1
+        self.assertGreaterEqual(len(doc.inline_shapes), 8)  # 1 + 1 + 3 (Ch3: G1, K1, chat) + 2 + 1
 
 
 if __name__ == "__main__":
