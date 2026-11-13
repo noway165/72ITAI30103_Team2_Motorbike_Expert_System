@@ -4,7 +4,7 @@ File mẫu của giảng viên: [sample/Final_Project_report_sample.docx](sample
 
 ## Thứ tự trong báo cáo
 
-Bìa (Ministry of Education and Training, Van Lang University, tên môn, Final Project, Title, Lecturer, Course code, Group và MSSV, Ho Chi Minh City + tháng năm), Acknowledgments, Commitment, mục lục tự động, các chương, References. Viết bằng tiếng Anh.
+Bìa (Ministry of Education and Training, Van Lang University, tên môn, Final Project, Title, Lecturer, Course code, Group và MSSV, Ho Chi Minh City + tháng năm), Acknowledgments, Commitment, mục lục tự động, các chương, References, Appendix A (ảnh màn hình MotoLogic, `appendix_lam.md`; nằm ngoài 10 trang thân bài). Viết bằng tiếng Anh.
 
 | Chương | Người viết |
 |---|---|
@@ -72,7 +72,7 @@ Lưu ảnh vào `figures/`, tên `fig_<nội_dung>.png`. Biểu đồ và sơ đ
 |---|---|---|---|
 | 1 | Figure 1.1.1: tổng quan hệ thống | Lâm | Có: `fig_system_overview.png` |
 | 2 | Figure 2.2.1: forward và backward trên luật SF01, SF02 | Lâm | Có: `fig_forward_backward.png` |
-| 3 | Ba bước của MotoLogic: chọn xe, hỏi đáp, kết quả (13/11, được vượt 10 trang) | Lâm | Có: `fig_app_setup.png`, `fig_app_guided.png`, `fig_app_result.png` |
+| 3 | Ba bước của MotoLogic: chọn xe, hỏi đáp, kết quả | Lâm | Bỏ khỏi báo cáo 13/11 (đề bài: 10 trang); có trong slide 4. Ảnh: `fig_app_setup.png`, `fig_app_guided.png`, `fig_app_result.png` |
 | 3 | Màn chat theo luật, đang hỏi "tại sao" | Lâm | Có: `fig_motologic_chat.png` (`python tools/shots.py`) |
 | 3 | Ví dụ forward chaining tính CF | Giang | Có: `fig_cf_example.png` (`python src/report_figures.py`) |
 | 3 | Màn hình MotoLogic: kết quả SE01 có đồng hồ độ tin cậy (confidence gauge) và Wang | Giang | Có, chụp lại 13/11 (có chọn dòng xe): `fig_motologic_4_result.png` (thêm `fig_motologic_1_setup`, `_2_guided`, `_3_symptoms`); không tính vào 1 hình của phần Giang |
