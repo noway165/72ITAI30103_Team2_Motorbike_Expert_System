@@ -1,4 +1,4 @@
-﻿"""tools/build_report.py: the Word report is assembled from docs/report (owner: Lâm). Needs python-docx."""
+"""tools/build_report.py: the Word report is assembled from docs/report (owner: Lâm). Needs python-docx."""
 
 import re
 import sys
