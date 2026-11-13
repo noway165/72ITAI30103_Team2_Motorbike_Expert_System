@@ -299,6 +299,26 @@ class WindowTest(unittest.TestCase):
         self.root.update()
         self.assertEqual(self.errors, [])
 
+    def test_low_cf_is_not_called_highly_likely(self):
+        """Khoa's exe test 13/11: BT10 (CF 0.49) was headed "LỖI CÓ KHẢ NĂNG CAO"."""
+        import gui
+        app = gui.App(self.root)
+        page = app.page
+        for symptoms, want, other in ((("rear_shock_bouncy", "sits_low_parked"), "possible", "likely"),
+                                      (("starter_clicks_or_silent", "horn_weak", "battery_older_than_2_years"),
+                                       "likely", "possible")):
+            page.new_diagnosis()
+            page.set(step=1, method="symptoms")
+            page.start()
+            for sid in symptoms:
+                page.toggle_symptom(sid)
+            page.finish()
+            self.root.update()
+            shown = [w.cget("text") for w in _all(page) if isinstance(w, tk_label())]
+            self.assertIn(TEXT["vi"][want].upper(), shown)
+            self.assertNotIn(TEXT["vi"][other].upper(), shown)
+        self.assertEqual(self.errors, [])
+
 
 def tk_label():
     import tkinter as tk
