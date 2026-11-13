@@ -411,9 +411,9 @@ class ChoiceCard(RoundCard):
             icon(b, icon_name, 34, "accent", fill).grid(row=0, column=1, rowspan=3, sticky="n", padx=(0, px(12)))
         head = tk.Frame(b, bg=C[fill])
         head.grid(row=0, column=2, sticky="we")
-        if badge:
-            chip(head, badge, C["on_lime"], C["lime"]).pack(side="right", anchor="n")
-        autowrap(label(head, title, "title", bg=fill)).pack(side="left", fill="x", expand=True)
+        if badge:  # own line: beside the title it squeezed "questions" into "questio/ns" in a small window
+            chip(head, badge, C["on_lime"], C["lime"]).pack(side="top", anchor="w", pady=(0, px(6)))
+        autowrap(label(head, title, "title", bg=fill)).pack(side="top", fill="x", expand=True)
         if subtitle:
             autowrap(label(b, subtitle, "body", "muted", bg=fill)).grid(row=1, column=2, sticky="we", pady=(px(2), 0))
         if note:

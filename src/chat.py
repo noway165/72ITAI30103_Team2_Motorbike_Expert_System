@@ -53,6 +53,8 @@ TEXT = {
         "proved_by": "Lỗi này được chứng minh bởi luật {rules}.",
         "for_model": "Riêng cho {name}:",
         "others": "Các khả năng lúc này:",
+        "one_action": "Mỗi lỗi trong cơ sở tri thức chỉ có một cách xử lý, nên mình không có cách khác cho lỗi này. "
+                      "Nếu chưa chắc là lỗi này, các khả năng lúc này:",
         "other_row": "{fault}: {p:.0%}, {state}",
         "proved": "luật đã chứng minh (CF {cf:.2f})", "not_proved": "chưa đủ điều kiện luật nào",
         "what_fault": "{name} là một lỗi thuộc bộ phận {part} ({severity}). Cách xử lý: {action}",
@@ -89,6 +91,8 @@ TEXT = {
         "proved_by": "This fault is proved by rule {rules}.",
         "for_model": "For your {name}:",
         "others": "The possibilities now:",
+        "one_action": "The knowledge base has one action for each fault, so there is no other fix for this one. "
+                      "If you are not sure it is this fault, the possibilities now:",
         "other_row": "{fault}: {p:.0%}, {state}",
         "proved": "proved by the rules (CF {cf:.2f})", "not_proved": "no rule satisfied yet",
         "what_fault": "{name} is a fault of the {part} system ({severity}). What to do: {action}",
@@ -123,9 +127,15 @@ FILLER = {"a", "roi", "nha", "nhe", "day", "dau", "oi", "lam", "ma", "thi", "nhi
 INTENTS: List[Tuple[str, List[str]]] = [
     ("restart", ["lam lai", "bat dau lai", "noi lai tu dau", "restart", "start over"]),
     ("result", ["xem ket qua", "ket qua", "ket luan di", "show result", "result", "conclusion"]),
+    ("better", ["cach tot hon", "cach nao tot hon", "tot hon khong", "cach khac", "better way", "another way",
+                "other way", "alternative"]),
     ("fix", ["sua the nao", "sua sao", "sua nhu the nao", "phai lam gi", "lam gi bay gio", "xu ly the nao",
              "xu ly sao", "xu ly nhu the nao", "khac phuc", "cach sua", "fix it", "how to fix", "how do i fix",
-             "repair", "what should i do", "what to do", "what do i do"]),
+             "repair", "what should i do", "what to do", "what do i do",
+             # "is it dangerous", "can I still ride": the fix reply gives the action and the severity
+             "cach nao", "lam sao gio", "lam sao bay gio", "phai lam sao", "nen lam gi", "gio sao",
+             "nguy hiem", "di tiep duoc", "chay tiep duoc", "di duoc khong", "dangerous", "is it safe",
+             "still ride", "can i ride"]),
     ("what", ["la gi", "nghia la gi", "what is", "what s a", "what does", "what are"]),
     ("how", ["lam sao biet", "sao biet", "dua vao dau", "can cu vao dau", "vi sao ket luan", "tai sao ket luan",
              "tai sao la", "vi sao la", "giai thich", "how do you know", "how did you", "explain"]),
@@ -372,6 +382,8 @@ def _reply(kb: KnowledgeBase, dx, text: str, kind: Optional[str], lang: str) -> 
     model = dx.get("model", "")
     if kind == "result":
         return [final(kb, iv, lang, model)]
+    if kind == "better":  # one action per fault: say so and list the other possibilities
+        return [fix(kb, iv, lang, model), TEXT[lang]["one_action"] + "\n" + others(kb, iv, lang).split("\n", 1)[1]]
     if kind in ("fix", "others", "what"):
         return [{"fix": lambda: fix(kb, iv, lang, model), "others": lambda: others(kb, iv, lang),
                  "what": lambda: what(kb, text, iv, lang)}[kind]()]

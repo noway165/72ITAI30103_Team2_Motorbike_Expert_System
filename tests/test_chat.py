@@ -45,7 +45,12 @@ class ParseTest(unittest.TestCase):
         for text, want in (("tại sao hỏi vậy?", "why"), ("why?", "why"), ("làm sao biết vậy", "how"),
                            ("sửa thế nào", "fix"), ("what should I do", "fix"), ("còn khả năng nào khác", "others"),
                            ("cầu chì tổng là gì", "what"), ("làm lại", "restart"), ("xem kết quả", "result"),
-                           ("còi cũng yếu", None)):
+                           ("còi cũng yếu", None),
+                           # asked by a user on 13/11
+                           ("có cách nào tốt hơn không", "better"), ("có cách khác không", "better"),
+                           ("có cách nào sửa không", "fix"), ("phải làm sao giờ", "fix"),
+                           ("có nguy hiểm không", "fix"), ("is there a better way", "better"),
+                           ("can I still ride it", "fix"), ("đèn có sáng không", None)):
             with self.subTest(text=text):
                 self.assertEqual(intent(text), want)
 

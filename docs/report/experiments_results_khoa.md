@@ -29,10 +29,10 @@ Forward and backward chaining return the same faults and CFs and rank the expect
 30 scenarios; without the four fallback rules, two scenarios fail (Figure 4.2.1). Choosing the part
 first shortens the dialogue 4.4 times. The assistant asks about seven times fewer questions on the
 30 scenarios, whose descriptions were all used while writing it; on ten held-out descriptions it
-misses two or three brake and suspension faults (Figure 4.2.2). With 10% of the answers flipped, top-1 falls
+misses two or three brake, fork and steering faults (Figure 4.2.2). With 10% of the answers flipped, top-1 falls
 to 76% for backward chaining on the chosen part and 92% for the assistant. Nine scenarios for the bike-model
 rules, written by their author, are ranked first by both engines and proved by Wang; without the bike model
-only four reach a fault.
+only four are ranked first.
 
 Figure 4.2.1: Top-1 accuracy by scenario group, with and without the fallback rules.
 File: `figures/fig_accuracy_by_group.png`.

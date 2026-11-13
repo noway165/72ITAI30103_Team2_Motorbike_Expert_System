@@ -17,7 +17,7 @@ Author: Tang Thoai Lam. Cover, Acknowledgments and Commitment, read by `tools/bu
 
 ## Acknowledgments
 
-We sincerely thank Dr. Nguyen Thanh Huy for his lectures on logical agents and expert systems and for his guidance during this project. We also thank Van Lang University for the course and the learning environment, and the authors of the service manuals and articles we used as sources for our rules.
+We sincerely thank Dr. Nguyen Thanh Huy for the lectures on logical agents and expert systems and for the guidance during this project. We also thank Van Lang University for the course and the learning environment, and the authors of the service manuals and articles we used as sources for our rules.
 
 Ho Chi Minh City, November 2026. Group 2.
 
