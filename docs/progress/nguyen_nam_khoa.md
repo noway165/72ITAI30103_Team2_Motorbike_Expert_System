@@ -8,7 +8,7 @@ Kiểm thử: `python -m unittest discover tests`, `python src/kb.py`.
 |---|---|
 | K1. Ch3 `methodology_khoa.md` ≤ 120 từ + 1 hình | Xong: 115 từ, giữ `fig_backward_flow.png`, thêm nửa câu “9,0 thay vì 39,7 câu” |
 | K2. Ch4: kiểm tra phần Lâm đã sửa | Đồng ý. Đã chạy lại `evaluate.py`, `evaluate_assistant.py`: mọi số khớp (5,5 câu 30/30; giữ riêng 10,8 / 11,5 câu, 8/10 và 7/10; dòng xe 9/9, bỏ dòng xe 4/9). Thêm 1 câu về đảo câu trả lời (K6); 191 từ |
-| K3. Thử bản .exe mới, 5 kịch bản + 1 kịch bản dòng xe | Bảng mục 5: số mong đợi đã tính lại trên KB mới; Khoa chạy .exe và điền |
+| K3. Thử bản .exe mới, 5 kịch bản + 1 kịch bản dòng xe | Xong 13/11: 6/6 đúng (mục 5) |
 | K4. Đo lại bảng so sánh công bằng | Xong (mục 3), `python tools/compare_fair.py`; gửi Giang mục 4 |
 | K5. Thử chat trên động cơ, truyền động (5 cuộc) | Xong (mục 7); 5 góp ý cho Lâm |
 | K6. (tuỳ chọn) Đảo 10–20% câu trả lời | Xong (mục 6), `python tools/compare_fair.py --noise` |
@@ -107,12 +107,17 @@ Màn Chẩn đoán → Hỏi đáp từng câu; chọn bộ phận ở thẻ “
 
 | Kịch bản | Xe (bước 1) | Bộ phận | Trả lời Có | Mong đợi | Kết quả trên .exe | Sáng / Tối |
 |---|---|---|---|---|---|---|
-| SE01 | Tay ga, FI, Xe khác | Khởi động, nhiên liệu | đề chỉ tạch tạch; còi yếu; ắc quy hơn 2 năm | Ắc quy yếu, CF 0.89, 9 câu | | |
-| ET03 | Xe số, bình xăng con | Động cơ | máy gõ lạch cạch; quá hạn thay nhớt; nhớt đen đặc | Thiếu nhớt, CF 0.88, 13 câu | | |
-| ET07 | Tay ga, FI | Truyền động | rú ga nhưng tăng tốc chậm; curoa quá mốc thay | Dây curoa mòn, CF 0.86, 9 câu | | |
-| BT03 | Xe số, FI | Phanh | tay phanh mềm; dầu phanh dưới MIN; rỉ dầu phanh | Rò rỉ dầu phanh, CF 0.96, 9 câu | | |
-| BT10 | Xe số, bình xăng con | Lốp, giảm xóc | giảm xóc sau nảy nhiều; xe đứng thấp | Giảm xóc sau yếu, CF 0.49, 12 câu | | |
-| MS04 (dòng xe) | Honda Vision | Động cơ | máy gõ lạch cạch | Thiếu nhớt, CF 0.65 (luật MD04), khoảng 9 câu; có khối “Riêng cho Honda Vision” | | |
+| SE01 | Tay ga, FI, Xe khác | Khởi động, nhiên liệu | đề chỉ tạch tạch; còi yếu; ắc quy hơn 2 năm | Ắc quy yếu, CF 0.89, 9 câu | Đúng: Ắc quy yếu, CF 0.89, luật SF01 → SF02, SF14 | Sáng: đọc rõ |
+| ET03 | Xe số, bình xăng con | Động cơ | máy gõ lạch cạch; quá hạn thay nhớt; nhớt đen đặc | Thiếu nhớt, CF 0.88, 13 câu | Đúng: Thiếu nhớt, CF 0.88, luật EN06, EN16 | Tối: đọc rõ |
+| ET07 | Tay ga, FI | Truyền động | rú ga nhưng tăng tốc chậm; curoa quá mốc thay | Dây curoa mòn, CF 0.86, 9 câu | Đúng: Dây curoa mòn, CF 0.86, luật TR01 → TR02, TR12, “Cần mang ra thợ” | Tối: đọc rõ |
+| BT03 | Xe số, FI | Phanh | tay phanh mềm; dầu phanh dưới MIN; rỉ dầu phanh | Rò rỉ dầu phanh, CF 0.96, 9 câu | Đúng: Rò rỉ dầu phanh, CF 0.96, luật BR04, BR05 → BR06, BR13, “Cần mang ra thợ” | Tối: đọc rõ |
+| BT10 | Xe số, bình xăng con | Lốp, giảm xóc | giảm xóc sau nảy nhiều; xe đứng thấp | Giảm xóc sau yếu, CF 0.49, 12 câu | Đúng: Giảm xóc sau yếu, CF 0.49, luật TS09 → TS15 | Tối: đọc rõ |
+| MS04 (dòng xe) | Honda Vision | Động cơ | máy gõ lạch cạch | Thiếu nhớt, CF 0.65 (luật MD04), khoảng 9 câu; có khối “Riêng cho Honda Vision” | Đúng: Thiếu nhớt, CF 0.65, luật MD04, có khối “Riêng cho Honda Vision” (nhớt 10W-30, tr. 150) | Tối: đọc rõ |
+
+Thử ngày 13/11 trên bản .exe build từ `main` (88 luật, 40 lỗi): 6/6 kịch bản ra đúng lỗi, đúng CF và đúng chuỗi luật.
+Số câu hỏi không ghi lại. Nếu bản .exe cuối của Lâm (tối 14/11) khác bản này thì chạy lại BT03 và MS04.
+
+Ghi chú cho Giang (màn kết quả): BT10 có độ tin cậy 49% nhưng tiêu đề vẫn ghi “LỖI CÓ KHẢ NĂNG CAO”; nên đổi nhãn khi CF thấp.
 
 Bản thử 12/11 (trước khi có dòng xe): SE01 ra Ắc quy yếu, CF 0.89, Wang chứng minh được, chế độ Sáng đọc rõ.
 Kiểm thêm: “Tại sao”, “Câu trước”, “Không biết”, đổi VI/EN và Sáng/Tối giữa chừng vẫn giữ câu trả lời.
