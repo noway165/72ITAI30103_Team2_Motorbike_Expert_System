@@ -46,6 +46,18 @@ Cập nhật lần cuối: 12/11/2026 (nhánh `feature/motologic`). Theo lịch 
 | B. 4 ảnh MotoLogic: `docs/report/figures/fig_motologic_1_setup.png` … `_4_result.png` | Xong |
 | C. Slide và lời thoại phần Forward + Wang theo số mới, kèm kịch bản demo SE01 và BT03 (`docs/slides/`) | Xong |
 
+## Phân công khuya 12/11 (PhanCong_Nhom2_12-11_v4.pdf), nhánh `feature/giang-v4`
+
+Làm trên main 13/11 (đã có PR #22 của Giang và nhánh dòng xe của Lâm, PR #23, #24). Số từ đếm theo `python tools/build_report.py`.
+
+| Việc | Trạng thái |
+|---|---|
+| G1. Ch3 `methodology_giang.md` ≈180 từ (gồm Chapter conclusion của Ch3), 1 hình; "confidence gauge"; conclusion dùng "rule-based chat" và nhắc 6 dòng xe | Xong: 3.y + 3.z + 3.w 183 từ trong bản Word, 1 hình `fig_cf_example.png`; số luật đổi 79 → 88 |
+| G2. Chụp lại `fig_motologic_*.png` bằng `tools/shots.py` cho khớp main | Xong: 4 ảnh vi, sáng, 1600×950; bước 1 có chọn Honda Vision, kết quả có khối "Riêng cho Honda Vision" |
+| G3. Ch5 `discussion.md` ≤300 từ; 5.2 thêm câu so sánh công bằng; 5.3 thêm giới hạn của chat và nguồn yếu của luật dòng xe | Xong: 298 từ trong bản Word; 5,5 câu khớp `assistant_results.md`. Số so sánh công bằng Giang đo lại trên main (36,3 câu khi backward đọc cùng mô tả; 22,2 câu, 28/30 khi dừng ở lỗi đầu tiên; 7/30 cuộc chạm giới hạn 15 câu). Chờ số K4 của Khoa, khác thì thay |
+| G4. Kéo main, chạy 3 cách có chọn dòng xe; Stepper ✓ hai lần; bước 1 phải cuộn mới thấy nút Bắt đầu | Xong: hai lỗi giao diện đã sửa từ PR #22 và vẫn đúng sau khi Lâm thêm chọn dòng xe. Ảnh 1600×950 (vi sáng, en tối) thấy đủ 7 lựa chọn xe, 3 cách và nút Bắt đầu. Chạy cả 3 cách qua trang MotoLogic (trong tiến trình, như `tools/shots.py`) với dòng xe chọn ở bước 1, 9 kịch bản MS01–MS09, vi và en: hỏi đáp từng câu 18/18, chọn triệu chứng 18/18, kể bằng lời 18/18 ra đúng lỗi. Test 192 OK (skipped=5) |
+| G5. Thử chat 5 cuộc với phanh, lốp, giảm xóc | Xong (bảng G3 ở mục v3 bên dưới), chạy lại trên main 13/11: 5/5 đúng lỗi, chỉ cuộc 3 đổi số |
+
 ## Phân công tối 12/11 (PhanCong_Nhom2_12-11_v3.pdf), nhánh `feature/giang-report-fixes`
 
 | Việc | Trạng thái |
@@ -73,7 +85,7 @@ Chạy bằng `chat.start` / `chat.respond` (giống khung chat). Người trả
 |---|---|---|---|---|
 | 1 | "phanh trước kêu ken két, má phanh nhìn mỏng lắm rồi"; "tại sao hỏi vậy?" | Đúng: đọc ra phanh kêu ken két và má phanh mỏng | Có: "tại sao" liệt kê luật TR01 của câu đang hỏi. Câu hỏi đầu (tăng ga máy rú) lạc sang truyền động | Má phanh mòn, 98%, BR02 → BR01, Wang ✓, 3 câu trả lời (BT01 đúng) |
 | 2 | "bóp phanh thấy mềm, phải bóp sâu mới ăn"; "còn khả năng nào?" | Sai: không nhận ra triệu chứng nào (chỉ có cụm "tay phanh mềm") | Một phần: "còn khả năng nào" trả lời đúng nhưng chưa có gì để xếp hạng; phải trả lời 11 câu mới tới tay phanh mềm và dầu phanh cũ | Dầu phanh cũ, 70%, BR07, Wang ✓ (BT04 đúng) |
-| 3 | "lốp sau cứ vài hôm lại xẹp"; "tại sao hỏi vậy?" | Một phần: đọc ra lốp non hơi, chưa đọc ra xì hơi nhanh | Có cho "tại sao"; nhưng hỏi 10 câu ở bộ phận khác trước khi hỏi "lốp xì hơi nhanh" và "thấy đinh" | Lốp bị thủng, 96%, TS05 → TS04, Wang ✓, 13 câu (BT08 đúng) |
+| 3 | "lốp sau cứ vài hôm lại xẹp"; "tại sao hỏi vậy?" | Một phần: đọc ra lốp non hơi, chưa đọc ra xì hơi nhanh | Có cho "tại sao"; nhưng hỏi 12 câu khác trước khi hỏi "lốp xì hơi nhanh" và "thấy đinh" | Lốp bị thủng, 95%, TS05 → TS04, Wang ✓, 14 câu (BT08 đúng; chạy lại trên main 13/11) |
 | 4 | "phuộc trước chảy dầu, phanh gấp thì đầu xe chúi xuống"; "phải làm gì?" | Đúng: dầu rỉ trên ống phuộc và phuộc mềm, chúi khi phanh | Có: "phải làm gì" trả cách xử lý và luật TS07. Nhưng sau đó vẫn hỏi 14 câu không liên quan | Phuộc trước rò dầu, 85%, TS07 (BT09 đúng) |
 | 5 | "the front tyre looks flat and the steering feels heavy"; "why?" (tiếng Anh) | Một phần: đọc ra lốp non hơi, không đọc ra tay lái nặng ("feels heavy") | Có: "why" liệt kê luật TR01; tự hỏi lại tay lái nặng ở câu thứ 6 | Lốp thiếu hơi, 85%, TS01, Wang ✓, 6 câu (BT07 đúng) |
 
@@ -81,7 +93,7 @@ Tóm tắt: 5/5 ra đúng lỗi; câu hỏi thêm (tại sao / còn gì / phải
 
 ## Kết quả hiện tại
 
-- Cơ sở tri thức: 73 triệu chứng, 9 trung gian, 40 lỗi, **79 luật**. `python src/kb.py`: 0 lỗi.
+- Cơ sở tri thức (main 13/11, có luật dòng xe): 79 triệu chứng, 9 trung gian, 40 lỗi, **88 luật**. `python src/kb.py`: 0 lỗi, 0 cảnh báo.
 - 30 kịch bản: top-1 30/30 với forward và backward chaining; Wang khớp forward chaining trên 30 kịch bản và 500 bộ ngẫu nhiên.
 
 ## Còn lại
