@@ -13,7 +13,7 @@ Slide chung: [nhom2_thuyet_trinh.pptx](nhom2_thuyet_trinh.pptx), 19 slide; lời
 | 18–19 | Lâm | Kết luận, cảm ơn | 0:45 |
 | | | Cộng | 13:15, còn khoảng 1:45 để chuyển người và mở app |
 
-Lời thoại cũ của Giang (4:20 + 2:00 demo) và Khoa (3:30 + 2:00 demo) dài hơn khung này, nên mỗi bạn chỉ demo một kịch bản và rút phần nói. Giang demo SE01 bằng "Tôi biết triệu chứng" và bấm kiểm chứng Wang; BT03 để dành nếu thầy hỏi. Khoa demo BT03 ở "Hỏi đáp từng câu", bấm "Tại sao" ở câu 3.
+Lời thoại cũ của Giang (4:20 + 2:00 demo) và Khoa (3:30 + 2:00 demo) dài hơn khung này, nên mỗi bạn chỉ demo một kịch bản và rút phần nói. Bản rút gọn nằm trong Notes của slide 5–15 (sửa ở `NOTES` trong `tools/build_slides.py`); bản đầy đủ vẫn ở `giang_script.md` và `khoa_script.md` để trả lời vấn đáp. Giang demo SE01 bằng "Tôi biết triệu chứng" và bấm kiểm chứng Wang; BT03 để dành nếu thầy hỏi. Khoa demo BT03 ở "Hỏi đáp từng câu", bấm "Tại sao" ở câu 3.
 
 Trước buổi vấn đáp: mở sẵn `MotorbikeExpert.exe`, giao diện Sáng, tiếng Việt. Mỗi bạn demo xong bấm "Kể lại từ đầu" hoặc "Chẩn đoán mới".
 

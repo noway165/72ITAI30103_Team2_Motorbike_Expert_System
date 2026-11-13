@@ -49,6 +49,51 @@ FIXES = [
 ]
 
 
+# Speaker notes of Giang's (slides 5-10) and Khoa's (11-15) parts, shortened from their scripts of 12/11 so the
+# whole talk fits the lecturer's 15 minutes (Giang 4:00, Khoa 3:45 with one demo each; docs/slides/lam_script.md).
+# The full versions stay in giang_script.md and khoa_script.md. Edit here, then rebuild.
+NOTES = {
+    5: "Em là Kiều Bảo Giang. Phần của em là suy diễn tiến, cách xếp hạng lỗi bằng hệ số chắc chắn CF, và kiểm "
+       "chứng bằng thuật toán Wang.",
+    6: "Suy diễn tiến đi theo dữ liệu. Người lái chọn các triệu chứng đang gặp. Mỗi luật có bộ đếm số điều kiện chưa "
+       "đúng; mỗi khi một triệu chứng hay kết luận mới được xử lý, bộ đếm giảm một, về 0 thì luật chạy và kết luận vào "
+       "hàng đợi. Đây là thuật toán PL-FC-ENTAILS trong AIMA chương 7. Ví dụ: đề chỉ nghe tạch tạch và còi yếu, luật "
+       "SF01 suy ra điện yếu; từ đó SF14 cho ra ắc quy yếu, biết thêm ắc quy hơn hai năm thì SF02 nâng độ tin cậy lên.",
+    7: "Một bộ triệu chứng có thể ra nhiều lỗi nên phải xếp hạng, bằng CF theo cách của MYCIN. Điều kiện nối bằng VÀ "
+       "lấy CF nhỏ nhất, luật nhân CF của nó với CF điều kiện, nhiều luật cùng kết luận thì gộp CF1 cộng CF2 nhân một "
+       "trừ CF1. Ắc quy yếu có ba luật cho 0,765, 0,675 và 0,54, gộp lại 0,96. Lỗi từ 0,2 trở lên mới được báo.",
+    8: "Bộ suy diễn là code nhóm tự viết nên có thể sai. Em dùng thuật toán Wang, một bộ chứng minh độc lập: mỗi luật "
+       "thành công thức kéo theo, triệu chứng là nguyên tử, Wang bỏ dần từng phép nối tới khi mỗi nhánh có cùng một "
+       "nguyên tử ở hai bên. Vì suy diễn tiến đúng và đủ với Horn clause, hai bên phải ra cùng tập lỗi. Trên 30 kịch "
+       "bản và 500 bộ ngẫu nhiên, hơn 21 nghìn lần so sánh, không có khác biệt nào.",
+    9: "Mỗi nhóm có 10 kịch bản do người không viết luật soạn. Cả 30 kịch bản ra đúng lỗi hạng 1. Lần đầu sai 2 kịch "
+       "bản và Wang cũng không chứng minh được, nghĩa là thiếu luật chứ bộ suy diễn không sai: suy ra được kết luận "
+       "trung gian nhưng thiếu một triệu chứng để đi tiếp. Nhóm thêm 4 luật dự phòng có CF thấp hơn; bỏ chúng thì còn "
+       "28 trên 30.",
+    10: "Màn kết quả MotoLogic hiện lỗi đứng đầu trên đồng hồ CF, chuỗi luật thật đã dùng, cách xử lý và thông số của "
+        "dòng xe; ô kiểm chứng bằng Wang bấm để chứng minh kết luận. Em demo kịch bản SE01: chọn Honda Vision, Tôi biết "
+        "triệu chứng, tick đề chỉ nghe tạch tạch, còi yếu, ắc quy hơn 2 năm, xem kết quả: ắc quy yếu, độ tin cậy 89%, "
+        "rồi bấm kiểm chứng Wang. Mời bạn Khoa.",
+    11: "Em là Nguyễn Nam Khoa. Phần của em là suy diễn lùi cho màn Hỏi đáp từng câu, phần giải thích Tại sao và Như "
+        "thế nào, và đánh giá hệ thống.",
+    12: "Suy diễn lùi đi từ giả thuyết. Chương trình lấy từng lỗi làm mục tiêu, tìm các luật kết luận lỗi đó và biến "
+        "điều kiện thành mục tiêu con; gặp kết luận trung gian thì đi lùi tiếp, gặp triệu chứng chưa biết thì mới hỏi. "
+        "Một điều kiện trả lời Không thì bỏ cả luật, và câu đã trả lời được nhớ lại. Ví dụ BT03: rò rỉ dầu phanh cần "
+        "hụt dầu phanh qua BR13, điều đó lại cần tay phanh mềm và dầu dưới vạch MIN qua BR04, nên đó là các câu được "
+        "hỏi.",
+    13: "Hệ chuyên gia phải giải thích được. Bấm Tại sao thì thấy chuỗi luật đang thử và câu đang hỏi là điều kiện của "
+        "luật nào. Có kết quả, bấm Vì sao thì thấy triệu chứng, luật đã chạy và CF: BR06 cho 0,9, BR13 cho 0,6 nhân "
+        "0,98, gộp được 0,96, giống hệt suy diễn tiến. Người lái còn có thể trả lời Không biết và quay lại câu trước.",
+    14: "Trên 30 kịch bản, suy diễn lùi đúng lỗi hạng 1 cả 30, cùng lỗi và CF với suy diễn tiến. Hỏi mọi bộ phận cần "
+        "trung bình 39,7 câu trên 79 triệu chứng; chọn đúng bộ phận trước thì còn 9 câu, ít hơn 4,4 lần. Trợ lý của "
+        "bạn Lâm cần 5,5 câu. So sánh cho công bằng: cho suy diễn lùi đọc cùng mô tả vẫn hỏi 36,3 câu; dừng ở lỗi đầu "
+        "tiên chứng minh được thì 22,2 câu nhưng chỉ đúng 28 trên 30. Vậy Trợ lý nhanh chủ yếu nhờ chọn câu và dừng sớm.",
+    15: "Màn Hỏi đáp: bên trái chọn bộ phận và xem giả thuyết còn lại, bên phải là câu hỏi với ba nút Có, Không, Không "
+        "biết và phím tắt. Em demo BT03: chọn Phanh, trả lời Có cho dầu dưới vạch MIN và tay phanh mềm, ở câu 3 bấm "
+        "Tại sao để thấy luật BR05 và BR08. Kết quả là rò rỉ dầu phanh, CF 0,96, kèm nhãn Cần mang ra thợ. Mời bạn Lâm.",
+}
+
+
 def rgb(hex_: str) -> RGBColor:
     return RGBColor.from_string(hex_)
 
@@ -376,6 +421,8 @@ def build(out: Path = OUT) -> Path:
     print(f"{replace_text(prs)} numbers corrected")
     fix_teammates(prs)
     slide_numbers(prs)
+    for n, notes in NOTES.items():
+        prs.slides[n - 1].notes_slide.notes_text_frame.text = notes
     prs.save(str(out))
     return out
 
