@@ -300,7 +300,8 @@ def table(doc, rows: list, caption: str) -> None:
 
 def figure(doc, path: str, fid: str, caption: str) -> None:
     p = para(doc, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0)
-    p.add_run().add_picture(str(REPORT / path), width=Inches(4.0))
+    screenshot = Path(path).name.startswith(("fig_app_", "fig_motologic"))  # small UI text: use the full width
+    p.add_run().add_picture(str(REPORT / path), width=Inches(6.0 if screenshot else 5.0))
     p.paragraph_format.keep_with_next = True  # never a caption alone at the top of a page
     para(doc, f"Figure {fid}: {caption}", 12, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, spacing=1.0, after=6)
 
