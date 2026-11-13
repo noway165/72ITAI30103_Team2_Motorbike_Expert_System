@@ -72,8 +72,8 @@ Lưu ảnh vào `figures/`, tên `fig_<nội_dung>.png`. Biểu đồ và sơ đ
 |---|---|---|---|
 | 1 | Figure 1.1.1: tổng quan hệ thống | Lâm | Có: `fig_system_overview.png` |
 | 2 | Figure 2.2.1: forward và backward trên luật SF01, SF02 | Lâm | Có: `fig_forward_backward.png` |
-| 3 | Cấu trúc luật và các lớp triệu chứng → trung gian → lỗi | Lâm | Chưa |
-| 3 | Màn Trợ lý chẩn đoán đang hỏi, có thanh khả năng | Lâm | Chưa |
+| 3 | Cấu trúc luật và các lớp triệu chứng → trung gian → lỗi | Lâm | Bỏ (v4: phần Lâm còn 1 hình) |
+| 3 | Màn chat theo luật, đang hỏi "tại sao" | Lâm | Có: `fig_motologic_chat.png` (`python tools/shots.py`) |
 | 3 | Ví dụ forward chaining tính CF | Giang | Có: `fig_cf_example.png` (`python src/report_figures.py`) |
 | 3 | Màn hình MotoLogic: kết quả SE01 có đồng hồ độ tin cậy (confidence gauge) và Wang | Giang | Có, chụp lại 13/11 (có chọn dòng xe): `fig_motologic_4_result.png` (thêm `fig_motologic_1_setup`, `_2_guided`, `_3_symptoms`); không tính vào 1 hình của phần Giang |
 | 3 | Ví dụ cây chứng minh Wang | Giang | Có nhưng bỏ khỏi Ch3 (phần Giang còn 1 hình); dùng cho slide: `fig_wang_proof.png` |

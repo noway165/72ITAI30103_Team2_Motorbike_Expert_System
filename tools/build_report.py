@@ -136,9 +136,14 @@ def parse(lines: list) -> tuple:
 def chapter(parts: list) -> tuple:
     """Sections of one chapter in order (conclusion last), the figures, the references and the renumbering map."""
     sections, figures, refs = [], {}, []
-    for part in parts:
+    for n, part in enumerate(parts):
         name, ch = (part, "") if isinstance(part, str) else part
-        s, f, r = parse(lines_of(name, ch))
+        lines = lines_of(name, ch)
+        # two writers may both use "3.y": make each part's placeholders unique before they are mapped
+        tokens = {m.group(1) for ln in lines if ln.startswith("## ") and (m := TOKEN.match(ln[3:].strip()))
+                  and not m.group(1).split(".")[1].isdigit()}
+        lines = [renumber(ln, {t: f"{t}_{n}" for t in tokens}) for ln in lines]
+        s, f, r = parse(lines)
         sections += [x for x in s if x["kind"] == "text"]
         figures.update(f)
         refs += r
