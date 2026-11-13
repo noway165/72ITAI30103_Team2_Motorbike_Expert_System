@@ -106,7 +106,7 @@ TEXT = {
         "beliefs": "Khả năng lúc này", "by_rules": "luật đã chứng minh",
         "see_result": "Xem kết quả đầy đủ", "restart_chat": "Kể lại từ đầu",
         "e3": "Kết quả chẩn đoán", "t3": "Đây là điều triệu chứng của bạn gợi ý.",
-        "likely": "Lỗi có khả năng cao", "chain": "Theo chuỗi luật {chain}",
+        "likely": "Lỗi có khả năng cao", "possible": "Lỗi có thể gặp", "chain": "Theo chuỗi luật {chain}",
         "obs": "Quan sát", "rules_used": "Luật đã dùng",
         "reach": "Chương trình suy ra thế nào?", "reach_sub": "Quan sát của bạn → kết luận trung gian → lỗi",
         "you": "Bạn trả lời", "next_step": "Bước tiếp theo", "alt": "Cũng có thể là",
@@ -188,7 +188,7 @@ TEXT = {
         "beliefs": "Most likely now", "by_rules": "proved by the rules",
         "see_result": "See the full result", "restart_chat": "Start over",
         "e3": "Diagnosis result", "t3": "Here's what your symptoms suggest.",
-        "likely": "Likely fault", "chain": "Supported by the {chain} rule chain",
+        "likely": "Likely fault", "possible": "Possible fault", "chain": "Supported by the {chain} rule chain",
         "obs": "Observations", "rules_used": "Rules used",
         "reach": "How did we reach this?", "reach_sub": "Your observations → intermediate fact → likely fault",
         "you": "You said", "next_step": "Recommended next step", "alt": "It could also be",
@@ -211,6 +211,7 @@ TEXT = {
 KINDS = {"scooter": "is_scooter", "manual": "is_manual"}
 FUELS = {"fi": "is_fuel_injected", "carb": "is_carburetor"}
 METHODS = ("guided", "symptoms", "talk")
+LIKELY_AT = 0.6  # below this CF the result is headed "possible fault", not "likely fault"
 VEHICLE = set(KINDS.values()) | set(FUELS.values())
 
 
@@ -906,7 +907,8 @@ class DiagnosisPage(Page):
         sub = tk.Canvas(box, width=px(40), height=px(40), bg=C["lime"], highlightthickness=0, bd=0)
         box.create_window(px(36), px(36), window=sub)
         _draw_icon(sub, mark, px(40), C["on_lime"])
-        label(b, (t["likely"] if s.fault else t["no_fault"]).upper(), "eyebrow", "lime", bg="panel").grid(
+        head = ("likely" if s.cf >= LIKELY_AT else "possible") if s.fault else "no_fault"
+        label(b, t[head].upper(), "eyebrow", "lime", bg="panel").grid(
             row=0, column=1, sticky="w")
         autowrap(label(b, s.name if s.fault else t["no_fault_sub"], "big", "on_panel", bg="panel")).grid(
             row=1, column=1, sticky="we")
