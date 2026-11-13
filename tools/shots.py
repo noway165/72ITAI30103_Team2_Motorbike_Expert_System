@@ -111,6 +111,9 @@ def screens(root: tk.Tk, app, out: Path, tag: str) -> None:
     rec = app.state["history"][p.dx["record"]]
     p.verify(rec, rec.result.diagnoses[0].fault)
     shot("3_result_verified")
+    for n, key in enumerate(gui.PAGES[1:], 2):  # history (with the session above), knowledge base, classic screens
+        app.show(key)
+        shot(f"page{n}_{key}")
 
 
 def main() -> int:
