@@ -183,16 +183,14 @@ def slides(prs) -> None:
                   "Lâm: I start with the problem and the architecture. Giang then presents forward chaining, "
                   "certainty factors and Wang's algorithm, and Khoa backward chaining and the evaluation. I present "
                   "the diagnosis assistant, then we show the program live and conclude.")
-    agenda = [("Problem and architecture", "Lâm", "2:00"), ("Forward chaining, CF, Wang", "Giang", "1:45"),
-              ("Backward chaining and evaluation", "Khoa", "1:45"), ("Diagnosis assistant and chat", "Lâm", "0:45"),
-              ("Live demo", "All", "5:00"), ("Conclusion and questions", "Lâm", "0:45")]
-    for i, (part, who, mins) in enumerate(agenda):
+    agenda = ["Problem, architecture and AI techniques", "Forward chaining, CF, Wang", "Backward chaining and evaluation",
+              "Diagnosis assistant and chat", "Live demo", "Conclusion and questions"]  # no speakers or times (16/11)
+    for i, part in enumerate(agenda):
         x, y = 0.6 + (i % 2) * 6.2, 1.45 + (i // 2) * 1.65
         demo = part == "Live demo"
         card(s, x, y, 5.95, 1.4, PANEL if demo else SOFT)
-        text(s, x + 0.3, y + 0.2, 0.9, 1.0, f"{i + 1:02d}", 32, LIME if demo else ACCENT, True)
-        text(s, x + 1.35, y + 0.25, 4.3, 0.45, part, 18, WHITE if demo else TEXT, True)
-        text(s, x + 1.35, y + 0.75, 4.3, 0.4, f"{who} · {mins}", 14, ON_DARK if demo else MUTED)
+        text(s, x + 0.3, y, 0.9, 1.4, f"{i + 1:02d}", 32, LIME if demo else ACCENT, True, anchor=MSO_ANCHOR.MIDDLE)
+        text(s, x + 1.35, y, 4.3, 1.4, part, 18, WHITE if demo else TEXT, True, anchor=MSO_ANCHOR.MIDDLE)
 
     # 2. Problem (Lâm) -----------------------------------------------------------------------------------------
     s = new_slide(prs, "CONTENT", "The problem: riders only see symptoms",
@@ -368,7 +366,7 @@ def slides(prs) -> None:
                   "Control 6, with the same scenarios.")
     for i, (who, way, steps, shows) in enumerate([
             ("Lâm", "Describe it in words", ["Honda Vision → Describe it in words",
-                                             "“the starter only clicks, the horn is weak”", "ask “why?”, answer “yes”",
+                                             "“the starter only clicks”", "ask “why?”, answer “yes” (horn)",
                                              "See the full result"],
              "Rule-based replies; the Vision's battery spec from its owner's manual"),
             ("Giang", "I know my symptoms", ["Another bike → I know my symptoms", "starter only clicks, weak horn, "
