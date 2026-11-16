@@ -32,6 +32,7 @@ from pathlib import Path
 from docx import Document
 from docx.enum.section import WD_SECTION
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
@@ -179,6 +180,17 @@ def inline(paragraph, text: str, size: float = 13, bold: bool = False, italic: b
         run.font.size = Pt(size - 1 if code else size)
         run.font.name = "Consolas" if code else FONT
         run._r.get_or_add_rPr().get_or_add_rFonts().set(qn("w:eastAsia"), run.font.name)
+
+
+def hyperlink(paragraph, url: str, size: float) -> None:
+    """A clickable link (blue, underlined) at the end of the paragraph, in Word and in the exported PDF."""
+    run = paragraph.add_run(url)
+    run.font.size, run.font.name, run.font.underline = Pt(size), FONT, True
+    run.font.color.rgb = RGBColor(0x05, 0x63, 0xC1)
+    link = OxmlElement("w:hyperlink")
+    link.set(qn("r:id"), paragraph.part.relate_to(url, RT.HYPERLINK, is_external=True))
+    run._r.addprevious(link)
+    link.append(run._r)
 
 
 def para(doc, text="", size=13, bold=False, italic=False, align=None, style=None, spacing=2.0, after=0):
@@ -395,8 +407,11 @@ def build(out: Path = OUT) -> Path:
         refs += write_chapter(doc, number, title, parts)
     page_break(doc)
     doc.add_paragraph("References", style="Heading 1")
-    for ref in dict.fromkeys(refs):
-        p = para(doc, ref, 12, spacing=1.0, after=6)
+    for ref in sorted(dict.fromkeys(refs)):  # alphabetical by first author, as APA lists them
+        url = re.search(r"https?://\S+$", ref)
+        p = para(doc, ref[:url.start()] if url else ref, 12, spacing=1.0, after=6)
+        if url:
+            hyperlink(p, url.group(), 12)
         p.paragraph_format.left_indent, p.paragraph_format.first_line_indent = Inches(0.4), Inches(-0.4)
     if (REPORT / "appendix_lam.md").exists():  # after the references, outside the 10-page body
         sections, figures, _ = parse(lines_of("appendix_lam.md"))
