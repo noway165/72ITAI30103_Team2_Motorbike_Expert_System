@@ -407,9 +407,9 @@ def build(out: Path = OUT) -> Path:
         refs += write_chapter(doc, number, title, parts)
     page_break(doc)
     doc.add_paragraph("References", style="Heading 1")
-    for ref in sorted(dict.fromkeys(refs)):  # alphabetical by first author, as APA lists them
+    for n, ref in enumerate(dict.fromkeys(refs), 1):  # numbered [1], [2] ... in the order the text cites them
         url = re.search(r"https?://\S+$", ref)
-        p = para(doc, ref[:url.start()] if url else ref, 12, spacing=1.0, after=6)
+        p = para(doc, f"[{n}] " + (ref[:url.start()] if url else ref), 12, spacing=1.0, after=6)
         if url:
             hyperlink(p, url.group(), 12)
         p.paragraph_format.left_indent, p.paragraph_format.first_line_indent = Inches(0.4), Inches(-0.4)

@@ -1,6 +1,6 @@
 # Thuyết trình nhóm 2 (vấn đáp 16/11/2026): thứ tự, thời gian, demo và lời thoại
 
-Slide chung: [Group2_Presentation.pptx](Group2_Presentation.pptx), 13 slide tiếng Anh; lời thoại (tiếng Anh) nằm trong phần Notes của từng slide. File được tạo bằng `python tools/build_slides.py` (cần python-pptx; dùng theme của deck Giang). Muốn sửa chữ hay lời thoại thì sửa trong script rồi chạy lại lệnh. Số liệu lấy từ `src/evaluate.py`, `src/evaluate_assistant.py`, `src/wang.py`, `tools/compare_fair.py` ngày 13/11.
+Slide chung: [Group2_Presentation.pptx](Group2_Presentation.pptx), 15 slide tiếng Anh (sau góp ý ngày 16/11: thêm slide 6 về sáu kỹ thuật AI và slide 14 References có đánh số như báo cáo); lời thoại (tiếng Anh) nằm trong phần Notes của từng slide. File được tạo bằng `python tools/build_slides.py` (cần python-pptx; dùng theme của deck Giang). Muốn sửa chữ hay lời thoại thì sửa trong script rồi chạy lại lệnh. Số liệu lấy từ `src/evaluate.py`, `src/evaluate_assistant.py`, `src/wang.py`, `tools/compare_fair.py` ngày 13/11.
 
 Deck tiếng Việt cũ của Giang ([giang_forward_wang.pptx](giang_forward_wang.pptx), [giang_script.md](giang_script.md)) và Khoa ([khoa_backward_eval.pptx](khoa_backward_eval.pptx), [khoa_script.md](khoa_script.md)) giữ lại để tham khảo khi trả lời vấn đáp; số liệu trong đó là của 12/11.
 
@@ -8,17 +8,17 @@ Deck tiếng Việt cũ của Giang ([giang_forward_wang.pptx](giang_forward_wan
 
 | Slide | Người nói | Nội dung | Thời gian |
 |---|---|---|---|
-| 1–5 | Lâm | Tiêu đề, thành viên và nhiệm vụ, nội dung, bài toán, kiến trúc | 2:00 |
-| 6–7 | Giang | Suy diễn tiến và CF, thuật toán Wang | 1:45 |
-| 8–9 | Khoa | Suy diễn lùi và giải thích, đánh giá trên 30 kịch bản | 1:45 |
-| 10 | Lâm | Trợ lý chẩn đoán và chat theo luật | 0:45 |
-| 11 | Cả nhóm | Demo trực tiếp (mỗi bạn khoảng 1:30) | 5:00 |
-| 12–13 | Lâm | Kết luận, cảm ơn | 0:45 |
-| | | Cộng | 12:00, còn khoảng 3 phút để chuyển người và mở app |
+| 1–6 | Lâm | Tiêu đề, thành viên và nhiệm vụ, nội dung, bài toán, kiến trúc, sáu kỹ thuật AI | 2:15 |
+| 7–8 | Giang | Suy diễn tiến và CF, thuật toán Wang | 1:45 |
+| 9–10 | Khoa | Suy diễn lùi và giải thích, đánh giá trên 30 kịch bản | 1:45 |
+| 11 | Lâm | Trợ lý chẩn đoán và chat theo luật | 0:45 |
+| 12 | Cả nhóm | Demo trực tiếp (mỗi bạn khoảng 1:30) | 5:00 |
+| 13–15 | Lâm | Kết luận, tài liệu tham khảo, cảm ơn | 0:45 |
+| | | Cộng | 12:15, còn khoảng 2:45 để chuyển người và mở app |
 
 Lời thoại ước khoảng 900 từ tiếng Anh, khoảng 7 phút nếu nói 130 từ một phút.
 
-## Demo (slide 11)
+## Demo (slide 12)
 
 Trước buổi vấn đáp: mở sẵn `MotorbikeExpert.exe`, chọn **EN** và **Light**. Mỗi bạn demo xong bấm "New diagnosis" ở màn kết quả để về bước 1.
 
