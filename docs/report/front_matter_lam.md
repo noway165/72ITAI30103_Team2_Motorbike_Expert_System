@@ -1,6 +1,6 @@
 # Front matter
 
-Author: Tang Thoai Lam. Cover, Acknowledgments and Commitment, read by `tools/build_report.py`.
+Author: Tang Thoai Lam. Cover, Acknowledgments, Commitment and Team Contribution, read by `tools/build_report.py`.
 
 ## Cover
 
@@ -28,3 +28,15 @@ We declare that the project "Motorbike Fault Diagnosis Expert System" is our own
 Lecturer: Dr. Nguyen Thanh Huy. Students: Group 2.
 
 Ho Chi Minh City, November 2026.
+
+## Team Contribution
+
+The three members agreed that each contributed an equal share of the project.
+
+| Member | Student ID | Tasks | Share |
+|---|---|---|---|
+| Tăng Thoại Lâm (leader) | 2474802010210 | Knowledge base and its validator, six bike models with owner's-manual specs, MotoLogic interface, CLI and executable, diagnosis assistant and rule-based chat; Chapters 1, 2, 3.1, 3.5 and 6, cover and references; merged the report and the slides | 33.3% |
+| Kiều Bảo Giang | 2474802010095 | Forward chaining, certainty factors, Wang's algorithm prover, MotoLogic screen design, the By-symptoms screen, CF and dead-end figures; Chapters 3.2, 3.3 and 5; forward chaining and Wang slides | 33.3% |
+| Nguyễn Nam Khoa | 2474802010194 | Backward chaining with why / how explanations, the step-by-step screen, evaluation on 30 scenarios, fair comparison and noise tests, charts; Chapters 3.4 and 4; backward chaining and evaluation slides | 33.3% |
+
+Table 0.1: Members, tasks and contribution.

@@ -132,20 +132,20 @@ def slides(prs) -> None:
     text(s, 0.8, 5.6, 11.7, 0.4, "Tăng Thoại Lâm  ·  Kiều Bảo Giang  ·  Nguyễn Nam Khoa", 16, LIME, True)
 
     # 2. Team and tasks (Lâm) ----------------------------------------------------------------------------------
-    s = new_slide(prs, "CONTENT", "Team and tasks",
+    s = new_slide(prs, "CONTENT", "Team and contribution",
                   "Lâm: Our team has three members. I led the team and built the knowledge base, the bike-model data, "
                   "the MotoLogic interface, the executable and the chat assistant. Giang built forward chaining, the "
                   "certainty factors and Wang's prover, and designed the MotoLogic screens. Khoa built backward "
                   "chaining with its explanations, the step-by-step screen and the evaluation.")
-    team = [("Tăng Thoại Lâm", "Team leader · 2474802010210",
+    team = [("Tăng Thoại Lâm", "Team leader · 2474802010210 · 33.3%",
              ["Knowledge base: 79 symptoms, 40 faults, 88 rules with sources", "Six bike models and owner's-manual specs",
               "MotoLogic interface, CLI and .exe", "Diagnosis assistant and rule-based chat"],
              "Report: Ch. 1, 2, 3.1, 3.5, 6; merged report and slides"),
-            ("Kiều Bảo Giang", "Member · 2474802010095",
+            ("Kiều Bảo Giang", "Member · 2474802010095 · 33.3%",
              ["Forward chaining engine", "Certainty factors (MYCIN)", "Wang's algorithm prover",
               "MotoLogic design and By-symptoms screen"],
              "Report: Ch. 3.2, 3.3, 5"),
-            ("Nguyễn Nam Khoa", "Member · 2474802010194",
+            ("Nguyễn Nam Khoa", "Member · 2474802010194 · 33.3%",
              ["Backward chaining engine", "Why / how explanations", "Step-by-step screen",
               "Evaluation on 30 scenarios, charts"],
              "Report: Ch. 3.4, 4")]
