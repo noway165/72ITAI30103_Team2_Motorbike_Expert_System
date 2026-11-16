@@ -19,7 +19,7 @@ Retaken on 13/11 on main (with the bike-model picker) using `python tools/shots.
 
 Forward chaining is data-driven: confirmed symptoms enter an agenda, each rule counts its unproved
 premises, and a rule whose count reaches zero fires and adds its conclusion (PL-FC-ENTAILS?
-[Russell and Norvig, ch. 7]). Faults are ranked with MYCIN-style certainty factors: a rule passes on
+[Russell and Norvig 2020, ch. 7]). Faults are ranked with MYCIN-style certainty factors: a rule passes on
 its CF times the minimum CF of its premises, and rules with the same conclusion combine as
 CF1 + CF2 × (1 − CF1). Faults with CF ≥ 0.20 are reported, best first (Figure 3.y.1).
 

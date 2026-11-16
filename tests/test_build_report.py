@@ -39,6 +39,13 @@ class BuildReportTest(unittest.TestCase):
         self.assertEqual(heads[-1], "References")
         self.assertIn("Figure 3.1.3: The result for a Honda Vision", text)  # the app screens are in the body
         self.assertIn("Wang, H. (1960)", text)
+        refs = [p.text for p in doc.paragraphs[[p.text for p in doc.paragraphs].index("References") + 1:] if p.text]
+        self.assertEqual(refs, sorted(refs))  # alphabetical
+        self.assertTrue(refs[-1].startswith("World Health Organization"))
+        self.assertIn("Naryanto et al. [2022]", text)  # first author of the IJEECS paper (checked on its DOI page)
+        links = [r.target_ref for r in doc.part.rels.values() if r.is_external]
+        self.assertIn("https://doi.org/10.1147/rd.41.0002", links)  # every DOI / URL is clickable
+        self.assertEqual(len([u for u in links if u.startswith("http")]), 6)
         self.assertIn("Motorbike Fault Diagnosis Expert System", text)  # cover title
         self.assertGreaterEqual(len(doc.inline_shapes), 8)  # 1 + 1 + 3 (Ch3: G1, K1, chat) + 2 + 1
 
