@@ -26,6 +26,8 @@ from pptx.util import Inches, Pt
 ROOT = Path(__file__).resolve().parents[1]
 THEME_DECK = ROOT / "docs" / "slides" / "giang_forward_wang.pptx"
 FIG = ROOT / "docs" / "report" / "figures"
+IMG = ROOT / "docs" / "slides" / "img"
+TEAM = ("Tăng Thoại Lâm", "Kiều Bảo Giang", "Nguyễn Nam Khoa")
 OUT = ROOT / "docs" / "slides" / "Group2_Presentation.pptx"
 FOOTER = "Group 2 · Motorbike Fault Diagnosis Expert System"
 
@@ -38,7 +40,7 @@ def rgb(hex_: str) -> RGBColor:
 
 
 def text(slide, x, y, w, h, lines, size=14, color=TEXT, bold=False, align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP,
-         bullets=False, space=0, font=None):
+         bullets=False, space=0, font=None, spacing=0):
     """A text box with no inner margin; `lines` is a string or a list of paragraphs."""
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
@@ -62,6 +64,8 @@ def text(slide, x, y, w, h, lines, size=14, color=TEXT, bold=False, align=PP_ALI
         run.font.color.rgb = rgb(color)
         if font:
             run.font.name = font
+        if spacing:  # letter spacing in points (the small caps eyebrows)
+            run.font._element.set("spc", str(int(spacing * 100)))
     return box
 
 
@@ -109,6 +113,15 @@ def stat(slide, x, y, w, h, number, label, dark=False):
     text(slide, x + 0.25, y + 0.8, w - 0.5, h - 0.9, label, 13, ON_DARK if dark else MUTED)
 
 
+def dark_slide(prs, notes):
+    """A dark slide drawn by hand (title and thank-you slides): the layout's placeholders are removed."""
+    s = prs.slides.add_slide(next(l for l in prs.slide_layouts if l.name == "DARK"))
+    for ph in list(s.placeholders):
+        ph._element.getparent().remove(ph._element)
+    s.notes_slide.notes_text_frame.text = notes
+    return s
+
+
 def new_slide(prs, layout, title, notes, subtitle=None):
     s = prs.slides.add_slide(next(l for l in prs.slide_layouts if l.name == layout))
     phs = {ph.placeholder_format.idx: ph for ph in s.placeholders}
@@ -125,11 +138,19 @@ def new_slide(prs, layout, title, notes, subtitle=None):
 
 def slides(prs) -> None:
     # 1. Title (Lâm) -------------------------------------------------------------------------------------------
-    s = new_slide(prs, "DARK", "Motorbike Fault Diagnosis Expert System",
-                  "Lâm: Good morning. We are Group 2, and our project is a rule-based expert system that diagnoses "
-                  "common motorbike faults.",
-                  "Group 2 · Introduction to Artificial Intelligence (261_72ITSE30303_01) · Lecturer: Dr. Nguyen Thanh Huy")
-    text(s, 0.8, 5.6, 11.7, 0.4, "Tăng Thoại Lâm  ·  Kiều Bảo Giang  ·  Nguyễn Nam Khoa", 16, LIME, True)
+    # the team's own design of 16/11 (Group2_PresentationSlide.pdf); the artwork is cropped from that PDF
+    s = dark_slide(prs, "Lâm: Good morning. We are Group 2, and our project is a rule-based expert system that "
+                        "diagnoses common motorbike faults.")
+    text(s, 0.8, 1.42, 8.0, 0.3, "GROUP 2  ·  INTRODUCTION TO ARTIFICIAL INTELLIGENCE", 13, LIME, True, spacing=2)
+    text(s, 0.8, 1.75, 8.6, 0.8, "Motorbike Fault Diagnosis", 44, WHITE, True)
+    text(s, 0.8, 2.42, 8.6, 0.8, "Expert System", 44, LIME, True)
+    text(s, 0.8, 3.33, 8.0, 0.75, ["Course 261_72ITSE30303_01", "Lecturer: Dr. Nguyen Thanh Huy"], 18, ON_DARK)
+    text(s, 0.8, 4.92, 6.0, 0.3, "PRESENTED BY", 11, ON_DARK, True, spacing=2)
+    for i, name in enumerate(TEAM):
+        x = 0.8 + i * 2.5
+        card(s, x, 5.3, 2.29, 0.72, PANEL_SOFT)
+        text(s, x + 0.25, 5.3, 2.0, 0.72, name, 16, WHITE, True, anchor=MSO_ANCHOR.MIDDLE)
+    s.shapes.add_picture(str(IMG / "title_art.png"), Inches(9.02), Inches(1.92), Inches(3.57), Inches(3.57))
 
     # 2. Team and tasks (Lâm) ----------------------------------------------------------------------------------
     s = new_slide(prs, "CONTENT", "Team and contribution",
@@ -358,7 +379,6 @@ def slides(prs) -> None:
              "Brake fluid leak, CF 0.96, take it to a mechanic")]):
         x = 0.6 + i * 4.13
         card(s, x, 1.4, 3.9, 4.65, SOFT)
-        text(s, x + 0.3, 1.6, 3.3, 0.35, who, 13, MUTED, True)
         text(s, x + 0.3, 1.95, 3.3, 0.45, way, 18, ACCENT, True)
         text(s, x + 0.3, 2.55, 3.3, 2.2, steps, 14, TEXT, bullets=True, space=6)
         card(s, x + 0.2, 4.6, 3.5, 1.25, WHITE)
@@ -406,16 +426,18 @@ def slides(prs) -> None:
         "case-based reasoning methods. IJ-ICT, 15(4), 1829-1840."], 14, TEXT, space=8)
 
     # 11. Thanks -----------------------------------------------------------------------------------------------
-    s = new_slide(prs, "DARK", "Thank you for listening",
-                  "Lâm: Thank you for listening. We are happy to take your questions.",
-                  "Questions are welcome")
-    for i, (name, sid) in enumerate([("Tăng Thoại Lâm", "2474802010210"), ("Kiều Bảo Giang", "2474802010095"),
-                                     ("Nguyễn Nam Khoa", "2474802010194")]):
-        x = 0.8 + i * 3.95
-        card(s, x, 5.35, 3.75, 1.0, PANEL_SOFT)
-        text(s, x + 0.25, 5.5, 3.3, 0.35, name, 16, WHITE, True)
-        text(s, x + 0.25, 5.88, 3.3, 0.3, "Student ID " + sid, 12, ON_DARK)
-    text(s, 0.8, 6.55, 11.7, 0.35, "Group 2 · MotorbikeExpert.exe runs offline on Windows", 12, ON_DARK)
+    s = dark_slide(prs, "Lâm: Thank you for listening. We are happy to take your questions.")
+    text(s, 0.8, 1.42, 8.0, 0.3, "GROUP 2  ·  MOTORBIKE FAULT DIAGNOSIS EXPERT SYSTEM", 13, LIME, True, spacing=2)
+    text(s, 0.8, 1.75, 8.0, 0.85, "Thank you", 54, WHITE, True)
+    text(s, 0.8, 2.6, 8.0, 0.85, "for listening", 54, LIME, True)
+    text(s, 0.8, 3.6, 8.0, 0.45, "Questions are welcome", 22, ON_DARK)
+    for i, (name, sid) in enumerate(zip(TEAM, ("2474802010210", "2474802010095", "2474802010194"))):
+        x = 0.8 + i * 2.62
+        card(s, x, 4.85, 2.45, 0.95, PANEL_SOFT)
+        text(s, x + 0.25, 4.98, 2.1, 0.35, name, 16, WHITE, True)
+        text(s, x + 0.25, 5.36, 2.1, 0.3, "Student ID " + sid, 12, ON_DARK)
+    text(s, 0.8, 6.28, 8.0, 0.3, "Group 2  ·  MotorbikeExpert.exe runs offline on Windows", 13, ON_DARK)
+    s.shapes.add_picture(str(IMG / "qa_art.png"), Inches(9.07), Inches(2.18), Inches(3.5), Inches(2.47))
 
 
 def drop_slides(prs) -> None:
