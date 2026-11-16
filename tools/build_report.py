@@ -285,7 +285,9 @@ def table(doc, rows: list, caption: str) -> None:
                 b.set(qn(f"w:{k}"), v)
             borders.append(b)
         t._tbl.tblPr.append(borders)
-    longest = [max(len(row[c]) for row in rows) for c in range(len(rows[0]))]
+    # wide columns for long text, but a long cell must not squeeze the others to a few letters per line
+    longest = [min(45, max(max(len(row[c]) for row in rows), max(len(w) for row in rows for w in row[c].split()) + 8))
+               for c in range(len(rows[0]))]
     t.autofit = False
     for r, row in enumerate(rows):
         for c, text in enumerate(row):
@@ -348,7 +350,7 @@ def front_matter() -> tuple:
             else:
                 info[key.strip()] = value.strip()
     for s in sections:
-        texts[s["title"]] = [b[1] for b in s["blocks"] if b[0] == "p"]
+        texts[s["title"]] = s["blocks"]
     return info, texts
 
 
@@ -373,11 +375,14 @@ def build(out: Path = OUT) -> Path:
     setup(doc)
     info, texts = front_matter()
     cover(doc, info)
-    for title in ("Acknowledgments", "Commitment"):
+    for title in ("Acknowledgments", "Commitment", "Team Contribution"):
         page_break(doc)
         doc.add_paragraph(title, style="Heading 1")
-        for text in texts.get(title, []):
-            para(doc, text, align=WD_ALIGN_PARAGRAPH.JUSTIFY)
+        for block in texts.get(title, []):
+            if block[0] == "table":
+                table(doc, block[1], block[2])
+            else:
+                para(doc, block[1], align=WD_ALIGN_PARAGRAPH.JUSTIFY)
     page_break(doc)
     para(doc, "Table of Contents", 18, True, spacing=1.0, after=6)
     field(para(doc, spacing=1.0), r'TOC \o "1-2" \h \z \u')
