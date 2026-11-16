@@ -9,8 +9,8 @@ knowledge base of 12/11/2026: 79 symptoms, 40 faults, 88 rules.
 
 ## 4.1 Experimental setup
 
-The system was tested on 30 scenarios, ten per subsystem group, each written by a member who did not
-write the rules under test. Answers follow the scenario's symptoms; the assistant also starts from the
+The system was tested on 30 scenarios, ten per subsystem group, **each written by a member who did not
+write the rules under test.** Answers follow the scenario's symptoms; the assistant also starts from the
 scenario's description.
 
 ## 4.2 Results
@@ -25,8 +25,8 @@ scenario's description.
 
 Table 4.2.1: Questions asked and top-1 accuracy of each way of asking.
 
-Forward and backward chaining return the same faults and CFs and rank the expected fault first in all
-30 scenarios; without the four fallback rules, two scenarios fail (Figure 4.2.1). Choosing the part
+**Forward and backward chaining return the same faults and CFs and rank the expected fault first in all
+30 scenarios**; without the four fallback rules, two scenarios fail (Figure 4.2.1). Choosing the part
 first shortens the dialogue 4.4 times. The assistant asks about seven times fewer questions on the
 30 scenarios, whose descriptions were all used while writing it; on ten held-out descriptions it
 misses two or three brake, fork and steering faults (Figure 4.2.2). With 10% of the answers flipped, top-1 falls
@@ -40,7 +40,3 @@ File: `figures/fig_accuracy_by_group.png`.
 Figure 4.2.2: Mean questions asked by backward chaining and by the assistant, by scenario group.
 File: `figures/fig_backward_questions.png`.
 
-## 4.3 Chapter conclusion
-
-The rule base finds every expected fault. The assistant trades a few misses for far shorter dialogues;
-with only 30 scenarios, 100% is an optimistic estimate for real riders.

@@ -22,7 +22,7 @@ Bìa (Ministry of Education and Training, Van Lang University, tên môn, Final 
 | `front_matter_lam.md` | Bìa (tên, MSSV), Acknowledgments, Commitment | Lâm |
 | `introduction_background_lam.md` | Chapter 1, Chapter 2, References | Lâm |
 | `methodology_lam.md` | 3.1 Knowledge base and interface | Lâm |
-| `methodology_giang.md` | Forward chaining, CF, Wang; Chapter conclusion của Ch3 | Giang |
+| `methodology_giang.md` | Forward chaining, CF, Wang | Giang |
 | `methodology_khoa.md` | Backward chaining, why/how | Khoa |
 | `assistant_lam.md` | Trợ lý và chat (mục cuối của Ch3) | Lâm |
 | `experiments_results_khoa.md` | Chapter 4 | Khoa |
@@ -39,14 +39,14 @@ python tools/build_report.py      # -> build/report/Final_Report_Group2.docx
 Script lấy bìa (khung, logo), khổ giấy, lề, style và footer từ file mẫu; tự đánh số mục và hình; tạo mục lục (Word hỏi cập nhật khi mở file, chọn Yes); đặt mỗi hình ngay sau đoạn đầu tiên nhắc tới nó. Quy ước để script đọc đúng:
 
 - Phần trước dòng `## ` đầu tiên là ghi chú cho nhóm, không đưa vào báo cáo.
-- Mục viết `## 3.y Tên mục`. Số tạm (`3.y`) được thay bằng số thật ở mọi chỗ trong chương (`Figure 3.y.1` thành `Figure 3.2.1`). Mục tên "Chapter conclusion" luôn được đưa xuống cuối chương.
+- Mục viết `## 3.y Tên mục`. Số tạm (`3.y`) được thay bằng số thật ở mọi chỗ trong chương (`Figure 3.y.1` thành `Figure 3.2.1`).
 - Hình: dòng `Figure 3.y.1: chú thích` rồi dòng ``File: `figures/ten.png` ``. Trong bài phải có chữ `(Figure 3.y.1)`, nếu không script cảnh báo và đặt hình ở cuối chương.
 - Bảng Markdown, ngay sau là dòng `Table 4.2.1: chú thích`.
 - Viết đoạn văn liền, không gạch đầu dòng (dòng bắt đầu bằng `- ` chỉ dùng trong References và Cover).
 
 ## Định dạng theo mẫu
 
-- Mỗi chương kết thúc bằng mục **Chapter conclusion**.
+- Góp ý của thầy ngày 16/11: không có mục Chapter conclusion ở cuối mỗi chương (Chapter 6 Conclusion vẫn giữ); mỗi mục có một câu chính in đậm (`**...**`); tên các kỹ thuật AI in đậm khi định nghĩa, và có bảng kỹ thuật AI ở đầu Chapter 3; tài liệu tham khảo đánh số [1], [2] ... theo thứ tự trích dẫn lần đầu (trong bài viết `[4, ch. 7]`, danh sách References viết đúng thứ tự đó, script tự thêm số).
 - Tiêu đề chương dạng `Chapter 1: Introduction`; mục con đánh số `1.1`, `1.2`.
 - Hình có chú thích ngay bên dưới, số theo chương.mục.thứ tự: `Figure 1.1.1: ...`. Trong bài phải nhắc đến từng hình.
 - Times New Roman, chữ thường 13 pt, tiêu đề chương 18 pt đậm, tiêu đề mục 13 pt; khổ Letter, lề 1 inch, có số trang.

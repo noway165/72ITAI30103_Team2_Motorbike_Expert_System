@@ -11,8 +11,8 @@ it with Khoa's K4 numbers if they differ.
 ## 5.1 Where the system went wrong
 
 All 30 scenarios rank the expected fault first with both engines, and Wang's prover agrees with
-forward chaining on every scenario and 500 random answer sets, so the errors came from the
-knowledge base. Two cases failed the same way: an intermediate fact was derived, but every rule
+forward chaining on every scenario and 500 random answer sets, **so the errors came from the
+knowledge base.** Two cases failed the same way: an intermediate fact was derived, but every rule
 going on needed a symptom the rider did not have (Figure 5.1.1). A lower-CF fallback rule to the
 most common fault (for example TS15) fixed both; without these rules top-1 drops to 28/30.
 
@@ -24,21 +24,15 @@ its phrase list, but 8/10 (Vietnamese) and 7/10 (English) with about 11 question
 ones. The comparison is not equal: the assistant does not count what it reads, stops once the
 leading fault is proved and is capped at 15 questions (reached in 7/30). Reading the same
 description, backward chaining still asks 36.3; stopping at the first proved fault gives 22.2
-(28/30). Most of the gap comes from stopping early; step-by-step questions stay recommended.
+(28/30). **Most of the gap comes from stopping early**; step-by-step questions stay recommended.
 
 ## 5.3 Limitations
 
-The rules are definite clauses, so a "no" answer cannot lower a fault's CF: in ET05 "low coolant"
+The rules are definite clauses, so **a "no" answer cannot lower a fault's CF**: in ET05 "low coolant"
 stays second (CF 0.45) although the coolant is fine. The chat understands only phrasings in
 its phrase list: "tay phanh mềm" (soft brake lever) is read, "bóp phanh thấy mềm" is not. The
 bike-model rules rest on weak sources (news articles and repair-shop websites), and the CFs and
 scenarios were written by the team.
-
-## 5.4 Chapter conclusion
-
-The engines are correct with respect to the rules; the remaining errors come from what the rules
-and the phrase list can express. Negative evidence, a larger phrase list and real repair cases come
-next.
 
 ## Figure
 

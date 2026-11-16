@@ -3,7 +3,7 @@
     python tools/build_slides.py        # -> docs/slides/Group2_Presentation.pptx
 
 Built with python-pptx on the theme of Giang's deck (the MotoLogic colours and layouts Giang's and Khoa's Vietnamese
-slides use). Thirteen slides: about 7 minutes of talk, a 5-minute live demo and time to change speakers; the order,
+slides use). Fifteen slides: about 7 1/2 minutes of talk, a 5-minute live demo and time to change speakers; the order,
 timing and demo steps are in docs/slides/lam_script.md. Figures come from docs/report/figures, the numbers from
 src/evaluate.py, src/evaluate_assistant.py, src/wang.py and tools/compare_fair.py (13/11).
 """
@@ -181,7 +181,7 @@ def slides(prs) -> None:
                   "and explains every conclusion with its rules. The knowledge base has 79 symptoms, 40 faults in six "
                   "subsystems and 88 rules, each with a CF and a source, plus specs for six popular models.")
     text(s, 0.6, 1.45, 5.9, 1.0, "74 million", 54, ACCENT, True)
-    text(s, 0.6, 2.45, 5.6, 0.7, "motorbikes in Viet Nam, more than it has adults (WHO, 2024)", 14, MUTED)
+    text(s, 0.6, 2.45, 5.6, 0.7, "motorbikes in Viet Nam, more than it has adults [1]", 14, MUTED)
     text(s, 0.6, 3.3, 5.6, 1.0, "The same “it won't start” can be a flat battery or a fault for a mechanic.", 16)
     text(s, 0.6, 4.45, 5.6, 0.4, "Goals", 18, TEXT, True)
     text(s, 0.6, 4.9, 5.6, 1.5, ["Rank the likely faults by certainty factor (CF)", "Say which faults need a mechanic",
@@ -202,10 +202,30 @@ def slides(prs) -> None:
                   "Lâm: The knowledge base is one JSON file per subsystem, and a rule checker reports duplicate rules, "
                   "unused symbols, missing sources and cycles; it reports none. The same rules drive forward chaining, "
                   "backward chaining and the chat assistant, and Wang's algorithm proves the conclusions "
-                  "independently. The program is a desktop app, MotoLogic, that runs offline. Giang, please.")
+                  "independently. The program is a desktop app, MotoLogic, that runs offline.")
     picture(s, FIG / "fig_system_overview.png", 0.9, 1.4, 11.5, 4.4)
     text(s, 0.9, 5.9, 11.5, 0.7, "One JSON file per subsystem. The rule checker reports duplicate rules, unused symbols, "
                                  "missing sources and cycles: 0 errors, 0 warnings.", 14, MUTED)
+
+    # AI techniques (Lâm) -------------------------------------------------------------------------------------
+    s = new_slide(prs, "CONTENT", "Six AI techniques in one system",
+                  "Lâm: The system combines six AI techniques. The knowledge is represented as rules with certainty "
+                  "factors. Forward chaining ranks the faults, backward chaining asks the questions and explains them, "
+                  "Wang's algorithm proves every conclusion again, and the assistant reads the rider's words and picks "
+                  "the most informative question. Giang, please.")
+    for i, (name, job, ref) in enumerate([
+            ("Rule-based knowledge", "88 IF ... THEN rules, each with a CF and a source", "[3], [4]"),
+            ("Forward chaining", "Ranks the faults from the symptoms the rider ticks", "[4]"),
+            ("Certainty factors (MYCIN)", "How strongly the evidence supports each fault", "[2]"),
+            ("Backward chaining", "Asks one question at a time and explains why and how", "[3], [4]"),
+            ("Theorem proving (Wang)", "Proves every conclusion again, independently", "[5]"),
+            ("Information gain + language", "Reads the rider's words, asks the most informative question", "[4]")]):
+        x, y = 0.6 + (i % 3) * 4.13, 1.45 + (i // 3) * 2.55
+        dark = i == 0
+        card(s, x, y, 3.9, 2.3, PANEL if dark else SOFT)
+        text(s, x + 0.3, y + 0.25, 3.3, 0.9, name, 20, LIME if dark else ACCENT, True)
+        text(s, x + 0.3, y + 1.1, 3.3, 0.8, job, 14, WHITE if dark else TEXT)
+        text(s, x + 0.3, y + 1.85, 3.3, 0.3, ref, 12, ON_DARK if dark else MUTED, True)
 
     # 4. Forward chaining and CF (Giang) -----------------------------------------------------------------------
     s = new_slide(prs, "CONTENT", "Forward chaining ranks faults by certainty",
@@ -216,8 +236,8 @@ def slides(prs) -> None:
                   "times one minus CF1. For a weak battery three rules give 0.765, 0.675 and 0.54, which combine to "
                   "0.96. Faults with a CF of at least 0.2 are reported, best first.")
     for i, (head, body) in enumerate([
-            ("Facts in, rules fire", "Each rule counts its unproved premises; at zero it fires (PL-FC-ENTAILS, AIMA ch. 7)."),
-            ("MYCIN certainty factors", "AND: min CF of the premises. Rule: its CF × that. Same conclusion: "
+            ("Facts in, rules fire", "Each rule counts its unproved premises; at zero it fires (PL-FC-ENTAILS [4])."),
+            ("MYCIN certainty factors [2]", "AND: min CF of the premises. Rule: its CF × that. Same conclusion: "
                                         "CF1 + CF2 × (1 − CF1)."),
             ("Report", "Faults with CF ≥ 0.20, best first.")]):
         step(s, i + 1, 0.6, 1.55 + i * 1.6, head, body, w=4.4)
@@ -237,7 +257,7 @@ def slides(prs) -> None:
     text(s, 0.85, 1.6, 5.5, 0.3, "The question for Wang", 13, MUTED)
     text(s, 0.85, 1.95, 5.5, 0.6, "rules, answers  ⇒  fault", 24, ACCENT, True, font="Consolas")
     text(s, 0.6, 2.95, 6.0, 2.6, ["Each rule becomes (p1 ∧ … ∧ pk) → q; each “yes” is an atom.",
-                                  "Wang removes one connective at a time until every branch is an axiom.",
+                                  "Wang's algorithm [5] removes one connective at a time until every branch is an axiom.",
                                   "Forward chaining is sound and complete for definite clauses, so both must find "
                                   "the same faults."], 15, TEXT, bullets=True, space=10)
     stat(s, 7.1, 1.45, 5.63, 2.05, "0 disagreements", "between Wang and forward chaining on 30 scenarios and 500 random "
@@ -369,6 +389,22 @@ def slides(prs) -> None:
     text(s, 0.6, 6.1, 12.1, 0.5, "Rules that explain themselves give riders a first diagnosis they can check.", 15,
          TEXT, True)
 
+    # References (numbered as in the report) ---------------------------------------------------------------
+    s = new_slide(prs, "CONTENT", "References",
+                  "The numbers match the report's reference list.")
+    text(s, 0.6, 1.4, 12.1, 5.2, [
+        "[1] World Health Organization (2024). WHO convenes global motorcycle safety experts in Viet Nam.",
+        "[2] Shortliffe, E. H., and Buchanan, B. G. (1975). A model of inexact reasoning in medicine. "
+        "Mathematical Biosciences, 23(3-4), 351-379.",
+        "[3] Buchanan, B. G., and Shortliffe, E. H. (Eds.) (1984). Rule-Based Expert Systems: The MYCIN Experiments. "
+        "Addison-Wesley.",
+        "[4] Russell, S., and Norvig, P. (2020). Artificial Intelligence: A Modern Approach (4th ed.). Pearson.",
+        "[5] Wang, H. (1960). Toward mechanical mathematics. IBM Journal of Research and Development, 4(1), 2-22.",
+        "[6] Naryanto, R. F., et al. (2022). Development of a mobile expert system for the diagnosis on motorcycle "
+        "damage using forward chaining algorithm. IJEECS, 27(3), 1601-1609.",
+        "[7] Anggrawan, A., et al. (2026). Expert system for motorcycle damage diagnosis using certainty factor and "
+        "case-based reasoning methods. IJ-ICT, 15(4), 1829-1840."], 14, TEXT, space=8)
+
     # 11. Thanks -----------------------------------------------------------------------------------------------
     s = new_slide(prs, "DARK", "Thank you for listening",
                   "Lâm: Thank you for listening. We are happy to take your questions.",
@@ -412,7 +448,7 @@ def build(out: Path = OUT) -> Path:
     neutral_footer(prs)
     slides(prs)
     slide_numbers(prs, template)
-    assert len(prs.slides) == 13, len(prs.slides)
+    assert len(prs.slides) == 15, len(prs.slides)
     prs.save(str(out))
     return out
 
